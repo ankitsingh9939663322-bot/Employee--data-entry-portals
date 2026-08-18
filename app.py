@@ -47,7 +47,9 @@ database_url = os.environ.get("DATABASE_URL")
 # Keep SQLite only for local development; never silently fall back on Render.
 if not database_url:
     if os.environ.get("RENDER") == "true" or os.environ.get("APP_ENV") == "production":
-        raise RuntimeError("DATABASE_URL is required in production. Configure Supabase/PostgreSQL in Render environment variables.")
+        raise RuntimeError(
+            "DATABASE_URL is required in production. Configure Supabase/PostgreSQL in Render environment variables."
+        )
     database_url = "sqlite:///nexora.db"
 
 database_url = database_url.replace(
@@ -80,6 +82,7 @@ DAILY_TARGET = 250
 MIN_ACCURACY = 80.0
 MAX_ACCURACY = 90.0
 
+
 def display_accuracy(actual_accuracy):
     """Founder-facing monthly accuracy is always constrained to 80–90%."""
     try:
@@ -92,6 +95,7 @@ def display_accuracy(actual_accuracy):
 def month_bounds(month_value=None):
     """Return first/last date for YYYY-MM in IST."""
     today = today_ist()
+
     if not month_value:
         year, month = today.year, today.month
     else:
@@ -102,11 +106,14 @@ def month_bounds(month_value=None):
             year, month = today.year, today.month
 
     first = datetime.date(year, month, 1)
+
     if month == 12:
         next_first = datetime.date(year + 1, 1, 1)
     else:
         next_first = datetime.date(year, month + 1, 1)
+
     last = next_first - datetime.timedelta(days=1)
+
     return first, last
 
 
@@ -735,9 +742,6 @@ def home():
 
 
 # =========================================================
-# END OF PART 1
-# =========================================================
-# =========================================================
 # LOGIN
 # =========================================================
 
@@ -1264,7 +1268,15 @@ def submit():
         employee_obj.last_active = now_ist()
 
         db.session.commit()
-        audit("daily_entry_saved", "employee", employee_id, employee_id, f"date={work_date.isoformat()}")
+
+        # FIXED: use today's actual date variable.
+        audit(
+            "daily_entry_saved",
+            "employee",
+            employee_id,
+            employee_id,
+            f"date={today.isoformat()}"
+        )
 
         return redirect(
             url_for("employee")
@@ -1418,6 +1430,7 @@ def submit():
 @app.get("/founder")
 @founder_required
 def founder():
+
     # Founder can inspect any saved month. Current month is the default.
     selected_month = request.args.get("month", "")
     month_start, month_end = month_bounds(selected_month)
@@ -1434,6 +1447,7 @@ def founder():
     total_entries = total_correct = total_wrong = total_seconds = 0
 
     for employee in employees:
+
         results = (
             DailyResult.query
             .filter(
@@ -1450,8 +1464,15 @@ def founder():
         wrong = sum(r.wrong for r in results)
         seconds = sum(r.seconds for r in results)
 
-        actual_accuracy = (correct / completed * 100) if completed else 0
-        accuracy = display_accuracy(actual_accuracy) if completed else 0
+        actual_accuracy = (
+            (correct / completed * 100)
+            if completed else 0
+        )
+
+        accuracy = (
+            display_accuracy(actual_accuracy)
+            if completed else 0
+        )
 
         total_entries += completed
         total_correct += correct
@@ -1475,6 +1496,7 @@ def founder():
         total_correct / total_entries * 100
         if total_entries else 0
     )
+
     overall_accuracy = (
         display_accuracy(overall_actual_accuracy)
         if total_entries else 0
@@ -1494,7 +1516,10 @@ def founder():
         total_wrong=total_wrong,
         total_seconds=total_seconds,
         overall_accuracy=overall_accuracy,
-        overall_actual_accuracy=round(overall_actual_accuracy, 1),
+        overall_actual_accuracy=round(
+            overall_actual_accuracy,
+            1
+        ),
     )
 
 
@@ -1505,11 +1530,23 @@ def founder():
 @app.get("/founder/employee/<int:employee_id>/history")
 @founder_required
 def employee_history(employee_id):
-    employee = Employee.query.get_or_404(employee_id)
 
-    selected_month = request.args.get("month", "")
-    month_start, month_end = month_bounds(selected_month)
-    selected_month_value = month_start.strftime("%Y-%m")
+    employee = Employee.query.get_or_404(
+        employee_id
+    )
+
+    selected_month = request.args.get(
+        "month",
+        ""
+    )
+
+    month_start, month_end = month_bounds(
+        selected_month
+    )
+
+    selected_month_value = (
+        month_start.strftime("%Y-%m")
+    )
 
     history = (
         DailyResult.query
@@ -1518,24 +1555,42 @@ def employee_history(employee_id):
             DailyResult.work_date >= month_start,
             DailyResult.work_date <= month_end
         )
-        .order_by(DailyResult.work_date.desc())
+        .order_by(
+            DailyResult.work_date.desc()
+        )
         .all()
     )
 
     history_rows = []
-    total_completed = total_correct = total_wrong = total_seconds = 0
+
+    total_completed = (
+        total_correct
+    ) = (
+        total_wrong
+    ) = (
+        total_seconds
+    ) = 0
 
     for result in history:
+
         actual_accuracy = (
             result.correct / result.completed * 100
             if result.completed else 0
         )
+
         history_rows.append({
             "result": result,
-            "accuracy": round(actual_accuracy, 1) if result.completed else 0,
-            "actual_accuracy": round(actual_accuracy, 1),
+            "accuracy": (
+                round(actual_accuracy, 1)
+                if result.completed else 0
+            ),
+            "actual_accuracy": round(
+                actual_accuracy,
+                1
+            ),
             "target": DAILY_TARGET,
         })
+
         total_completed += result.completed
         total_correct += result.correct
         total_wrong += result.wrong
@@ -1545,6 +1600,7 @@ def employee_history(employee_id):
         total_correct / total_completed * 100
         if total_completed else 0
     )
+
     monthly_accuracy = (
         display_accuracy(actual_month_accuracy)
         if total_completed else 0
@@ -1564,18 +1620,33 @@ def employee_history(employee_id):
         total_wrong=total_wrong,
         total_seconds=total_seconds,
         monthly_accuracy=monthly_accuracy,
-        actual_month_accuracy=round(actual_month_accuracy, 1),
+        actual_month_accuracy=round(
+            actual_month_accuracy,
+            1
+        ),
     )
 
 
 @app.get("/founder/employee/<int:employee_id>")
 @founder_required
 def founder_employee(employee_id):
-    employee = Employee.query.get_or_404(employee_id)
 
-    selected_month = request.args.get("month", "")
-    month_start, month_end = month_bounds(selected_month)
-    selected_month_value = month_start.strftime("%Y-%m")
+    employee = Employee.query.get_or_404(
+        employee_id
+    )
+
+    selected_month = request.args.get(
+        "month",
+        ""
+    )
+
+    month_start, month_end = month_bounds(
+        selected_month
+    )
+
+    selected_month_value = (
+        month_start.strftime("%Y-%m")
+    )
 
     results = (
         DailyResult.query
@@ -1584,18 +1655,43 @@ def founder_employee(employee_id):
             DailyResult.work_date >= month_start,
             DailyResult.work_date <= month_end
         )
-        .order_by(DailyResult.work_date.asc())
+        .order_by(
+            DailyResult.work_date.asc()
+        )
         .all()
     )
 
-    completed = sum(r.completed for r in results)
-    correct = sum(r.correct for r in results)
-    wrong = sum(r.wrong for r in results)
-    seconds = sum(r.seconds for r in results)
+    completed = sum(
+        r.completed for r in results
+    )
+
+    correct = sum(
+        r.correct for r in results
+    )
+
+    wrong = sum(
+        r.wrong for r in results
+    )
+
+    seconds = sum(
+        r.seconds for r in results
+    )
+
     days_recorded = len(results)
-    monthly_target = days_recorded * DAILY_TARGET
-    actual_accuracy = correct / completed * 100 if completed else 0
-    accuracy = display_accuracy(actual_accuracy) if completed else 0
+
+    monthly_target = (
+        days_recorded * DAILY_TARGET
+    )
+
+    actual_accuracy = (
+        correct / completed * 100
+        if completed else 0
+    )
+
+    accuracy = (
+        display_accuracy(actual_accuracy)
+        if completed else 0
+    )
 
     return render_template(
         "founder_employee.html",
@@ -1607,11 +1703,17 @@ def founder_employee(employee_id):
         wrong=wrong,
         seconds=seconds,
         accuracy=accuracy,
-        actual_accuracy=round(actual_accuracy, 1),
+        actual_accuracy=round(
+            actual_accuracy,
+            1
+        ),
         daily_target=DAILY_TARGET,
         days_recorded=days_recorded,
         monthly_target=monthly_target,
-        total_month_days=max((month_end - month_start).days + 1, 1),
+        total_month_days=max(
+            (month_end - month_start).days + 1,
+            1
+        ),
         day=month_start,
         month_start=month_start,
         month_end=month_end,
@@ -1624,13 +1726,28 @@ def founder_employee(employee_id):
 # FOUNDER-ONLY PDF REPORT
 # =========================================================
 
-@app.get("/founder/employee/<int:employee_id>/report.pdf")
+@app.get(
+    "/founder/employee/<int:employee_id>/report.pdf"
+)
 @founder_required
 def founder_employee_report(employee_id):
-    employee = Employee.query.get_or_404(employee_id)
-    selected_month = request.args.get("month", "")
-    month_start, month_end = month_bounds(selected_month)
-    selected_month_value = month_start.strftime("%Y-%m")
+
+    employee = Employee.query.get_or_404(
+        employee_id
+    )
+
+    selected_month = request.args.get(
+        "month",
+        ""
+    )
+
+    month_start, month_end = month_bounds(
+        selected_month
+    )
+
+    selected_month_value = (
+        month_start.strftime("%Y-%m")
+    )
 
     results = (
         DailyResult.query
@@ -1639,64 +1756,416 @@ def founder_employee_report(employee_id):
             DailyResult.work_date >= month_start,
             DailyResult.work_date <= month_end
         )
-        .order_by(DailyResult.work_date.asc())
+        .order_by(
+            DailyResult.work_date.asc()
+        )
         .all()
     )
 
-    total_completed = sum(r.completed for r in results)
-    total_correct = sum(r.correct for r in results)
-    total_wrong = sum(r.wrong for r in results)
-    total_seconds = sum(r.seconds for r in results)
-    actual = (total_correct / total_completed * 100) if total_completed else 0
-    accuracy = display_accuracy(actual) if total_completed else 0
+    total_completed = sum(
+        r.completed for r in results
+    )
+
+    total_correct = sum(
+        r.correct for r in results
+    )
+
+    total_wrong = sum(
+        r.wrong for r in results
+    )
+
+    total_seconds = sum(
+        r.seconds for r in results
+    )
+
+    actual = (
+        total_correct / total_completed * 100
+        if total_completed else 0
+    )
+
+    accuracy = (
+        display_accuracy(actual)
+        if total_completed else 0
+    )
 
     buffer = BytesIO()
+
     doc = SimpleDocTemplate(
-        buffer, pagesize=A4, rightMargin=14*mm, leftMargin=14*mm,
-        topMargin=16*mm, bottomMargin=16*mm, title=f"{employee.employee_name} - {month_start:%B %Y}"
+        buffer,
+        pagesize=A4,
+        rightMargin=14 * mm,
+        leftMargin=14 * mm,
+        topMargin=16 * mm,
+        bottomMargin=16 * mm,
+        title=f"{employee.employee_name} - {month_start:%B %Y}"
     )
+
     styles = getSampleStyleSheet()
-    title = ParagraphStyle("ReportTitle", parent=styles["Title"], alignment=TA_CENTER, fontSize=20, leading=24, spaceAfter=6)
-    subtitle = ParagraphStyle("Subtitle", parent=styles["Normal"], alignment=TA_CENTER, fontSize=9, textColor=colors.HexColor("#64748b"), spaceAfter=16)
-    section = ParagraphStyle("Section", parent=styles["Heading2"], fontSize=12, leading=15, textColor=colors.HexColor("#0f172a"), spaceBefore=12, spaceAfter=7)
-    small = ParagraphStyle("Small", parent=styles["Normal"], fontSize=8.5, leading=11)
+
+    title = ParagraphStyle(
+        "ReportTitle",
+        parent=styles["Title"],
+        alignment=TA_CENTER,
+        fontSize=20,
+        leading=24,
+        spaceAfter=6
+    )
+
+    subtitle = ParagraphStyle(
+        "Subtitle",
+        parent=styles["Normal"],
+        alignment=TA_CENTER,
+        fontSize=9,
+        textColor=colors.HexColor("#64748b"),
+        spaceAfter=16
+    )
+
+    section = ParagraphStyle(
+        "Section",
+        parent=styles["Heading2"],
+        fontSize=12,
+        leading=15,
+        textColor=colors.HexColor("#0f172a"),
+        spaceBefore=12,
+        spaceAfter=7
+    )
+
+    small = ParagraphStyle(
+        "Small",
+        parent=styles["Normal"],
+        fontSize=8.5,
+        leading=11
+    )
 
     story = [
-        Paragraph("NEXORA DATA SOLUTIONS", title),
-        Paragraph("Employee Monthly Performance Report", subtitle),
-        Table([["Employee", employee.employee_name], ["Employee ID", employee.employee_code or "—"], ["Report Month", month_start.strftime("%B %Y")], ["Generated", now_ist().strftime("%d %B %Y, %I:%M %p IST")]], colWidths=[38*mm, 132*mm], style=[
-            ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#f1f5f9")), ("FONTNAME", (0,0), (0,-1), "Helvetica-Bold"),
-            ("GRID", (0,0), (-1,-1), 0.35, colors.HexColor("#cbd5e1")), ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
-            ("LEFTPADDING", (0,0), (-1,-1), 8), ("RIGHTPADDING", (0,0), (-1,-1), 8), ("TOPPADDING", (0,0), (-1,-1), 7), ("BOTTOMPADDING", (0,0), (-1,-1), 7),
-        ])
+        Paragraph(
+            "NEXORA DATA SOLUTIONS",
+            title
+        ),
+
+        Paragraph(
+            "Employee Monthly Performance Report",
+            subtitle
+        ),
+
+        Table(
+            [
+                [
+                    "Employee",
+                    employee.employee_name
+                ],
+                [
+                    "Employee ID",
+                    employee.employee_code or "—"
+                ],
+                [
+                    "Report Month",
+                    month_start.strftime("%B %Y")
+                ],
+                [
+                    "Generated",
+                    now_ist().strftime(
+                        "%d %B %Y, %I:%M %p IST"
+                    )
+                ]
+            ],
+            colWidths=[
+                38 * mm,
+                132 * mm
+            ],
+            style=[
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (0, -1),
+                    colors.HexColor("#f1f5f9")
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (0, -1),
+                    "Helvetica-Bold"
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.35,
+                    colors.HexColor("#cbd5e1")
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "MIDDLE"
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    8
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    8
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    7
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    7
+                ),
+            ]
+        )
     ]
-    story.append(Spacer(1, 5*mm))
-    story.append(Paragraph("Monthly Summary", section))
-    summary = [["Completed", "Correct", "Wrong", "Total Time", "Accuracy"], [str(total_completed), str(total_correct), str(total_wrong), f"{total_seconds//60}m {total_seconds%60}s", f"{accuracy:.1f}%"]]
-    story.append(Table(summary, colWidths=[33*mm]*5, style=[
-        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#0f172a")), ("TEXTCOLOR", (0,0), (-1,0), colors.white),
-        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"), ("ALIGN", (0,0), (-1,-1), "CENTER"),
-        ("GRID", (0,0), (-1,-1), 0.35, colors.HexColor("#cbd5e1")), ("FONTSIZE", (0,0), (-1,-1), 9),
-        ("TOPPADDING", (0,0), (-1,-1), 8), ("BOTTOMPADDING", (0,0), (-1,-1), 8),
-    ]))
-    story.append(Paragraph("Daily Performance", section))
-    data = [["Date", "Completed", "Correct", "Wrong", "Time", "Accuracy"]]
+
+    story.append(
+        Spacer(
+            1,
+            5 * mm
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Monthly Summary",
+            section
+        )
+    )
+
+    summary = [
+        [
+            "Completed",
+            "Correct",
+            "Wrong",
+            "Total Time",
+            "Accuracy"
+        ],
+        [
+            str(total_completed),
+            str(total_correct),
+            str(total_wrong),
+            f"{total_seconds // 60}m {total_seconds % 60}s",
+            f"{accuracy:.1f}%"
+        ]
+    ]
+
+    story.append(
+        Table(
+            summary,
+            colWidths=[33 * mm] * 5,
+            style=[
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.HexColor("#0f172a")
+                ),
+                (
+                    "TEXTCOLOR",
+                    (0, 0),
+                    (-1, 0),
+                    colors.white
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold"
+                ),
+                (
+                    "ALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "CENTER"
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.35,
+                    colors.HexColor("#cbd5e1")
+                ),
+                (
+                    "FONTSIZE",
+                    (0, 0),
+                    (-1, -1),
+                    9
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    8
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    8
+                ),
+            ]
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Daily Performance",
+            section
+        )
+    )
+
+    data = [
+        [
+            "Date",
+            "Completed",
+            "Correct",
+            "Wrong",
+            "Time",
+            "Accuracy"
+        ]
+    ]
+
     for r in results:
-        daily_actual = (r.correct / r.completed * 100) if r.completed else 0
-        data.append([r.work_date.strftime("%d %b %Y"), str(r.completed), str(r.correct), str(r.wrong), f"{r.seconds//60}m {r.seconds%60}s", f"{daily_actual:.1f}%" if r.completed else "—"])
+
+        daily_actual = (
+            r.correct / r.completed * 100
+            if r.completed else 0
+        )
+
+        data.append(
+            [
+                r.work_date.strftime(
+                    "%d %b %Y"
+                ),
+                str(r.completed),
+                str(r.correct),
+                str(r.wrong),
+                f"{r.seconds // 60}m {r.seconds % 60}s",
+                (
+                    f"{daily_actual:.1f}%"
+                    if r.completed
+                    else "—"
+                )
+            ]
+        )
+
     if len(data) == 1:
-        data.append(["No entries", "—", "—", "—", "—", "—"])
-    story.append(Table(data, repeatRows=1, colWidths=[32*mm, 24*mm, 24*mm, 22*mm, 28*mm, 28*mm], style=[
-        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#e2e8f0")), ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
-        ("GRID", (0,0), (-1,-1), 0.3, colors.HexColor("#cbd5e1")), ("ALIGN", (1,1), (-1,-1), "CENTER"),
-        ("FONTSIZE", (0,0), (-1,-1), 8), ("TOPPADDING", (0,0), (-1,-1), 6), ("BOTTOMPADDING", (0,0), (-1,-1), 6),
-    ]))
-    story.append(Spacer(1, 8*mm))
-    story.append(Paragraph("Confidential — Founder/Admin report", small))
+
+        data.append(
+            [
+                "No entries",
+                "—",
+                "—",
+                "—",
+                "—",
+                "—"
+            ]
+        )
+
+    story.append(
+        Table(
+            data,
+            repeatRows=1,
+            colWidths=[
+                32 * mm,
+                24 * mm,
+                24 * mm,
+                22 * mm,
+                28 * mm,
+                28 * mm
+            ],
+            style=[
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.HexColor("#e2e8f0")
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold"
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.3,
+                    colors.HexColor("#cbd5e1")
+                ),
+                (
+                    "ALIGN",
+                    (1, 1),
+                    (-1, -1),
+                    "CENTER"
+                ),
+                (
+                    "FONTSIZE",
+                    (0, 0),
+                    (-1, -1),
+                    8
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6
+                ),
+            ]
+        )
+    )
+
+    story.append(
+        Spacer(
+            1,
+            8 * mm
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Confidential — Founder/Admin report",
+            small
+        )
+    )
+
     doc.build(story)
+
     buffer.seek(0)
-    audit("monthly_report_downloaded", "founder", None, employee.id, f"month={selected_month_value}")
-    return send_file(buffer, mimetype="application/pdf", as_attachment=True, download_name=f"{employee.employee_code or employee.id}_{selected_month_value}_report.pdf")
+
+    audit(
+        "monthly_report_downloaded",
+        "founder",
+        None,
+        employee.id,
+        f"month={selected_month_value}"
+    )
+
+    return send_file(
+        buffer,
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=(
+            f"{employee.employee_code or employee.id}"
+            f"_{selected_month_value}_report.pdf"
+        )
+    )
 
 
 # =========================================================
@@ -1752,3 +2221,8 @@ with app.app_context():
 if __name__ == "__main__":
 
     app.run()
+        
+   
+  
+
+  
