@@ -1,0 +1,315 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Nexora · Employee History
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="eyebrow">
+            Founder / Admin · Employee History
+        </div>
+
+
+        <h1>
+            {{ employee.employee_name }}
+        </h1>
+
+
+        <p class="muted">
+
+            Complete performance history
+
+        </p>
+
+        <form method="get" style="margin-top:18px;display:flex;gap:10px;align-items:end;flex-wrap:wrap;">
+            <div>
+                <label for="month">Select month</label>
+                <input id="month" type="month" name="month" value="{{ selected_month }}" required>
+            </div>
+            <button type="submit">View Month</button>
+        </form>
+
+        <div class="stats" style="margin-top:20px;">
+            <div class="stat">Completed <b>{{ total_completed }}</b></div>
+            <div class="stat">Correct <b>{{ total_correct }}</b></div>
+            <div class="stat">Wrong <b>{{ total_wrong }}</b></div>
+            <div class="stat">Monthly Accuracy <b>{{ monthly_accuracy }}%</b></div>
+        </div>
+
+
+        <!-- EMPLOYEE INFORMATION -->
+
+        <div
+            style="
+                margin-top:18px;
+                padding:14px;
+                border-radius:10px;
+                background:rgba(127,127,127,0.08);
+            "
+        >
+
+            <b>
+                Employee ID:
+            </b>
+
+            {{ employee.employee_code }}
+
+        </div>
+
+
+        <!-- HISTORY TABLE -->
+
+        <div
+            style="
+                overflow-x:auto;
+                margin-top:25px;
+            "
+        >
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Completed
+                        </th>
+
+                        <th>
+                            Correct
+                        </th>
+
+                        <th>
+                            Wrong
+                        </th>
+
+                        <th>
+                            Accuracy
+                        </th>
+
+                        <th>
+                            Time
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for row in history %}
+
+                    <tr>
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            {{ row.result.work_date.strftime(
+                                "%d %B %Y"
+                            ) }}
+
+                        </td>
+
+
+                        <!-- COMPLETED -->
+
+                        <td>
+
+                            {{ row.result.completed }}
+                            /
+                            {{ daily_target }}
+
+                        </td>
+
+
+                        <!-- CORRECT -->
+
+                        <td>
+
+                            {{ row.result.correct }}
+
+                        </td>
+
+
+                        <!-- WRONG -->
+
+                        <td>
+
+                            {{ row.result.wrong }}
+
+                        </td>
+
+
+                        <!-- ACCURACY -->
+
+                        <td>
+
+                            {{ row.accuracy }}%
+
+                        </td>
+
+
+                        <!-- TIME -->
+
+                        <td>
+
+                            {% set minutes =
+                                row.result.seconds // 60
+                            %}
+
+                            {% set seconds =
+                                row.result.seconds % 60
+                            %}
+
+
+                            {% if minutes > 0 %}
+
+                                {{ minutes }} min
+                                {{ seconds }} sec
+
+                            {% else %}
+
+                                {{ seconds }} sec
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if row.result.completed >= daily_target %}
+
+                                <strong>
+                                    Completed
+                                </strong>
+
+                            {% elif row.result.completed > 0 %}
+
+                                In progress
+
+                            {% else %}
+
+                                Not started
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="text-align:center;"
+                        >
+
+                            No performance history available.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- BACK TO EMPLOYEE -->
+
+        <p style="margin-top:22px;">
+
+            <a
+                href="{{ url_for(
+                    'founder_employee',
+                    employee_id=employee.id,
+                    month=selected_month
+                ) }}"
+            >
+                ← Back to Employee Details
+            </a>
+
+        </p>
+
+
+        <!-- BACK TO DASHBOARD -->
+
+        <p style="margin-top:12px;">
+
+            <a href="{{ url_for('founder') }}">
+                ← Back to Founder Dashboard
+            </a>
+
+        </p>
+
+
+        <!-- LOGOUT -->
+
+        <p style="margin-top:12px;">
+
+            <a href="{{ url_for('logout') }}">
+                Sign out
+            </a>
+
+        </p>
+
+
+    </div>
+
+</div>
+
+<div class="site-footer">Nexora Data Solutions · Secure internal workspace</div>
+</body>
+
+</html>

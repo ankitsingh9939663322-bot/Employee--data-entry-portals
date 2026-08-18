@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Nexora · Sign in</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <div class="card narrow">
+
+        <div class="eyebrow">
+            Secure access
+        </div>
+
+        <h1>
+            Sign in
+        </h1>
+
+        <p class="muted">
+            Access the authorized training workspace.
+        </p>
+
+
+        <!-- Flash Messages -->
+
+        {% with messages = get_flashed_messages() %}
+
+            {% for m in messages %}
+
+                <div class="flash">
+                    {{ m }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+
+        <form method="POST">
+
+            <!-- CSRF -->
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+
+            <!-- Role -->
+
+            <label>
+                Role
+            </label>
+
+            <select
+                name="role"
+                id="role"
+                onchange="changeLoginFields()"
+            >
+
+                <option value="employee">
+                    Employee
+                </option>
+
+                <option value="founder">
+                    Founder / Admin
+                </option>
+
+            </select>
+
+
+            <!-- Employee Login -->
+
+            <div id="employeeFields">
+
+                <label>
+                    Employee ID
+                </label>
+
+                <input
+                    type="text"
+                    name="employee_code"
+                    id="employee_code"
+                    placeholder="Example: EMP0001"
+                    autocomplete="username"
+                    autocapitalize="characters"
+                >
+
+                <p class="muted"
+                   style="font-size:12px;margin-top:5px;">
+
+                    Enter the Employee ID provided during registration.
+
+                </p>
+
+            </div>
+
+
+            <!-- Founder Login -->
+
+            <div id="founderFields"
+                 style="display:none;">
+
+                <label>
+                    Date of Birth
+                </label>
+
+                <input
+                    type="date"
+                    name="dob"
+                    id="dob"
+                >
+
+            </div>
+
+
+            <!-- Password -->
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                id="password"
+                autocomplete="current-password"
+                required
+            >
+
+
+            <button type="submit">
+                Sign in
+            </button>
+
+        </form>
+
+
+        <p class="muted">
+
+            New employee?
+
+            <a href="{{ url_for('register') }}">
+                Create an account
+            </a>
+
+        </p>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+/*
+    Switch between Employee and Founder login.
+*/
+
+function changeLoginFields() {
+
+    const role =
+        document.getElementById("role").value;
+
+    const employeeFields =
+        document.getElementById("employeeFields");
+
+    const founderFields =
+        document.getElementById("founderFields");
+
+    const employeeCode =
+        document.getElementById("employee_code");
+
+    const dob =
+        document.getElementById("dob");
+
+
+    if (role === "founder") {
+
+        employeeFields.style.display =
+            "none";
+
+        founderFields.style.display =
+            "block";
+
+        employeeCode.required =
+            false;
+
+        dob.required =
+            true;
+
+    } else {
+
+        employeeFields.style.display =
+            "block";
+
+        founderFields.style.display =
+            "none";
+
+        employeeCode.required =
+            true;
+
+        dob.required =
+            false;
+
+    }
+
+}
+
+
+/*
+    Set correct fields when page first loads.
+*/
+
+changeLoginFields();
+
+</script>
+
+
+<div class="site-footer">Nexora Data Solutions · Secure internal workspace</div>
+</body>
+</html>

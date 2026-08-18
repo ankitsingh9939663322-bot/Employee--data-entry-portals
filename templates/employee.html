@@ -1,0 +1,413 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Nexora · Employee</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="brand">
+            NEXORA DATA SOLUTIONS · Training Operations Portal
+        </div>
+    </div>
+
+
+    <div class="container">
+
+        <div class="card">
+
+            <div class="eyebrow">
+                Employee workspace
+            </div>
+
+            <h1>
+                Daily Data Entry Task
+            </h1>
+
+
+            <!-- Employee Information -->
+            <div style="
+                margin-top:15px;
+                padding:14px;
+                border-radius:10px;
+                background:rgba(127,127,127,0.08);
+            ">
+
+                <div>
+                    <b>
+                        {{ employee.employee_name }}
+                    </b>
+                </div>
+
+                <div class="muted"
+                     style="margin-top:4px;font-size:13px;">
+
+                    Employee ID:
+                    <b>{{ employee.employee_code }}</b>
+
+                </div>
+
+            </div>
+
+
+            <p class="muted"
+               style="margin-top:18px;">
+
+                Complete today's 250 simulated records.
+                Your score and right/wrong counts are intentionally
+                not displayed.
+
+            </p>
+
+
+            <!-- Progress -->
+            <div style="margin-top:24px;">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    margin-bottom:8px;
+                ">
+
+                    <b id="count">
+                        {{ completed }} / {{ daily_target }} completed
+                    </b>
+
+                    <span class="muted"
+                          style="font-size:13px;">
+                        Daily task
+                    </span>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="fill"
+                        id="progressFill"
+                        style="
+                            width:
+                            {{ (completed / daily_target * 100)
+                               if daily_target else 0 }}%
+                        "
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Reference Data -->
+            <div
+                class="ref"
+                id="ref"
+                style="margin-top:24px;">
+            </div>
+
+
+            <!-- Data Entry Form -->
+            <form
+                method="post"
+                action="{{ url_for('submit') }}"
+                id="task"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <input
+                    type="hidden"
+                    name="index"
+                    id="idx"
+                    value="{{ completed }}"
+                >
+
+                <input
+                    type="hidden"
+                    name="seconds"
+                    id="secs"
+                    value="0"
+                >
+
+
+                <div class="grid">
+
+                    <div>
+
+                        <label>
+                            Name
+                        </label>
+
+                        <input
+                            name="name"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Age
+                        </label>
+
+                        <input
+                            name="age"
+                            type="number"
+                            min="1"
+                            max="120"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            City
+                        </label>
+
+                        <input
+                            name="city"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Phone
+                        </label>
+
+                        <input
+                            name="phone"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <label>
+                    Email
+                </label>
+
+                <input
+                    name="email"
+                    type="email"
+                    autocomplete="off"
+                    required
+                >
+
+
+                <div class="actions">
+
+                    <button
+                        type="reset"
+                        class="secondary"
+                    >
+                        Clear
+                    </button>
+
+                    <button type="submit">
+                        Submit &amp; Next
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <p style="margin-top:20px;">
+
+                <a href="{{ url_for('logout') }}">
+                    Sign out
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+<script>
+
+const records = {{ records | tojson }};
+
+const dailyTarget = {{ daily_target }};
+
+let i = {{ completed }};
+
+let start = Date.now();
+
+
+/* ---------------------------------------------------------
+   SHOW CURRENT RECORD
+--------------------------------------------------------- */
+
+function show() {
+
+    if (i >= dailyTarget) {
+
+        document.querySelector(".card").innerHTML = `
+
+            <div class="eyebrow">
+                Task completed
+            </div>
+
+            <h1>
+                Today's task completed
+            </h1>
+
+            <p class="muted">
+                Your ${dailyTarget}-record task has been
+                submitted for authorized review.
+            </p>
+
+            <div style="
+                margin-top:20px;
+                padding:16px;
+                border-radius:10px;
+                background:rgba(127,127,127,0.08);
+            ">
+
+                <b>
+                    ${dailyTarget} / ${dailyTarget}
+                    completed
+                </b>
+
+            </div>
+
+            <p style="margin-top:20px;">
+
+                <a href="{{ url_for('logout') }}">
+                    Sign out
+                </a>
+
+            </p>
+
+        `;
+
+        return;
+    }
+
+
+    if (!records[i]) {
+
+        document.getElementById("ref").innerHTML =
+            "<b>Unable to load this record.</b>";
+
+        return;
+    }
+
+
+    const x = records[i];
+
+
+    document.getElementById("ref").innerHTML =
+
+        "<b>Reference data</b><br>" +
+
+        "Name: " + escapeHtml(x.name) + "<br>" +
+
+        "Age: " + escapeHtml(x.age) + "<br>" +
+
+        "City: " + escapeHtml(x.city) + "<br>" +
+
+        "Phone: " + escapeHtml(x.phone) + "<br>" +
+
+        "Email: " + escapeHtml(x.email);
+
+
+    document.getElementById("idx").value = i;
+
+    document.getElementById("secs").value = 0;
+
+
+    document.getElementById("count").innerText =
+        i + " / " + dailyTarget + " completed";
+
+
+    const percentage =
+        (i / dailyTarget) * 100;
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        percentage + "%";
+
+
+    start = Date.now();
+}
+
+
+/* ---------------------------------------------------------
+   HTML ESCAPE
+--------------------------------------------------------- */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* ---------------------------------------------------------
+   SAVE TIME BEFORE SUBMIT
+--------------------------------------------------------- */
+
+document.getElementById("task").addEventListener(
+    "submit",
+    function () {
+
+        document.getElementById("secs").value =
+            Math.max(
+                0,
+                Math.floor(
+                    (Date.now() - start) / 1000
+                )
+            );
+
+    }
+);
+
+
+/* ---------------------------------------------------------
+   INITIAL LOAD
+--------------------------------------------------------- */
+
+show();
+
+</script>
+
+<div class="site-footer">Nexora Data Solutions · Secure internal workspace</div>
+</body>
+</html>

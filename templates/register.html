@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Nexora · Employee Registration</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <div class="card narrow">
+
+        <div class="eyebrow">
+            Employee registration
+        </div>
+
+        <h1>
+            Create Employee Account
+        </h1>
+
+        <p class="muted">
+            Enter your details to create your employee account.
+        </p>
+
+
+        <!-- Flash Messages -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% for category, message in messages %}
+
+                <div class="flash">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+
+        <!-- Registration Form -->
+
+        <form
+            method="post"
+            autocomplete="off"
+        >
+
+            <!-- CSRF -->
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+
+            <!-- Employee Name -->
+
+            <label>
+                Employee Name
+            </label>
+
+            <input
+                type="text"
+                name="employee_name"
+                placeholder="Enter your full name"
+                maxlength="150"
+                required
+                autocomplete="name"
+            >
+
+
+            <!-- Date of Birth -->
+
+            <label>
+                Date of Birth
+            </label>
+
+            <input
+                type="date"
+                name="dob"
+                required
+            >
+
+
+            <!-- Password -->
+
+            <label>
+                Create Password
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                minlength="10"
+                required
+                autocomplete="new-password"
+            >
+
+            <p
+                class="muted"
+                style="font-size:12px;margin-top:4px;"
+            >
+                Password must contain at least 10 characters.
+            </p>
+
+
+            <!-- Confirm Password -->
+
+            <label>
+                Confirm Password
+            </label>
+
+            <input
+                type="password"
+                name="password2"
+                minlength="10"
+                required
+                autocomplete="new-password"
+            >
+
+
+            <!-- Submit -->
+
+            <button
+                type="submit"
+                style="width:100%;margin-top:15px;"
+            >
+                Create Employee Account
+            </button>
+
+        </form>
+
+
+        <!-- Login -->
+
+        <p class="muted">
+
+            Already have an account?
+
+            <a href="{{ url_for('login') }}">
+                Sign in
+            </a>
+
+        </p>
+
+
+        <!-- Information -->
+
+        <div
+            style="
+                margin-top:20px;
+                padding:14px;
+                border-radius:10px;
+                background:rgba(127,127,127,0.08);
+            "
+        >
+
+            <p
+                class="muted"
+                style="margin:0;font-size:13px;"
+            >
+
+                After registration, your Employee ID will be
+                automatically generated and displayed on your
+                employee workspace.
+
+            </p>
+
+            <p
+                class="muted"
+                style="margin:8px 0 0;font-size:13px;"
+            >
+
+                Keep your Employee ID and password safe.
+                You will use them to sign in again later.
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<div class="site-footer">Nexora Data Solutions · Secure internal workspace</div>
+</body>
+
+</html>
+            
