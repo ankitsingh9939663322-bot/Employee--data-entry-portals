@@ -1,0 +1,930 @@
+```html
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Nexora · Employee Details</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        /* =================================================
+           PREMIUM EMPLOYEE DETAILS
+        ================================================= */
+
+        .employee-hero {
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-end;
+            gap:24px;
+            flex-wrap:wrap;
+            margin-bottom:24px;
+        }
+
+        .employee-heading {
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
+
+        .large-avatar {
+            width:58px;
+            height:58px;
+            flex:0 0 58px;
+            display:grid;
+            place-items:center;
+            border-radius:17px;
+            background:linear-gradient(
+                135deg,
+                var(--primary),
+                var(--primary-2)
+            );
+            color:#fff;
+            font-size:21px;
+            font-weight:900;
+            box-shadow:0 10px 24px rgba(37,99,235,.2);
+        }
+
+        .employee-heading h1 {
+            margin-bottom:4px;
+        }
+
+        .employee-heading .muted {
+            margin-bottom:0;
+        }
+
+        .action-row {
+            display:flex;
+            gap:9px;
+            flex-wrap:wrap;
+        }
+
+        .action-row .button {
+            min-width:145px;
+        }
+
+        .month-card {
+            margin-top:5px;
+            padding:15px;
+            border-radius:16px;
+            background:linear-gradient(
+                135deg,
+                #f8faff,
+                #ffffff
+            );
+            border:1px solid #e2e8f1;
+            box-shadow:var(--shadow-sm);
+        }
+
+        .month-form {
+            display:flex;
+            align-items:flex-end;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .month-form .field {
+            min-width:220px;
+        }
+
+        .month-form label {
+            margin-top:0;
+        }
+
+        .section-title {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin:30px 0 14px;
+        }
+
+        .section-title h2 {
+            margin:0;
+            font-size:19px;
+        }
+
+        .section-title span {
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        .info-grid {
+            display:grid;
+            grid-template-columns:
+                repeat(4,minmax(0,1fr));
+            gap:12px;
+            margin-top:20px;
+        }
+
+        .info-item {
+            padding:16px;
+            border-radius:15px;
+            background:linear-gradient(
+                145deg,
+                #ffffff,
+                #f8faff
+            );
+            border:1px solid #e2e8f1;
+            box-shadow:var(--shadow-sm);
+        }
+
+        .info-label {
+            display:block;
+            color:#667085;
+            font-size:10px;
+            font-weight:850;
+            text-transform:uppercase;
+            letter-spacing:.055em;
+            margin-bottom:6px;
+        }
+
+        .info-value {
+            color:#182230;
+            font-size:14px;
+            font-weight:800;
+            word-break:break-word;
+        }
+
+        .active-badge,
+        .inactive-badge {
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 9px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:850;
+        }
+
+        .active-badge {
+            color:#166534;
+            background:#ecfdf3;
+            border:1px solid #b7ebc6;
+        }
+
+        .inactive-badge {
+            color:#667085;
+            background:#f4f6f8;
+            border:1px solid #e2e6eb;
+        }
+
+        .status-dot {
+            width:6px;
+            height:6px;
+            border-radius:50%;
+            background:currentColor;
+        }
+
+        .performance-progress {
+            margin-top:20px;
+            padding:19px;
+            border-radius:17px;
+            background:linear-gradient(
+                135deg,
+                #f8faff,
+                #ffffff
+            );
+            border:1px solid #e2e8f1;
+        }
+
+        .progress-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin-bottom:10px;
+        }
+
+        .progress-header strong {
+            font-size:14px;
+        }
+
+        .progress-value {
+            color:#315fd5;
+            font-size:13px;
+            font-weight:850;
+        }
+
+        .metric-panel {
+            display:grid;
+            grid-template-columns:
+                repeat(2,minmax(0,1fr));
+            gap:14px;
+            margin-top:20px;
+        }
+
+        .metric-box {
+            padding:17px;
+            border-radius:16px;
+            background:#fff;
+            border:1px solid #e2e8f1;
+            box-shadow:var(--shadow-sm);
+        }
+
+        .metric-box-label {
+            color:#667085;
+            font-size:10px;
+            font-weight:850;
+            text-transform:uppercase;
+            letter-spacing:.055em;
+        }
+
+        .metric-box-value {
+            display:block;
+            margin-top:6px;
+            color:#0b1220;
+            font-size:21px;
+            font-weight:850;
+        }
+
+        .status-panel {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin-top:18px;
+            padding:17px;
+            border-radius:16px;
+            background:#f8faff;
+            border:1px solid #e2e8f4;
+        }
+
+        .status-panel-title {
+            font-size:13px;
+            font-weight:850;
+            color:#344054;
+        }
+
+        .status-panel-text {
+            margin-top:3px;
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        .recorded-badge,
+        .empty-badge {
+            display:inline-flex;
+            align-items:center;
+            padding:7px 11px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:850;
+            white-space:nowrap;
+        }
+
+        .recorded-badge {
+            color:#166534;
+            background:#ecfdf3;
+            border:1px solid #b7ebc6;
+        }
+
+        .empty-badge {
+            color:#667085;
+            background:#f4f6f8;
+            border:1px solid #e2e6eb;
+        }
+
+        .history-link {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin-top:20px;
+            padding:17px;
+            border-radius:16px;
+            background:linear-gradient(
+                135deg,
+                #f7f9ff,
+                #ffffff
+            );
+            border:1px solid #e2e8f4;
+        }
+
+        .history-link-text strong {
+            display:block;
+            color:#182230;
+            font-size:13px;
+        }
+
+        .history-link-text span {
+            display:block;
+            margin-top:3px;
+            color:var(--muted);
+            font-size:11px;
+        }
+
+        .history-button {
+            white-space:nowrap;
+        }
+
+        .bottom-actions {
+            display:flex;
+            gap:18px;
+            flex-wrap:wrap;
+            margin-top:22px;
+        }
+
+        .bottom-actions a {
+            font-size:13px;
+        }
+
+        @media(max-width:900px) {
+
+            .info-grid {
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+            }
+
+        }
+
+        @media(max-width:700px) {
+
+            .employee-heading {
+                align-items:flex-start;
+            }
+
+            .large-avatar {
+                width:48px;
+                height:48px;
+                flex-basis:48px;
+                border-radius:14px;
+                font-size:18px;
+            }
+
+            .action-row {
+                width:100%;
+            }
+
+            .action-row .button {
+                flex:1;
+                min-width:0;
+            }
+
+            .month-form .field {
+                width:100%;
+                min-width:0;
+            }
+
+            .month-form button {
+                width:100%;
+            }
+
+            .info-grid {
+                grid-template-columns:1fr;
+            }
+
+            .metric-panel {
+                grid-template-columns:1fr;
+            }
+
+            .status-panel,
+            .history-link {
+                align-items:flex-start;
+                flex-direction:column;
+            }
+
+            .history-button {
+                width:100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<div class="container">
+
+    <div class="card">
+
+
+        <!-- =================================================
+             EMPLOYEE HERO
+        ================================================== -->
+
+        <div class="employee-hero">
+
+            <div class="employee-heading">
+
+                <div class="large-avatar">
+                    {{ employee.employee_name[0]|upper }}
+                </div>
+
+                <div>
+
+                    <div class="eyebrow">
+                        Founder / Admin · Employee Details
+                    </div>
+
+                    <h1>
+                        {{ employee.employee_name }}
+                    </h1>
+
+                    <p class="muted">
+                        Performance details for
+                        <b>{{ month_label }}</b>
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="action-row">
+
+                <a
+                    class="button button-secondary"
+                    href="{{ url_for('founder') }}?month={{ selected_month }}"
+                >
+                    ← Dashboard
+                </a>
+
+                <a
+                    class="button button-primary"
+                    href="{{ url_for(
+                        'founder_employee_report',
+                        employee_id=employee.id,
+                        month=selected_month
+                    ) }}"
+                >
+                    Download Monthly PDF
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MONTH SELECTOR
+        ================================================== -->
+
+        <div class="month-card">
+
+            <form
+                method="get"
+                class="month-form"
+            >
+
+                <div class="field">
+
+                    <label for="month">
+                        Performance period
+                    </label>
+
+                    <input
+                        id="month"
+                        type="month"
+                        name="month"
+                        value="{{ selected_month }}"
+                        required
+                    >
+
+                </div>
+
+                <button type="submit">
+                    View Month
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             EMPLOYEE INFORMATION
+        ================================================== -->
+
+        <div class="section-title">
+
+            <div>
+
+                <h2>
+                    Employee Information
+                </h2>
+
+                <span>
+                    Account and identification details
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+
+            <!-- NAME -->
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Employee Name
+                </span>
+
+                <span class="info-value">
+                    {{ employee.employee_name }}
+                </span>
+
+            </div>
+
+
+            <!-- ID -->
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Employee ID
+                </span>
+
+                <span class="info-value">
+                    {{ employee.employee_code }}
+                </span>
+
+            </div>
+
+
+            <!-- DOB -->
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Date of Birth
+                </span>
+
+                <span class="info-value">
+                    {{ employee.dob.strftime("%d %B %Y") }}
+                </span>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Account Status
+                </span>
+
+                <span class="info-value">
+
+                    {% if employee.active %}
+
+                        <span class="active-badge">
+                            <span class="status-dot"></span>
+                            Active
+                        </span>
+
+                    {% else %}
+
+                        <span class="inactive-badge">
+                            <span class="status-dot"></span>
+                            Inactive
+                        </span>
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             MONTHLY PERFORMANCE
+        ================================================== -->
+
+        <div class="section-title">
+
+            <div>
+
+                <h2>
+                    Monthly Performance
+                </h2>
+
+                <span>
+                    Saved performance data for {{ month_label }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stats">
+
+
+            <div class="stat">
+
+                Completed
+
+                <b>
+                    {{ completed }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Days Recorded
+
+                <b>
+                    {{ days_recorded }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Correct
+
+                <b>
+                    {{ correct }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Accuracy
+
+                <b>
+                    {{ accuracy }}%
+                </b>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             MONTHLY PROGRESS
+        ================================================== -->
+
+        <div class="performance-progress">
+
+            <div class="progress-header">
+
+                <strong>
+                    Monthly Progress
+                </strong>
+
+                <span class="progress-value">
+
+                    {{ completed }} / {{ daily_target }}
+
+                </span>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="fill"
+                    style="
+                        width:
+                        {{
+                            (
+                                completed
+                                /
+                                monthly_target
+                                *
+                                100
+                            )
+                            if monthly_target
+                            else 0
+                        }}%;
+                    "
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TIME + PERFORMANCE METRICS
+        ================================================== -->
+
+        <div class="metric-panel">
+
+
+            <!-- TOTAL TIME -->
+
+            <div class="metric-box">
+
+                <span class="metric-box-label">
+                    Total Time
+                </span>
+
+                <span class="metric-box-value">
+
+                    {% set minutes = seconds // 60 %}
+                    {% set remaining_seconds = seconds % 60 %}
+
+                    {% if minutes > 0 %}
+
+                        {{ minutes }} min
+                        {{ remaining_seconds }} sec
+
+                    {% else %}
+
+                        {{ remaining_seconds }} sec
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <!-- MONTH STATUS -->
+
+            <div class="metric-box">
+
+                <span class="metric-box-label">
+                    Selected Month Status
+                </span>
+
+                <span class="metric-box-value">
+
+                    {% if days_recorded > 0 %}
+
+                        Data Recorded
+
+                    {% else %}
+
+                        No Data
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             STATUS PANEL
+        ================================================== -->
+
+        <div class="status-panel">
+
+            <div>
+
+                <div class="status-panel-title">
+                    Monthly record status
+                </div>
+
+                <div class="status-panel-text">
+
+                    {% if days_recorded > 0 %}
+
+                        Performance data is available
+                        for the selected month.
+
+                    {% else %}
+
+                        No performance records are available
+                        for the selected month.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if days_recorded > 0 %}
+
+                <span class="recorded-badge">
+                    Data Recorded
+                </span>
+
+            {% else %}
+
+                <span class="empty-badge">
+                    No Data Recorded
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             HISTORY
+        ================================================== -->
+
+        <div class="history-link">
+
+            <div class="history-link-text">
+
+                <strong>
+                    Complete Employee History
+                </strong>
+
+                <span>
+                    View day-by-day performance records
+                    and historical results.
+                </span>
+
+            </div>
+
+
+            <a
+                class="button button-secondary history-button"
+                href="{{ url_for(
+                    'employee_history',
+                    employee_id=employee.id,
+                    month=selected_month
+                ) }}"
+            >
+                View History →
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             BOTTOM ACTIONS
+        ================================================== -->
+
+        <div class="bottom-actions">
+
+            <a href="{{ url_for('founder') }}">
+                ← Back to Founder Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Sign out
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<div class="site-footer">
+    Nexora Data Solutions · Secure internal workspace
+</div>
+
+
+</body>
+
+</html>
+```
