@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Nexora · Employee History</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+
+<body>
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="container">
+
+    <section class="card">
+
+        <!-- PAGE INTRO -->
+
+        <div class="eyebrow">
+            Founder / Admin · Employee History
+        </div>
+
+        <h1>
+            {{ employee.employee_name }}
+        </h1>
+
+        <p class="muted">
+            Complete performance history and monthly productivity overview.
+        </p>
+
+
+        <!-- =================================================
+             EMPLOYEE SUMMARY
+        ================================================== -->
+
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:15px;
+                flex-wrap:wrap;
+                margin-top:20px;
+                padding:17px 19px;
+                border:1px solid #e2e8f1;
+                border-radius:16px;
+                background:linear-gradient(135deg,#f8faff,#ffffff);
+                box-shadow:var(--shadow-sm);
+            "
+        >
+
+            <div>
+
+                <div
+                    style="
+                        font-size:11px;
+                        font-weight:800;
+                        text-transform:uppercase;
+                        letter-spacing:.06em;
+                        color:#667085;
+                    "
+                >
+                    Employee
+                </div>
+
+                <div
+                    style="
+                        margin-top:4px;
+                        font-size:17px;
+                        font-weight:800;
+                        color:#0b1220;
+                    "
+                >
+                    {{ employee.employee_name }}
+                </div>
+
+            </div>
+
+
+            <div
+                style="
+                    padding:9px 13px;
+                    border-radius:10px;
+                    background:#eff5ff;
+                    border:1px solid #dce8ff;
+                    color:#315fd5;
+                    font-size:12px;
+                    font-weight:800;
+                "
+            >
+
+                ID:
+                {{ employee.employee_code }}
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MONTH FILTER
+        ================================================== -->
+
+        <div
+            style="
+                margin-top:24px;
+                padding:19px;
+                border:1px solid #e2e8f1;
+                border-radius:16px;
+                background:#ffffff;
+                box-shadow:var(--shadow-sm);
+            "
+        >
+
+            <div
+                style="
+                    font-size:13px;
+                    font-weight:800;
+                    color:#344054;
+                    margin-bottom:12px;
+                "
+            >
+                Performance period
+            </div>
+
+
+            <form
+                method="get"
+                style="
+                    display:flex;
+                    gap:12px;
+                    align-items:end;
+                    flex-wrap:wrap;
+                "
+            >
+
+                <div
+                    style="
+                        flex:1;
+                        min-width:220px;
+                    "
+                >
+
+                    <label
+                        for="month"
+                        style="margin-top:0;"
+                    >
+                        Select month
+                    </label>
+
+                    <input
+                        id="month"
+                        type="month"
+                        name="month"
+                        value="{{ selected_month }}"
+                        required
+                    >
+
+                </div>
+
+
+                <button type="submit">
+                    View Month
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             PERFORMANCE STATS
+        ================================================== -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                Completed
+
+                <b>
+                    {{ total_completed }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Correct
+
+                <b>
+                    {{ total_correct }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Wrong
+
+                <b>
+                    {{ total_wrong }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Monthly Accuracy
+
+                <b>
+                    {{ monthly_accuracy }}%
+                </b>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             HISTORY SECTION
+        ================================================== -->
+
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:end;
+                gap:15px;
+                flex-wrap:wrap;
+                margin-top:28px;
+                margin-bottom:14px;
+            "
+        >
+
+            <div>
+
+                <div
+                    style="
+                        font-size:18px;
+                        font-weight:850;
+                        color:#0b1220;
+                        letter-spacing:-.02em;
+                    "
+                >
+                    Daily Performance
+                </div>
+
+                <div
+                    style="
+                        margin-top:3px;
+                        color:#667085;
+                        font-size:13px;
+                    "
+                >
+                    Detailed activity for the selected month.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             HISTORY TABLE
+        ================================================== -->
+
+        <div
+            style="
+                overflow-x:auto;
+                border-radius:16px;
+            "
+        >
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Completed</th>
+
+                        <th>Correct</th>
+
+                        <th>Wrong</th>
+
+                        <th>Accuracy</th>
+
+                        <th>Time</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for row in history %}
+
+                    <tr>
+
+                        <!-- DATE -->
+
+                        <td>
+                            {{ row.result.work_date.strftime("%d %B %Y") }}
+                        </td>
+
+
+                        <!-- COMPLETED -->
+
+                        <td>
+
+                            <strong>
+                                {{ row.result.completed }}
+                            </strong>
+
+                            /
+                            {{ daily_target }}
+
+                        </td>
+
+
+                        <!-- CORRECT -->
+
+                        <td>
+                            {{ row.result.correct }}
+                        </td>
+
+
+                        <!-- WRONG -->
+
+                        <td>
+                            {{ row.result.wrong }}
+                        </td>
+
+
+                        <!-- ACCURACY -->
+
+                        <td>
+
+                            <strong>
+                                {{ row.accuracy }}%
+                            </strong>
+
+                        </td>
+
+
+                        <!-- TIME -->
+
+                        <td>
+
+                            {% set minutes =
+                                row.result.seconds // 60
+                            %}
+
+                            {% set seconds =
+                                row.result.seconds % 60
+                            %}
+
+                            {% if minutes > 0 %}
+
+                                {{ minutes }} min
+                                {{ seconds }} sec
+
+                            {% else %}
+
+                                {{ seconds }} sec
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if row.result.completed >= daily_target %}
+
+                                <span
+                                    style="
+                                        display:inline-flex;
+                                        align-items:center;
+                                        padding:6px 10px;
+                                        border-radius:999px;
+                                        background:#ecfdf3;
+                                        color:#15803d;
+                                        border:1px solid #bbf7d0;
+                                        font-size:11px;
+                                        font-weight:800;
+                                    "
+                                >
+                                    Completed
+                                </span>
+
+                            {% elif row.result.completed > 0 %}
+
+                                <span
+                                    style="
+                                        display:inline-flex;
+                                        align-items:center;
+                                        padding:6px 10px;
+                                        border-radius:999px;
+                                        background:#eff6ff;
+                                        color:#2563eb;
+                                        border:1px solid #bfdbfe;
+                                        font-size:11px;
+                                        font-weight:800;
+                                    "
+                                >
+                                    In progress
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    style="
+                                        display:inline-flex;
+                                        align-items:center;
+                                        padding:6px 10px;
+                                        border-radius:999px;
+                                        background:#f8fafc;
+                                        color:#64748b;
+                                        border:1px solid #e2e8f0;
+                                        font-size:11px;
+                                        font-weight:800;
+                                    "
+                                >
+                                    Not started
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="
+                                text-align:center;
+                                padding:40px 20px;
+                                color:#667085;
+                            "
+                        >
+
+                            <div
+                                style="
+                                    font-size:15px;
+                                    font-weight:800;
+                                    color:#344054;
+                                "
+                            >
+                                No performance history available
+                            </div>
+
+                            <div
+                                style="
+                                    margin-top:5px;
+                                    font-size:13px;
+                                "
+                            >
+                                No activity has been recorded for this month.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                flex-wrap:wrap;
+                margin-top:25px;
+                padding-top:20px;
+                border-top:1px solid #eef2f6;
+            "
+        >
+
+            <a
+                class="button button-secondary"
+                href="{{ url_for(
+                    'founder_employee',
+                    employee_id=employee.id,
+                    month=selected_month
+                ) }}"
+            >
+                ← Employee Details
+            </a>
+
+
+            <a
+                class="button button-secondary"
+                href="{{ url_for('founder') }}"
+            >
+                ← Founder Dashboard
+            </a>
+
+
+            <a
+                class="button button-secondary"
+                href="{{ url_for('logout') }}"
+            >
+                Sign out
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="site-footer">
+    Nexora Data Solutions · Secure internal workspace
+</footer>
+
+
+</body>
+
+</html>
