@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: nexora-training-portal
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 60 app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FOUNDER_PASSWORD
+        sync: false
+      - key: FOUNDER_DOB
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: COOKIE_SECURE
+        value: "1"
+    healthCheckPath: /health
