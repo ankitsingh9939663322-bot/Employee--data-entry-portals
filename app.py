@@ -201,7 +201,7 @@ class AuditLog(db.Model):
     actor_id = db.Column(db.Integer, nullable=True)
     action = db.Column(db.String(120), nullable=False)
     employee_id = db.Column(db.Integer, nullable=True)
-    metadata = db.Column(db.Text, nullable=True)
+    audit_metadata = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=now_ist, nullable=False)
 
 
