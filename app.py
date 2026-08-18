@@ -267,7 +267,7 @@ def audit(action, actor_role=None, actor_id=None, employee_id=None, metadata=Non
             actor_id=actor_id,
             action=action,
             employee_id=employee_id,
-            metadata=metadata,
+           audit_metadata=metadata,
         ))
         db.session.commit()
     except Exception:
