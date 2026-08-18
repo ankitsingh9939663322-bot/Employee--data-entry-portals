@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Nexora · Employee Registration</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        .register-card {
+            max-width: 560px;
+            margin: 4vh auto;
+        }
+
+        .register-header {
+            text-align:center;
+            margin-bottom:26px;
+        }
+
+        .register-icon {
+            width:64px;
+            height:64px;
+            margin:0 auto 17px;
+            display:grid;
+            place-items:center;
+            border-radius:19px;
+            background:linear-gradient(
+                135deg,
+                var(--primary),
+                var(--primary-2)
+            );
+            color:#fff;
+            font-size:25px;
+            font-weight:900;
+            box-shadow:0 12px 28px rgba(37,99,235,.22);
+        }
+
+        .register-header .eyebrow {
+            margin-bottom:12px;
+        }
+
+        .register-header h1 {
+            margin-bottom:9px;
+        }
+
+        .register-header .muted {
+            margin-bottom:0;
+        }
+
+        .form-section {
+            padding:20px;
+            border:1px solid #e4e9f2;
+            border-radius:18px;
+            background:linear-gradient(
+                145deg,
+                #ffffff,
+                #f8faff
+            );
+            box-shadow:var(--shadow-sm);
+        }
+
+        .field-group {
+            margin-bottom:3px;
+        }
+
+        .field-label {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+        }
+
+        .field-label label {
+            margin-bottom:7px;
+        }
+
+        .field-number {
+            color:#98a2b3;
+            font-size:10px;
+            font-weight:800;
+        }
+
+        .password-note {
+            display:flex;
+            align-items:center;
+            gap:7px;
+            margin-top:7px;
+            color:#667085;
+            font-size:11px;
+        }
+
+        .password-note:before {
+            content:"✓";
+            display:grid;
+            place-items:center;
+            width:17px;
+            height:17px;
+            border-radius:50%;
+            background:#ecfdf3;
+            color:#16a34a;
+            font-weight:900;
+        }
+
+        .register-button {
+            width:100%;
+            margin-top:19px;
+            min-height:48px;
+            font-size:14px;
+        }
+
+        .login-box {
+            margin-top:20px;
+            padding:15px;
+            text-align:center;
+            border-radius:15px;
+            background:#f7f9ff;
+            border:1px solid #e2e8f4;
+        }
+
+        .login-box p {
+            margin:0;
+            font-size:13px;
+        }
+
+        .security-box {
+            display:flex;
+            gap:12px;
+            align-items:flex-start;
+            margin-top:18px;
+            padding:15px;
+            border-radius:15px;
+            background:linear-gradient(
+                135deg,
+                #f8faff,
+                #ffffff
+            );
+            border:1px solid #e2e8f1;
+        }
+
+        .security-icon {
+            flex:0 0 32px;
+            width:32px;
+            height:32px;
+            display:grid;
+            place-items:center;
+            border-radius:10px;
+            background:#eff5ff;
+            color:#2563eb;
+            font-weight:900;
+        }
+
+        .security-content strong {
+            display:block;
+            color:#182230;
+            font-size:12px;
+            margin-bottom:3px;
+        }
+
+        .security-content span {
+            display:block;
+            color:#667085;
+            font-size:11px;
+            line-height:1.55;
+        }
+
+        @media(max-width:700px) {
+
+            .register-card {
+                margin:2vh auto;
+            }
+
+            .register-icon {
+                width:56px;
+                height:56px;
+                border-radius:17px;
+                font-size:22px;
+            }
+
+            .form-section {
+                padding:17px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</div>
+
+
+<!-- MAIN -->
+
+<div class="container">
+
+    <div class="card register-card">
+
+
+        <!-- HEADER -->
+
+        <div class="register-header">
+
+            <div class="register-icon">
+                N
+            </div>
+
+            <div class="eyebrow">
+                Employee registration
+            </div>
+
+            <h1>
+                Create Employee Account
+            </h1>
+
+            <p class="muted">
+                Set up your secure employee workspace
+                in a few simple steps.
+            </p>
+
+        </div>
+
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% for category, message in messages %}
+
+                <div class="flash">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+
+        <!-- FORM -->
+
+        <div class="form-section">
+
+            <form
+                method="post"
+                autocomplete="off"
+            >
+
+
+                <!-- CSRF -->
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <!-- NAME -->
+
+                <div class="field-group">
+
+                    <div class="field-label">
+
+                        <label for="employee_name">
+                            Employee Name
+                        </label>
+
+                        <span class="field-number">
+                            01
+                        </span>
+
+                    </div>
+
+                    <input
+                        id="employee_name"
+                        type="text"
+                        name="employee_name"
+                        placeholder="Enter your full name"
+                        maxlength="150"
+                        required
+                        autocomplete="name"
+                    >
+
+                </div>
+
+
+                <!-- DOB -->
+
+                <div class="field-group">
+
+                    <div class="field-label">
+
+                        <label for="dob">
+                            Date of Birth
+                        </label>
+
+                        <span class="field-number">
+                            02
+                        </span>
+
+                    </div>
+
+                    <input
+                        id="dob"
+                        type="date"
+                        name="dob"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="field-group">
+
+                    <div class="field-label">
+
+                        <label for="password">
+                            Create Password
+                        </label>
+
+                        <span class="field-number">
+                            03
+                        </span>
+
+                    </div>
+
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        minlength="10"
+                        required
+                        autocomplete="new-password"
+                        placeholder="Create a secure password"
+                    >
+
+                    <div class="password-note">
+                        Minimum 10 characters required
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="field-group">
+
+                    <div class="field-label">
+
+                        <label for="password2">
+                            Confirm Password
+                        </label>
+
+                        <span class="field-number">
+                            04
+                        </span>
+
+                    </div>
+
+                    <input
+                        id="password2"
+                        type="password"
+                        name="password2"
+                        minlength="10"
+                        required
+                        autocomplete="new-password"
+                        placeholder="Re-enter your password"
+                    >
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="register-button"
+                >
+                    Create Employee Account
+                </button>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <div class="login-box">
+
+            <p>
+
+                Already have an account?
+
+                <a href="{{ url_for('login') }}">
+                    Sign in
+                </a>
+
+            </p>
+
+        </div>
+
+
+        <!-- SECURITY -->
+
+        <div class="security-box">
+
+            <div class="security-icon">
+                ✓
+            </div>
+
+            <div class="security-content">
+
+                <strong>
+                    Your employee access
+                </strong>
+
+                <span>
+                    After registration, your Employee ID will
+                    be automatically generated and shown in
+                    your employee workspace.
+                </span>
+
+                <span style="margin-top:4px;">
+                    Keep your Employee ID and password private.
+                    You will need them for future sign-ins.
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<div class="site-footer">
+    Nexora Data Solutions · Secure internal workspace
+</div>
+
+
+</body>
+
+</html>
