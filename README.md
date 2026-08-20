@@ -8,7 +8,7 @@ training environment**.
 - Central employee accounts stored in PostgreSQL/SQLite.
 - Employee-created DOB + password account.
 - Passwords stored as secure hashes, never plaintext.
-- New deterministic set of 200 simulated records each calendar day.
+- New deterministic set of 250 simulated records each calendar day.
 - Employee sees task progress only; no score/right/wrong count.
 - Founder/Admin dashboard supports month-by-month historical performance.
 - Monthly totals aggregate every saved daily result in the selected month.
