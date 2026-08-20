@@ -372,7 +372,16 @@ def setup_database():
                     ADD COLUMN last_active TIMESTAMP
                     """
                 )
+        if "last_active" not in columns:
 
+            with db.engine.begin() as connection:
+
+                connection.exec_driver_sql(
+                    """
+                    ALTER TABLE employee
+                    ADD COLUMN last_active TIMESTAMP
+                    """
+                )
         db.session.commit()
 
         # -------------------------------------------------
