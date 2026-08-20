@@ -193,6 +193,11 @@ class Employee(db.Model):
         default="approved",
         nullable=False
     )
+    approval_status = db.Column(
+    db.String(20),
+    default="pending",
+    nullable=False
+)
 
 # =========================================================
 # DAILY RESULT MODEL
