@@ -188,7 +188,11 @@ class Employee(db.Model):
         default=True,
         nullable=False
     )
-
+    approval_status = db.Column(
+        db.String(20),
+        default="approved",
+        nullable=False
+    )
 
 # =========================================================
 # DAILY RESULT MODEL
