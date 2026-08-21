@@ -1,0 +1,1061 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Nexora · Founder Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        /* -------------------------------------------------
+           PREMIUM FOUNDER DASHBOARD
+        ------------------------------------------------- */
+
+        .dashboard-hero {
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-end;
+            gap:24px;
+            margin-bottom:26px;
+            flex-wrap:wrap;
+        }
+
+        .dashboard-title {
+            max-width:720px;
+        }
+
+        .dashboard-title h1 {
+            margin-bottom:8px;
+        }
+
+        .dashboard-title .muted {
+            margin-bottom:0;
+        }
+
+        .month-panel {
+            background:linear-gradient(135deg,#f8faff,#ffffff);
+            border:1px solid #e2e8f1;
+            border-radius:16px;
+            padding:15px;
+            min-width:250px;
+            box-shadow:var(--shadow-sm);
+        }
+
+        .month-panel label {
+            margin:0 0 7px;
+        }
+
+        .month-controls {
+            display:flex;
+            gap:8px;
+            align-items:center;
+        }
+
+        .month-controls input {
+            min-width:0;
+        }
+
+        .month-controls button {
+            white-space:nowrap;
+        }
+
+        .section-heading {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin:30px 0 14px;
+            flex-wrap:wrap;
+        }
+
+        .section-heading h2 {
+            font-size:19px;
+            margin:0;
+        }
+
+        .section-heading span {
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        .employee-table-wrap {
+            overflow-x:auto;
+            border-radius:17px;
+        }
+
+        .employee-table {
+            min-width:850px;
+        }
+
+        .employee-name {
+            display:flex;
+            align-items:center;
+            gap:11px;
+        }
+
+        .employee-avatar {
+            width:38px;
+            height:38px;
+            flex:0 0 38px;
+            display:grid;
+            place-items:center;
+            border-radius:12px;
+            background:linear-gradient(
+                135deg,
+                var(--primary),
+                var(--primary-2)
+            );
+            color:#fff;
+            font-weight:850;
+            font-size:13px;
+            box-shadow:0 7px 16px rgba(37,99,235,.18);
+        }
+
+        .employee-name a {
+            display:block;
+            font-weight:800;
+            color:#182230;
+        }
+
+        .employee-name a:hover {
+            color:var(--primary);
+            text-decoration:none;
+        }
+
+        .employee-code {
+            display:inline-flex;
+            align-items:center;
+            padding:6px 9px;
+            border-radius:9px;
+            background:#f4f7fb;
+            border:1px solid #e3e8f0;
+            color:#475467;
+            font-size:12px;
+            font-weight:750;
+        }
+
+        .progress-cell {
+            min-width:160px;
+        }
+
+        .progress-meta {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-bottom:7px;
+            font-size:12px;
+        }
+
+        .progress-meta strong {
+            color:#182230;
+        }
+
+        .progress-meta span {
+            color:var(--muted);
+        }
+
+        .mini-progress {
+            width:100%;
+            height:7px;
+            background:#e9edf4;
+            border-radius:999px;
+            overflow:hidden;
+        }
+
+        .mini-progress-fill {
+            height:100%;
+            border-radius:999px;
+            background:linear-gradient(
+                90deg,
+                var(--primary),
+                var(--primary-2)
+            );
+        }
+
+        .accuracy-badge {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:62px;
+            padding:6px 9px;
+            border-radius:999px;
+            background:#eff5ff;
+            border:1px solid #dce8ff;
+            color:#315fd5;
+            font-size:12px;
+            font-weight:850;
+        }
+
+        .status-badge {
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:850;
+            white-space:nowrap;
+        }
+
+        .status-badge:before {
+            content:"";
+            width:6px;
+            height:6px;
+            border-radius:50%;
+        }
+
+        .status-completed {
+            color:#166534;
+            background:#ecfdf3;
+            border:1px solid #b7ebc6;
+        }
+
+        .status-completed:before {
+            background:#16a34a;
+        }
+
+        .status-progress {
+            color:#315fd5;
+            background:#eff5ff;
+            border:1px solid #dce8ff;
+        }
+
+        .status-progress:before {
+            background:#2563eb;
+        }
+
+        .status-not-started {
+            color:#667085;
+            background:#f4f6f8;
+            border:1px solid #e2e6eb;
+        }
+
+        .status-not-started:before {
+            background:#98a2b3;
+        }
+
+        .dashboard-note {
+            display:flex;
+            align-items:flex-start;
+            gap:10px;
+            margin-top:20px;
+            padding:14px 16px;
+            border-radius:14px;
+            background:#f8faff;
+            border:1px solid #e2e8f4;
+            color:#667085;
+            font-size:12px;
+            line-height:1.6;
+        }
+
+        .dashboard-note strong {
+            color:#344054;
+        }
+
+        .dashboard-note-icon {
+            width:24px;
+            height:24px;
+            flex:0 0 24px;
+            display:grid;
+            place-items:center;
+            border-radius:8px;
+            background:#eaf1ff;
+            color:#315fd5;
+            font-size:12px;
+            font-weight:900;
+        }
+
+        .logout-link {
+            display:inline-flex;
+            margin-top:22px;
+            padding:8px 0;
+            font-size:13px;
+        }
+
+        /* -------------------------------------------------
+           FOUNDER APPROVAL PANEL
+        ------------------------------------------------- */
+
+        .approval-panel {
+            margin-bottom:28px;
+        }
+
+        .approval-card {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:18px;
+            flex-wrap:wrap;
+            padding:16px;
+            border:1px solid #e2e8f1;
+            border-radius:15px;
+            background:#fafcff;
+        }
+
+        .approval-employee {
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .approval-name {
+            display:block;
+            color:#182230;
+            font-weight:800;
+        }
+
+        .approval-id {
+            display:block;
+            margin-top:3px;
+            color:#667085;
+            font-size:12px;
+        }
+
+        .approval-actions {
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+
+        .approval-actions form {
+            margin:0;
+        }
+
+        .reject-button {
+            background:#fff !important;
+            color:#b42318 !important;
+            border:1px solid #f1b5b0 !important;
+        }
+
+        @media(max-width:700px) {
+
+            .dashboard-hero {
+                align-items:stretch;
+            }
+
+            .month-panel {
+                width:100%;
+            }
+
+            .month-controls {
+                width:100%;
+            }
+
+            .month-controls button {
+                flex:1;
+            }
+
+            .section-heading {
+                margin-top:25px;
+            }
+
+            .dashboard-note {
+                font-size:11px;
+            }
+
+            .approval-card {
+                align-items:flex-start;
+            }
+
+            .approval-actions {
+                width:100%;
+            }
+
+            .approval-actions form {
+                flex:1;
+            }
+
+            .approval-actions button {
+                width:100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN CONTAINER
+===================================================== -->
+
+<div class="container">
+
+    <div class="card">
+
+
+        <!-- =================================================
+             DASHBOARD HERO
+        ================================================== -->
+
+        <div class="dashboard-hero">
+
+            <div class="dashboard-title">
+
+                <div class="eyebrow">
+                    Founder / Admin
+                </div>
+
+                <h1>
+                    Performance Dashboard
+                </h1>
+
+                <p class="muted">
+                    Employee performance overview for
+                    <b>{{ month_label }}</b>
+                </p>
+
+            </div>
+
+
+            <!-- MONTH SELECTOR -->
+
+            <div class="month-panel">
+
+                <form method="get">
+
+                    <label for="month">
+                        Performance period
+                    </label>
+
+                    <div class="month-controls">
+
+                        <input
+                            id="month"
+                            type="month"
+                            name="month"
+                            value="{{ selected_month }}"
+                            required
+                        >
+
+                        <button type="submit">
+                            View
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SUMMARY STATISTICS
+        ================================================== -->
+
+        <div class="stats">
+
+
+            <!-- EMPLOYEES -->
+
+            <div class="stat">
+
+                Employees
+
+                <b>
+                    {{ rows|length }}
+                </b>
+
+            </div>
+
+
+            <!-- ENTRIES -->
+
+            <div class="stat">
+
+                Entries
+
+                <b>
+                    {{ total_entries }}
+                </b>
+
+            </div>
+
+
+            <!-- DAILY TARGET -->
+
+            <div class="stat">
+
+                Daily Target
+
+                <b>
+                    {{ daily_target }}
+                </b>
+
+            </div>
+
+
+            <!-- ACCURACY -->
+
+            <div class="stat">
+
+                Monthly Accuracy
+
+                <b>
+                    {{ overall_accuracy }}%
+                </b>
+
+            </div>
+
+
+            <!-- ACTIVE EMPLOYEES -->
+
+            <div class="stat">
+
+                Active Employees
+
+                <b>
+
+                    {% set active_count = 0 %}
+
+                    {% for row in rows %}
+
+                        {% if row.completed > 0 %}
+
+                            {% set active_count =
+                                active_count + 1 %}
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {{ active_count }}
+
+                </b>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             PENDING FOUNDER APPROVALS
+        ================================================== -->
+
+        {% if pending_employees %}
+
+        <div class="approval-panel">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Pending Employee Approvals
+                    </h2>
+
+                    <span>
+                        Employees cannot start work until founder approval.
+                    </span>
+
+                </div>
+
+                <span class="status-badge status-progress">
+                    {{ pending_count }} Pending
+                </span>
+
+            </div>
+
+
+            <div
+                style="
+                    display:grid;
+                    gap:12px;
+                "
+            >
+
+                {% for employee in pending_employees %}
+
+                <div class="approval-card">
+
+
+                    <!-- EMPLOYEE INFORMATION -->
+
+                    <div class="approval-employee">
+
+                        <div class="employee-avatar">
+                            {{ employee.employee_name[0]|upper }}
+                        </div>
+
+                        <div>
+
+                            <strong class="approval-name">
+                                {{ employee.employee_name }}
+                            </strong>
+
+                            <span class="approval-id">
+                                Employee ID:
+                                {{ employee.employee_code }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- APPROVAL ACTIONS -->
+
+                    <div class="approval-actions">
+
+
+                        <!-- APPROVE -->
+
+                        <form
+                            method="post"
+                            action="{{ url_for(
+                                'approve_employee',
+                                employee_id=employee.id
+                            ) }}"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            >
+
+                            <button type="submit">
+                                Approve &amp; Start Work
+                            </button>
+
+                        </form>
+
+
+                        <!-- REJECT -->
+
+                        <form
+                            method="post"
+                            action="{{ url_for(
+                                'reject_employee',
+                                employee_id=employee.id
+                            ) }}"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="reject-button"
+                            >
+                                Reject
+                            </button>
+
+                        </form>
+
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             EMPLOYEE SECTION HEADER
+        ================================================== -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Employee Performance
+                </h2>
+
+                <span>
+                    Select an employee to view detailed history
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             EMPLOYEE TABLE
+        ================================================== -->
+
+        <div class="employee-table-wrap">
+
+            <table class="employee-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Employee
+                        </th>
+
+                        <th>
+                            Employee ID
+                        </th>
+
+                        <th>
+                            Progress
+                        </th>
+
+                        <th>
+                            Accuracy
+                        </th>
+
+                        <th>
+                            Time
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                {% for row in rows %}
+
+                    <tr>
+
+
+                        <!-- EMPLOYEE -->
+
+                        <td>
+
+                            <div class="employee-name">
+
+                                <div class="employee-avatar">
+
+                                    {{ row.employee.employee_name[0]|upper }}
+
+                                </div>
+
+                                <div>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'founder_employee',
+                                            employee_id=row.employee.id
+                                        ) }}"
+                                    >
+
+                                        {{ row.employee.employee_name }}
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EMPLOYEE ID -->
+
+                        <td>
+
+                            <span class="employee-code">
+
+                                {{ row.employee.employee_code }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- PROGRESS -->
+
+                        <td>
+
+                            <div class="progress-cell">
+
+                                <div class="progress-meta">
+
+                                    <strong>
+                                        {{ row.completed }}
+                                        /
+                                        {{ daily_target }}
+                                    </strong>
+
+                                    <span>
+                                        {% if daily_target %}
+                                            {{ (
+                                                row.completed
+                                                /
+                                                daily_target
+                                                * 100
+                                            )|round(0) }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="mini-progress">
+
+                                    <div
+                                        class="mini-progress-fill"
+                                        style="
+                                            width:
+                                            {{ (
+                                                row.completed
+                                                /
+                                                daily_target
+                                                * 100
+                                            ) if daily_target else 0 }}%;
+                                        "
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- ACCURACY -->
+
+                        <td>
+
+                            {% if row.completed > 0 %}
+
+                                <span class="accuracy-badge">
+
+                                    {{ row.accuracy }}%
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="accuracy-badge">
+
+                                    0%
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- TIME -->
+
+                        <td>
+
+                            {% if row.result %}
+
+                                {% set minutes =
+                                    row.result.seconds // 60
+                                %}
+
+                                {% set seconds =
+                                    row.result.seconds % 60
+                                %}
+
+                                {% if minutes > 0 %}
+
+                                    {{ minutes }}m
+                                    {{ seconds }}s
+
+                                {% else %}
+
+                                    {{ seconds }}s
+
+                                {% endif %}
+
+                            {% else %}
+
+                                0s
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if row.completed >= daily_target %}
+
+                                <span class="
+                                    status-badge
+                                    status-completed
+                                ">
+
+                                    Completed
+
+                                </span>
+
+                            {% elif row.completed > 0 %}
+
+                                <span class="
+                                    status-badge
+                                    status-progress
+                                ">
+
+                                    In progress
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
+
+                                    Not started
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% else %}
+
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="text-align:center;padding:35px;"
+                        >
+
+                            <strong>
+                                No employees registered yet.
+                            </strong>
+
+                            <div
+                                class="muted"
+                                style="margin-top:5px;"
+                            >
+                                Employee records will appear here
+                                once registrations are completed.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             INFORMATION NOTE
+        ================================================== -->
+
+        <div class="dashboard-note">
+
+            <div class="dashboard-note-icon">
+                i
+            </div>
+
+            <div>
+
+                <strong>
+                    Performance information
+                </strong>
+
+                <br>
+
+                Monthly accuracy is calculated from the saved
+                records for the selected month and displayed
+                within the configured 80–90% performance range.
+                Underlying daily task results remain stored
+                separately.
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGOUT
+        ================================================= -->
+
+        <a
+            class="logout-link"
+            href="{{ url_for('logout') }}"
+        >
+            Sign out
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<div class="site-footer">
+    Nexora Data Solutions · Secure internal workspace
+</div>
+
+
+</body>
+
+</html>
