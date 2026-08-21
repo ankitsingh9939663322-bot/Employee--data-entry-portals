@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <meta
+        name="theme-color"
+        content="#0b1220"
+    >
+
+    <title>Nexora · Approval Pending</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        .pending-page {
+            min-height: calc(100vh - 120px);
+            display: grid;
+            place-items: center;
+            padding: 40px 18px;
+        }
+
+        .pending-card {
+            width: min(560px, 100%);
+            padding: 42px 34px;
+            text-align: center;
+
+            border: 1px solid #e2e8f1;
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8faff
+                );
+
+            box-shadow:
+                0 24px 65px rgba(15,23,42,.10);
+        }
+
+        .pending-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 22px;
+
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+
+            color: #ea580c;
+
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .pending-eyebrow {
+            margin-bottom: 10px;
+
+            color: #315fd5;
+
+            font-size: 10px;
+            font-weight: 850;
+
+            letter-spacing: .11em;
+            text-transform: uppercase;
+        }
+
+        .pending-card h1 {
+            margin: 0 0 10px;
+
+            color: #0b1220;
+
+            font-size: 30px;
+            line-height: 1.15;
+            letter-spacing: -.035em;
+        }
+
+        .pending-description {
+            margin: 0 auto;
+
+            max-width: 450px;
+
+            color: #667085;
+
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .status-box {
+            margin-top: 25px;
+            padding: 17px;
+
+            border-radius: 15px;
+
+            background: #fffaf5;
+            border: 1px solid #fed7aa;
+
+            text-align: left;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+        }
+
+        .status-label {
+            color: #667085;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            padding: 6px 10px;
+
+            border-radius: 999px;
+
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+
+            color: #c2410c;
+
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .status-value::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #f97316;
+        }
+
+        .employee-info {
+            margin-top: 13px;
+            padding-top: 13px;
+
+            border-top: 1px solid #fde7d2;
+
+            color: #667085;
+
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .employee-info strong {
+            color: #344054;
+        }
+
+        .notice-box {
+            margin-top: 18px;
+            padding: 15px;
+
+            border-radius: 14px;
+
+            background: #f7f9ff;
+            border: 1px solid #e2e8f4;
+
+            color: #667085;
+
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .notice-box strong {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #344054;
+        }
+
+        .pending-actions {
+            display: flex;
+            justify-content: center;
+
+            gap: 10px;
+
+            margin-top: 24px;
+        }
+
+        .pending-actions a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 42px;
+
+            padding: 0 18px;
+
+            border-radius: 11px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            text-decoration: none;
+        }
+
+        .logout-button {
+            background: #f4f6f8;
+            border: 1px solid #e2e6eb;
+            color: #475467;
+        }
+
+        .logout-button:hover {
+            background: #eef1f5;
+            text-decoration: none;
+        }
+
+        @media(max-width:600px) {
+
+            .pending-page {
+                padding: 25px 12px;
+            }
+
+            .pending-card {
+                padding: 32px 20px;
+                border-radius: 20px;
+            }
+
+            .pending-card h1 {
+                font-size: 26px;
+            }
+
+            .status-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .pending-actions {
+                width: 100%;
+            }
+
+            .pending-actions a {
+                flex: 1;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS · Training Operations Portal
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="pending-page">
+
+    <div class="pending-card">
+
+
+        <!-- ICON -->
+
+        <div class="pending-icon">
+            ⏳
+        </div>
+
+
+        <!-- TITLE -->
+
+        <div class="pending-eyebrow">
+            Account review
+        </div>
+
+        <h1>
+            Founder Approval Pending
+        </h1>
+
+
+        <p class="pending-description">
+
+            Your employee account has been registered successfully,
+            but work access has not been activated yet.
+
+        </p>
+
+
+        <!-- STATUS -->
+
+        <div class="status-box">
+
+            <div class="status-row">
+
+                <span class="status-label">
+                    Account status
+                </span>
+
+                <span class="status-value">
+                    Pending approval
+                </span>
+
+            </div>
+
+
+            {% if employee %}
+
+                <div class="employee-info">
+
+                    <strong>
+                        Employee:
+                    </strong>
+
+                    {{ employee.employee_name }}
+
+                    {% if employee.employee_code %}
+
+                        <br>
+
+                        <strong>
+                            Employee ID:
+                        </strong>
+
+                        {{ employee.employee_code }}
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- NOTICE -->
+
+        <div class="notice-box">
+
+            <strong>
+                What happens next?
+            </strong>
+
+            The founder will review your registration and
+            approve your account. Once approved, you can sign
+            in again and access your employee workspace.
+
+        </div>
+
+
+        <!-- ACTION -->
+
+        <div class="pending-actions">
+
+            <a
+                class="logout-button"
+                href="{{ url_for('logout') }}"
+            >
+                Sign out
+            </a>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<div class="site-footer">
+
+    Nexora Data Solutions · Secure internal workspace
+
+</div>
+
+
+</body>
+
+</html>
