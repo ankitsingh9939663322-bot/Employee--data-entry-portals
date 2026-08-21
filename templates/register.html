@@ -10,6 +10,11 @@
         content="width=device-width, initial-scale=1"
     >
 
+    <meta
+        name="theme-color"
+        content="#0b1220"
+    >
+
     <title>Nexora · Employee Registration</title>
 
     <link
@@ -25,171 +30,268 @@
         }
 
         .register-header {
-            text-align:center;
-            margin-bottom:26px;
+            text-align: center;
+            margin-bottom: 26px;
         }
 
         .register-icon {
-            width:64px;
-            height:64px;
-            margin:0 auto 17px;
-            display:grid;
-            place-items:center;
-            border-radius:19px;
-            background:linear-gradient(
-                135deg,
-                var(--primary),
-                var(--primary-2)
-            );
-            color:#fff;
-            font-size:25px;
-            font-weight:900;
-            box-shadow:0 12px 28px rgba(37,99,235,.22);
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 17px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 19px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--primary-2)
+                );
+
+            color: #fff;
+            font-size: 25px;
+            font-weight: 900;
+
+            box-shadow:
+                0 12px 28px rgba(37,99,235,.22);
         }
 
         .register-header .eyebrow {
-            margin-bottom:12px;
+            margin-bottom: 12px;
         }
 
         .register-header h1 {
-            margin-bottom:9px;
+            margin-bottom: 9px;
         }
 
         .register-header .muted {
-            margin-bottom:0;
+            margin-bottom: 0;
         }
 
         .form-section {
-            padding:20px;
-            border:1px solid #e4e9f2;
-            border-radius:18px;
-            background:linear-gradient(
-                145deg,
-                #ffffff,
-                #f8faff
-            );
-            box-shadow:var(--shadow-sm);
+            padding: 20px;
+
+            border: 1px solid #e4e9f2;
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f8faff
+                );
+
+            box-shadow: var(--shadow-sm);
         }
 
         .field-group {
-            margin-bottom:3px;
+            margin-bottom: 3px;
         }
 
         .field-label {
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
         }
 
         .field-label label {
-            margin-bottom:7px;
+            margin-bottom: 7px;
         }
 
         .field-number {
-            color:#98a2b3;
-            font-size:10px;
-            font-weight:800;
+            color: #98a2b3;
+            font-size: 10px;
+            font-weight: 800;
         }
 
         .password-note {
-            display:flex;
-            align-items:center;
-            gap:7px;
-            margin-top:7px;
-            color:#667085;
-            font-size:11px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            margin-top: 7px;
+
+            color: #667085;
+            font-size: 11px;
         }
 
         .password-note:before {
-            content:"✓";
-            display:grid;
-            place-items:center;
-            width:17px;
-            height:17px;
-            border-radius:50%;
-            background:#ecfdf3;
-            color:#16a34a;
-            font-weight:900;
+            content: "✓";
+
+            display: grid;
+            place-items: center;
+
+            width: 17px;
+            height: 17px;
+
+            border-radius: 50%;
+
+            background: #ecfdf3;
+            color: #16a34a;
+
+            font-weight: 900;
         }
 
         .register-button {
-            width:100%;
-            margin-top:19px;
-            min-height:48px;
-            font-size:14px;
+            width: 100%;
+            margin-top: 19px;
+            min-height: 48px;
+            font-size: 14px;
         }
 
         .login-box {
-            margin-top:20px;
-            padding:15px;
-            text-align:center;
-            border-radius:15px;
-            background:#f7f9ff;
-            border:1px solid #e2e8f4;
+            margin-top: 20px;
+            padding: 15px;
+
+            text-align: center;
+
+            border-radius: 15px;
+
+            background: #f7f9ff;
+            border: 1px solid #e2e8f4;
         }
 
         .login-box p {
-            margin:0;
-            font-size:13px;
+            margin: 0;
+            font-size: 13px;
         }
 
-        .security-box {
-            display:flex;
-            gap:12px;
-            align-items:flex-start;
-            margin-top:18px;
-            padding:15px;
-            border-radius:15px;
-            background:linear-gradient(
-                135deg,
-                #f8faff,
-                #ffffff
-            );
-            border:1px solid #e2e8f1;
+        /* =========================================================
+           APPROVAL INFORMATION
+        ========================================================= */
+
+        .approval-box {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+
+            margin-top: 18px;
+            padding: 15px;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eff6ff,
+                    #f8faff
+                );
+
+            border: 1px solid #dbe7ff;
         }
 
-        .security-icon {
-            flex:0 0 32px;
-            width:32px;
-            height:32px;
-            display:grid;
-            place-items:center;
-            border-radius:10px;
-            background:#eff5ff;
-            color:#2563eb;
-            font-weight:900;
+        .approval-icon {
+            flex: 0 0 32px;
+
+            width: 32px;
+            height: 32px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background: #dbeafe;
+            color: #2563eb;
+
+            font-size: 14px;
+            font-weight: 900;
         }
 
-        .security-content strong {
-            display:block;
-            color:#182230;
-            font-size:12px;
-            margin-bottom:3px;
+        .approval-content strong {
+            display: block;
+
+            color: #182230;
+
+            font-size: 12px;
+
+            margin-bottom: 4px;
         }
 
-        .security-content span {
-            display:block;
-            color:#667085;
-            font-size:11px;
-            line-height:1.55;
+        .approval-content span {
+            display: block;
+
+            color: #667085;
+
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           REGISTRATION STEPS
+        ========================================================= */
+
+        .process-box {
+            display: grid;
+            gap: 9px;
+
+            margin-top: 15px;
+            padding: 14px 15px;
+
+            border-radius: 15px;
+
+            background: #ffffff;
+
+            border: 1px solid #e5eaf2;
+        }
+
+        .process-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            color: #667085;
+
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .process-number {
+            width: 21px;
+            height: 21px;
+
+            flex: 0 0 21px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 7px;
+
+            background: #f1f5f9;
+            color: #475467;
+
+            font-size: 10px;
+            font-weight: 850;
+        }
+
+        .process-row strong {
+            color: #344054;
         }
 
         @media(max-width:700px) {
 
             .register-card {
-                margin:2vh auto;
+                margin: 2vh auto;
             }
 
             .register-icon {
-                width:56px;
-                height:56px;
-                border-radius:17px;
-                font-size:22px;
+                width: 56px;
+                height: 56px;
+                border-radius: 17px;
+                font-size: 22px;
             }
 
             .form-section {
-                padding:17px;
+                padding: 17px;
+            }
+
+            .approval-box,
+            .process-box {
+                padding: 13px;
             }
 
         }
@@ -202,7 +304,9 @@
 <body>
 
 
-<!-- HEADER -->
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
 <div class="header">
 
@@ -213,14 +317,18 @@
 </div>
 
 
-<!-- MAIN -->
+<!-- =========================================================
+     MAIN
+========================================================= -->
 
 <div class="container">
 
     <div class="card register-card">
 
 
-        <!-- HEADER -->
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
 
         <div class="register-header">
 
@@ -237,14 +345,16 @@
             </h1>
 
             <p class="muted">
-                Set up your secure employee workspace
-                in a few simple steps.
+                Register your employee account for the
+                Nexora training operations workspace.
             </p>
 
         </div>
 
 
-        <!-- FLASH MESSAGES -->
+        <!-- =====================================================
+             FLASH MESSAGES
+        ====================================================== -->
 
         {% with messages = get_flashed_messages(with_categories=true) %}
 
@@ -259,7 +369,9 @@
         {% endwith %}
 
 
-        <!-- FORM -->
+        <!-- =====================================================
+             REGISTRATION FORM
+        ====================================================== -->
 
         <div class="form-section">
 
@@ -278,7 +390,9 @@
                 >
 
 
-                <!-- NAME -->
+                <!-- =================================================
+                     EMPLOYEE NAME
+                ================================================== -->
 
                 <div class="field-group">
 
@@ -307,7 +421,9 @@
                 </div>
 
 
-                <!-- DOB -->
+                <!-- =================================================
+                     DATE OF BIRTH
+                ================================================== -->
 
                 <div class="field-group">
 
@@ -333,7 +449,9 @@
                 </div>
 
 
-                <!-- PASSWORD -->
+                <!-- =================================================
+                     PASSWORD
+                ================================================== -->
 
                 <div class="field-group">
 
@@ -366,7 +484,9 @@
                 </div>
 
 
-                <!-- CONFIRM PASSWORD -->
+                <!-- =================================================
+                     CONFIRM PASSWORD
+                ================================================== -->
 
                 <div class="field-group">
 
@@ -395,13 +515,15 @@
                 </div>
 
 
-                <!-- SUBMIT -->
+                <!-- =================================================
+                     SUBMIT
+                ================================================== -->
 
                 <button
                     type="submit"
                     class="register-button"
                 >
-                    Create Employee Account
+                    Submit for Founder Approval
                 </button>
 
 
@@ -410,7 +532,101 @@
         </div>
 
 
-        <!-- LOGIN -->
+        <!-- =====================================================
+             APPROVAL INFORMATION
+        ====================================================== -->
+
+        <div class="approval-box">
+
+            <div class="approval-icon">
+                ✓
+            </div>
+
+            <div class="approval-content">
+
+                <strong>
+                    Founder approval required
+                </strong>
+
+                <span>
+                    Your registration will remain pending until
+                    it is reviewed and approved by the Founder /
+                    Admin. Employee work access will become
+                    available only after approval.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             APPROVAL PROCESS
+        ====================================================== -->
+
+        <div class="process-box">
+
+            <div class="process-row">
+
+                <div class="process-number">
+                    1
+                </div>
+
+                <div>
+                    <strong>Register</strong>
+                    — Submit your employee details.
+                </div>
+
+            </div>
+
+
+            <div class="process-row">
+
+                <div class="process-number">
+                    2
+                </div>
+
+                <div>
+                    <strong>Founder review</strong>
+                    — Your account is checked by the Founder.
+                </div>
+
+            </div>
+
+
+            <div class="process-row">
+
+                <div class="process-number">
+                    3
+                </div>
+
+                <div>
+                    <strong>Approval</strong>
+                    — Your employee account becomes active.
+                </div>
+
+            </div>
+
+
+            <div class="process-row">
+
+                <div class="process-number">
+                    4
+                </div>
+
+                <div>
+                    <strong>Work access</strong>
+                    — You can sign in and start your assigned work.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             LOGIN
+        ====================================================== -->
 
         <div class="login-box">
 
@@ -427,42 +643,14 @@
         </div>
 
 
-        <!-- SECURITY -->
-
-        <div class="security-box">
-
-            <div class="security-icon">
-                ✓
-            </div>
-
-            <div class="security-content">
-
-                <strong>
-                    Your employee access
-                </strong>
-
-                <span>
-                    After registration, your Employee ID will
-                    be automatically generated and shown in
-                    your employee workspace.
-                </span>
-
-                <span style="margin-top:4px;">
-                    Keep your Employee ID and password private.
-                    You will need them for future sign-ins.
-                </span>
-
-            </div>
-
-        </div>
-
-
     </div>
 
 </div>
 
 
-<!-- FOOTER -->
+<!-- =========================================================
+     FOOTER
+========================================================= -->
 
 <div class="site-footer">
     Nexora Data Solutions · Secure internal workspace
