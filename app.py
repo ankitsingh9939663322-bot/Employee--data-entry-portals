@@ -334,38 +334,132 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        employee_code = normalize_text(request.form.get("employee_code")).upper()
-        password = request.form.get("password", "")
-        founder_dob = os.environ.get("FOUNDER_DOB", "founder")
-        founder_password = os.environ.get("FOUNDER_PASSWORD", "CHANGE_THIS_FOUNDER_PASSWORD")
-        if employee_code == founder_username.upper() and secrets.compare_digest(password, founder_password):
+   if request.method == "POST":
+
+    role = normalize_text(request.form.get("role")).lower()
+    password = request.form.get("password", "")
+
+    # =========================================================
+    # FOUNDER LOGIN
+    # Founder = DOB + Password only
+    # DOB format = DD-MM-YYYY
+    # =========================================================
+
+    if role == "founder":
+
+        try:
+            entered_dob = datetime.datetime.strptime(
+                request.form.get("dob", "").strip(),
+                "%d-%m-%Y"
+            ).date()
+        except ValueError:
+            entered_dob = None
+
+        founder_dob_value = os.environ.get(
+            "FOUNDER_DOB",
+            ""
+        )
+
+        founder_password = os.environ.get(
+            "FOUNDER_PASSWORD",
+            "CHANGE_THIS_FOUNDER_PASSWORD"
+        )
+
+        try:
+            configured_founder_dob = datetime.datetime.strptime(
+                founder_dob_value.strip(),
+                "%d-%m-%Y"
+            ).date()
+        except ValueError:
+            configured_founder_dob = None
+
+        if (
+            entered_dob
+            and configured_founder_dob
+            and entered_dob == configured_founder_dob
+            and secrets.compare_digest(
+                password,
+                founder_password
+            )
+        ):
             session.clear()
             session["role"] = "founder"
-            audit("founder_login", actor_role="founder")
-            return redirect(url_for("founder"))
-        employee = Employee.query.filter_by(employee_code=employee_code).first()
-        if not employee:
-            flash("Invalid employee ID or password.", "error")
-            return render_template("login.html")
-        if not employee.active:
-            flash("This employee account is inactive.", "error")
-            return render_template("login.html")
-        if not check_password_hash(employee.password_hash, password):
-            flash("Invalid dob or password.", "error")
-            return render_template("login.html")
-        if not employee.approved:
-            flash("Your account is waiting for founder approval.", "error")
-            audit("employee_login_blocked_pending_approval", actor_role="employee", employee_id=employee.id)
-            return render_template("login.html")
-        session.clear()
-        session["role"] = "employee"
-        session["employee_id"] = employee.id
-        employee.last_active = now_ist()
-        db.session.commit()
-        audit("employee_login", actor_role="employee", actor_id=employee.id, employee_id=employee.id)
-        return redirect(url_for("employee"))
-    return render_template("login.html")
+
+            audit(
+                "founder_login",
+                actor_role="founder"
+            )
+
+            return redirect(
+                url_for("founder")
+            )
+
+        flash(
+            "Invalid founder DOB or password.",
+            "error"
+        )
+
+        return render_template(
+            "login.html"
+        )
+
+    # =========================================================
+    # EMPLOYEE LOGIN
+    # Employee = Employee ID + Password
+    # =========================================================
+
+    employee_code = normalize_text(
+        request.form.get("employee_code")
+    ).upper()
+
+    if not employee_code:
+        flash(
+            "Employee ID is required.",
+            "error"
+        )
+        return render_template("login.html")
+
+    employee = Employee.query.filter_by(
+        employee_code=employee_code
+    ).first()
+
+    if not employee:
+        flash(
+            "Invalid employee ID or password.",
+            "error"
+        )
+        return render_template("login.html")
+
+    if not employee.active:
+        flash(
+            "This employee account is inactive.",
+            "error"
+        )
+        return render_template("login.html")
+
+    if not check_password_hash(
+        employee.password_hash,
+        password
+    ):
+        flash(
+            "Invalid employee ID or password.",
+            "error"
+        )
+        return render_template("login.html")
+
+    if not employee.approved:
+        flash(
+            "Your account is waiting for founder approval.",
+            "error"
+        )
+
+        audit(
+            "employee_login_blocked_pending_approval",
+            actor_role="employee",
+            employee_id=employee.id
+        )
+
+        return render_template("login.html")
 
 
 @app.route("/logout")
