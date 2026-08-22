@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Nexora · Founder Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        .dashboard-hero {
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-end;
+            gap:24px;
+            margin-bottom:26px;
+            flex-wrap:wrap;
+        }
+
+        .dashboard-title {
+            max-width:720px;
+        }
+
+        .dashboard-title h1 {
+            margin-bottom:8px;
+        }
+
+        .dashboard-title .muted {
+            margin-bottom:0;
+        }
+
+        .section-heading {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin:30px 0 14px;
+            flex-wrap:wrap;
+        }
+
+        .section-heading h2 {
+            font-size:19px;
+            margin:0;
+        }
+
+        .section-heading span {
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        .employee-table-wrap {
+            overflow-x:auto;
+            border-radius:17px;
+        }
+
+        .employee-table {
+            min-width:900px;
+        }
+
+        .employee-name {
+            display:flex;
+            align-items:center;
+            gap:11px;
+        }
+
+        .employee-avatar {
+            width:38px;
+            height:38px;
+            flex:0 0 38px;
+            display:grid;
+            place-items:center;
+            border-radius:12px;
+            background:linear-gradient(
+                135deg,
+                var(--primary),
+                var(--primary-2)
+            );
+            color:#fff;
+            font-weight:850;
+            font-size:13px;
+            box-shadow:0 7px 16px rgba(37,99,235,.18);
+        }
+
+        .employee-name a {
+            display:block;
+            font-weight:800;
+            color:#182230;
+        }
+
+        .employee-name a:hover {
+            color:var(--primary);
+            text-decoration:none;
+        }
+
+        .employee-code {
+            display:inline-flex;
+            align-items:center;
+            padding:6px 9px;
+            border-radius:9px;
+            background:#f4f7fb;
+            border:1px solid #e3e8f0;
+            color:#475467;
+            font-size:12px;
+            font-weight:750;
+        }
+
+        .progress-cell {
+            min-width:160px;
+        }
+
+        .progress-meta {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-bottom:7px;
+            font-size:12px;
+        }
+
+        .progress-meta strong {
+            color:#182230;
+        }
+
+        .progress-meta span {
+            color:var(--muted);
+        }
+
+        .mini-progress {
+            width:100%;
+            height:7px;
+            background:#e9edf4;
+            border-radius:999px;
+            overflow:hidden;
+        }
+
+        .mini-progress-fill {
+            height:100%;
+            border-radius:999px;
+            background:linear-gradient(
+                90deg,
+                var(--primary),
+                var(--primary-2)
+            );
+        }
+
+        .accuracy-badge {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:62px;
+            padding:6px 9px;
+            border-radius:999px;
+            background:#eff5ff;
+            border:1px solid #dce8ff;
+            color:#315fd5;
+            font-size:12px;
+            font-weight:850;
+        }
+
+        .history-badge {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:7px 11px;
+            border-radius:9px;
+            background:#f8faff;
+            border:1px solid #dfe7f2;
+            color:#315fd5;
+            font-size:12px;
+            font-weight:800;
+        }
+
+        .status-badge {
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:850;
+            white-space:nowrap;
+        }
+
+        .status-badge:before {
+            content:"";
+            width:6px;
+            height:6px;
+            border-radius:50%;
+        }
+
+        .status-completed {
+            color:#166534;
+            background:#ecfdf3;
+            border:1px solid #b7ebc6;
+        }
+
+        .status-completed:before {
+            background:#16a34a;
+        }
+
+        .status-progress {
+            color:#315fd5;
+            background:#eff5ff;
+            border:1px solid #dce8ff;
+        }
+
+        .status-progress:before {
+            background:#2563eb;
+        }
+
+        .status-not-started {
+            color:#667085;
+            background:#f4f6f8;
+            border:1px solid #e2e6eb;
+        }
+
+        .status-not-started:before {
+            background:#98a2b3;
+        }
+
+        .approval-panel {
+            margin-bottom:28px;
+        }
+
+        .approval-card {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:18px;
+            flex-wrap:wrap;
+            padding:16px;
+            border:1px solid #e2e8f1;
+            border-radius:15px;
+            background:#fafcff;
+        }
+
+        .approval-employee {
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .approval-name {
+            display:block;
+            color:#182230;
+            font-weight:800;
+        }
+
+        .approval-id {
+            display:block;
+            margin-top:3px;
+            color:#667085;
+            font-size:12px;
+        }
+
+        .approval-actions {
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+
+        .approval-actions form {
+            margin:0;
+        }
+
+        .reject-button {
+            background:#fff !important;
+            color:#b42318 !important;
+            border:1px solid #f1b5b0 !important;
+        }
+
+        .dashboard-note {
+            display:flex;
+            align-items:flex-start;
+            gap:10px;
+            margin-top:20px;
+            padding:14px 16px;
+            border-radius:14px;
+            background:#f8faff;
+            border:1px solid #e2e8f4;
+            color:#667085;
+            font-size:12px;
+            line-height:1.6;
+        }
+
+        .dashboard-note strong {
+            color:#344054;
+        }
+
+        .dashboard-note-icon {
+            width:24px;
+            height:24px;
+            flex:0 0 24px;
+            display:grid;
+            place-items:center;
+            border-radius:8px;
+            background:#eaf1ff;
+            color:#315fd5;
+            font-size:12px;
+            font-weight:900;
+        }
+
+        .logout-link {
+            display:inline-flex;
+            margin-top:22px;
+            padding:8px 0;
+            font-size:13px;
+        }
+
+        .historical-summary {
+            margin-top:5px;
+            color:#667085;
+            font-size:11px;
+        }
+
+        @media(max-width:700px) {
+
+            .dashboard-hero {
+                align-items:stretch;
+            }
+
+            .section-heading {
+                margin-top:25px;
+            }
+
+            .dashboard-note {
+                font-size:11px;
+            }
+
+            .approval-card {
+                align-items:flex-start;
+            }
+
+            .approval-actions {
+                width:100%;
+            }
+
+            .approval-actions form {
+                flex:1;
+            }
+
+            .approval-actions button {
+                width:100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <div class="brand">
+        NEXORA DATA SOLUTIONS
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <div class="card">
+
+
+        <!-- =================================================
+             DASHBOARD HERO
+        ================================================== -->
+
+        <div class="dashboard-hero">
+
+            <div class="dashboard-title">
+
+                <div class="eyebrow">
+                    Founder / Admin
+                </div>
+
+                <h1>
+                    Performance Dashboard
+                </h1>
+
+                <p class="muted">
+
+                    Employee work overview for
+
+                    <b>
+                        {{ today.strftime("%d %B %Y") }}
+                    </b>
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SUMMARY
+        ================================================== -->
+
+        {% set active_count = 0 %}
+        {% set approved_count = 0 %}
+        {% set pending_count_local = 0 %}
+        {% set today_completed_total = 0 %}
+
+        {% for employee in employees %}
+
+            {% if employee.active %}
+                {% set active_count = active_count + 1 %}
+            {% endif %}
+
+            {% if employee.approved %}
+                {% set approved_count = approved_count + 1 %}
+            {% else %}
+                {% set pending_count_local = pending_count_local + 1 %}
+            {% endif %}
+
+            {% set today_result = daily_results.get(employee.id) %}
+
+            {% if today_result %}
+                {% set today_completed_total =
+                    today_completed_total + today_result.completed %}
+            {% endif %}
+
+        {% endfor %}
+
+
+        <div class="stats">
+
+
+            <div class="stat">
+
+                Employees
+
+                <b>
+                    {{ employees|length }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Approved
+
+                <b>
+                    {{ approved_count }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Pending Approval
+
+                <b>
+                    {{ pending_employees|length }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Active
+
+                <b>
+                    {{ active_count }}
+                </b>
+
+            </div>
+
+
+            <div class="stat">
+
+                Today's Entries
+
+                <b>
+                    {{ today_completed_total }}
+                </b>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             PENDING APPROVALS
+        ================================================== -->
+
+        {% if pending_employees %}
+
+        <div class="approval-panel">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Pending Employee Approvals
+                    </h2>
+
+                    <span>
+                        New employees cannot start work until
+                        founder approval.
+                    </span>
+
+                </div>
+
+                <span class="status-badge status-progress">
+                    {{ pending_employees|length }} Pending
+                </span>
+
+            </div>
+
+
+            <div
+                style="
+                    display:grid;
+                    gap:12px;
+                "
+            >
+
+                {% for employee in pending_employees %}
+
+                <div class="approval-card">
+
+
+                    <div class="approval-employee">
+
+                        <div class="employee-avatar">
+
+                            {{ employee.employee_name[0]|upper }}
+
+                        </div>
+
+                        <div>
+
+                            <strong class="approval-name">
+
+                                {{ employee.employee_name }}
+
+                            </strong>
+
+                            <span class="approval-id">
+
+                                Employee ID:
+                                {{ employee.employee_code }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="approval-actions">
+
+
+                        <!-- APPROVE -->
+
+                        <form
+                            method="post"
+                            action="{{ url_for(
+                                'approve_employee',
+                                employee_id=employee.id
+                            ) }}"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            >
+
+                            <button type="submit">
+
+                                Approve &amp; Start Work
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- REJECT -->
+
+                        <form
+                            method="post"
+                            action="{{ url_for(
+                                'reject_employee',
+                                employee_id=employee.id
+                            ) }}"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="reject-button"
+                            >
+
+                                Reject
+
+                            </button>
+
+                        </form>
+
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             EMPLOYEE PERFORMANCE
+        ================================================== -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Employee Performance &amp; Work History
+                </h2>
+
+                <span>
+                    Current work is shown here. Click an employee
+                    to view their complete saved history.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="employee-table-wrap">
+
+            <table class="employee-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Employee
+                        </th>
+
+                        <th>
+                            Employee ID
+                        </th>
+
+                        <th>
+                            Today's Progress
+                        </th>
+
+                        <th>
+                            Today's Accuracy
+                        </th>
+
+                        <th>
+                            Historical Work
+                        </th>
+
+                        <th>
+                            Account
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                {% for employee in employees %}
+
+                    {% set result =
+                        daily_results.get(employee.id) %}
+
+                    {% set totals =
+                        historical_totals.get(employee.id) %}
+
+
+                    <tr>
+
+
+                        <!-- EMPLOYEE -->
+
+                        <td>
+
+                            <div class="employee-name">
+
+                                <div class="employee-avatar">
+
+                                    {{ employee.employee_name[0]|upper }}
+
+                                </div>
+
+                                <div>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'employee_history',
+                                            employee_id=employee.id
+                                        ) }}"
+                                    >
+
+                                        {{ employee.employee_name }}
+
+                                    </a>
+
+                                    <div class="historical-summary">
+
+                                        {% if totals %}
+
+                                            {{ totals.record_count }}
+                                            saved work day(s)
+
+                                        {% else %}
+
+                                            No saved work yet
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EMPLOYEE ID -->
+
+                        <td>
+
+                            <span class="employee-code">
+
+                                {{ employee.employee_code }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- TODAY'S PROGRESS -->
+
+                        <td>
+
+                            <div class="progress-cell">
+
+                                <div class="progress-meta">
+
+                                    <strong>
+
+                                        {% if result %}
+                                            {{ result.completed }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+
+                                        /
+
+                                        {{ daily_target }}
+
+                                    </strong>
+
+                                    <span>
+
+                                        {% if result and daily_target %}
+
+                                            {{ (
+                                                result.completed
+                                                /
+                                                daily_target
+                                                * 100
+                                            )|round(0) }}%
+
+                                        {% else %}
+
+                                            0%
+
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+
+                                <div class="mini-progress">
+
+                                    <div
+                                        class="mini-progress-fill"
+                                        style="
+                                            width:
+                                            {% if result and daily_target %}
+                                                {{
+                                                    (
+                                                        result.completed
+                                                        /
+                                                        daily_target
+                                                        * 100
+                                                    )
+                                                    |round(2)
+                                                }}%
+                                            {% else %}
+                                                0%
+                                            {% endif %}
+                                        "
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- TODAY ACCURACY -->
+
+                        <td>
+
+                            {% if result and result.completed > 0 %}
+
+                                <span class="accuracy-badge">
+
+                                    {{
+                                        (
+                                            result.correct
+                                            /
+                                            result.completed
+                                            * 100
+                                        )|round(1)
+                                    }}%
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="accuracy-badge">
+                                    0%
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- HISTORICAL WORK -->
+
+                        <td>
+
+                            <a
+                                class="history-badge"
+                                href="{{ url_for(
+                                    'employee_history',
+                                    employee_id=employee.id
+                                ) }}"
+                            >
+
+                                View History
+
+                            </a>
+
+                            {% if totals %}
+
+                                <div
+                                    class="historical-summary"
+                                >
+
+                                    {{ totals.completed }}
+                                    records saved
+
+                                </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ACCOUNT -->
+
+                        <td>
+
+                            {% if employee.approved %}
+
+                                {% if employee.active %}
+
+                                    <span class="
+                                        status-badge
+                                        status-completed
+                                    ">
+
+                                        Approved / Active
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="
+                                        status-badge
+                                        status-not-started
+                                    ">
+
+                                        Disabled
+
+                                    </span>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <span class="
+                                    status-badge
+                                    status-progress
+                                ">
+
+                                    Pending Approval
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- TODAY STATUS -->
+
+                        <td>
+
+                            {% if not employee.approved %}
+
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
+
+                                    Awaiting approval
+
+                                </span>
+
+                            {% elif not employee.active %}
+
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
+
+                                    Inactive
+
+                                </span>
+
+                            {% elif is_sunday %}
+
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
+
+                                    Sunday Holiday
+
+                                </span>
+
+                            {% elif result and result.completed >= daily_target %}
+
+                                <span class="
+                                    status-badge
+                                    status-completed
+                                ">
+
+                                    Completed
+
+                                </span>
+
+                            {% elif result and result.completed > 0 %}
+
+                                <span class="
+                                    status-badge
+                                    status-progress
+                                ">
+
+                                    In Progress
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
+
+                                    Not Started
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% else %}
+
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                            "
+                        >
+
+                            <strong>
+                                No employees registered yet.
+                            </strong>
+
+                            <div
+                                class="muted"
+                                style="margin-top:5px;"
+                            >
+
+                                Employee records will appear here
+                                after registration.
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             HISTORY NOTE
+        ================================================== -->
+
+        <div class="dashboard-note">
+
+            <div class="dashboard-note-icon">
+                i
+            </div>
+
+            <div>
+
+                <strong>
+                    Employee history
+                </strong>
+
+                <br>
+
+                Employee work is saved day-by-day in the database.
+                Click <b>View History</b> or the employee name to
+                see the employee's previous work, completed
+                records, correct records, wrong records, time,
+                accuracy and Sunday holidays for the selected
+                month.
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             REPORT
+        ================================================== -->
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                flex-wrap:wrap;
+                margin-top:20px;
+            "
+        >
+
+            <a
+                href="{{ url_for('founder_report') }}"
+                class="history-badge"
+            >
+                Monthly Report
+            </a>
+
+            <a
+                href="{{ url_for('founder_report_pdf') }}"
+                class="history-badge"
+            >
+                Download PDF Report
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGOUT
+        ================================================== -->
+
+        <a
+            class="logout-link"
+            href="{{ url_for('logout') }}"
+        >
+            Sign out
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<div class="site-footer">
+
+    Nexora Data Solutions · Secure internal workspace
+
+</div>
+
+
+</body>
+
+</html>
