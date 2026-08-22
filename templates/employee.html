@@ -1032,72 +1032,367 @@
 <main class="nx-page">
 
     <div class="nx-card">
-{% if holiday %}
+<main class="nx-page">
 
-<section class="nx-complete">
+    <div class="nx-card">
 
-    <div class="nx-complete-icon"
-         style="
-            background:linear-gradient(
-                135deg,
-                #2563eb,
-                #4f46e5
-            );
-            box-shadow:
-                0 15px 30px rgba(37,99,235,.20);
-         ">
-        —
+        {% if holiday %}
+
+        <!-- =================================================
+             SUNDAY HOLIDAY
+             ================================================= -->
+
+        <section class="nx-complete">
+
+            <div
+                class="nx-complete-icon"
+                style="
+                    background:linear-gradient(
+                        135deg,
+                        #2563eb,
+                        #4f46e5
+                    );
+
+                    box-shadow:
+                        0 15px 30px rgba(37,99,235,.20);
+                "
+            >
+                —
+            </div>
+
+            <div class="nx-eyebrow">
+                Sunday Holiday
+            </div>
+
+            <h1>
+                Operations are currently unavailable
+            </h1>
+
+            <p>
+                Data entry services are unavailable today.
+                Operations will resume on Monday.
+            </p>
+
+            <div
+                class="nx-complete-stat"
+                style="
+                    border-color:#dbe5f5;
+
+                    background:
+                        linear-gradient(
+                            135deg,
+                            #f5f8ff,
+                            #ffffff
+                        );
+
+                    color:#344054;
+                "
+            >
+                Today · Sunday
+
+                <span
+                    style="
+                        display:block;
+                        margin-top:5px;
+                        color:#2563eb;
+                        font-size:11px;
+                        font-weight:750;
+                    "
+                >
+                    Work resumes Monday
+                </span>
+            </div>
+
+            <a
+                class="nx-complete-out"
+                href="{{ url_for('logout') }}"
+            >
+                Sign out of workspace
+            </a>
+
+        </section>
+
+
+        {% else %}
+
+        <!-- =================================================
+             NORMAL EMPLOYEE WORKSPACE
+             ================================================= -->
+
+        <section class="nx-card-top">
+
+            <div class="nx-eyebrow">
+                Employee workspace
+            </div>
+
+            <div class="nx-title-row">
+
+                <div class="nx-title">
+
+                    <h1>
+                        Daily Data Entry
+                    </h1>
+
+                    <p>
+                        Complete today's assigned records carefully.
+                        Your performance is securely recorded for
+                        authorized review.
+                    </p>
+
+                </div>
+
+                <div class="nx-task-badge">
+                    Daily task
+                </div>
+
+            </div>
+
+            <div class="nx-employee">
+
+                <div class="nx-avatar">
+                    {{ employee.employee_name[:1]|upper }}
+                </div>
+
+                <div>
+
+                    <div class="nx-employee-name">
+                        {{ employee.employee_name }}
+                    </div>
+
+                    <div class="nx-employee-id">
+                        Employee ID:
+                        <b>{{ employee.employee_code }}</b>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PROGRESS
+             ================================================= -->
+
+        <section class="nx-progress-section">
+
+            <div class="nx-progress-head">
+
+                <div
+                    class="nx-progress-count"
+                    id="count"
+                >
+                    {{ completed }} / {{ target }} completed
+                </div>
+
+                <div class="nx-progress-label">
+                    Daily progress
+                </div>
+
+            </div>
+
+            <div class="nx-progress">
+
+                <div
+                    class="nx-progress-fill"
+                    id="progressFill"
+                    style="
+                        width:
+                        {{ (completed / target * 100)
+                           if target else 0 }}%
+                    "
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FORM
+             ================================================= -->
+
+        <section class="nx-form-area">
+
+            <div class="nx-section-title">
+
+                <span class="nx-section-number">
+                    01
+                </span>
+
+                Verify reference data and enter the matching details
+
+            </div>
+
+
+            <div
+                class="nx-reference"
+                id="ref"
+            ></div>
+
+
+            <form
+                method="post"
+                action="{{ url_for('employee_submit') }}"
+                id="task"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <input
+                    type="hidden"
+                    name="index"
+                    id="idx"
+                    value="{{ completed }}"
+                >
+
+                <input
+                    type="hidden"
+                    name="seconds"
+                    id="secs"
+                    value="0"
+                >
+
+                <div class="nx-grid">
+
+                    <div class="nx-field">
+
+                        <label for="name">
+                            Name
+                        </label>
+
+                        <input
+                            class="nx-input"
+                            id="name"
+                            name="name"
+                            autocomplete="off"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="nx-field">
+
+                        <label for="age">
+                            Age
+                        </label>
+
+                        <input
+                            class="nx-input"
+                            id="age"
+                            name="age"
+                            type="number"
+                            min="1"
+                            max="120"
+                            autocomplete="off"
+                            placeholder="Enter age"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="nx-field">
+
+                        <label for="city">
+                            City
+                        </label>
+
+                        <input
+                            class="nx-input"
+                            id="city"
+                            name="city"
+                            autocomplete="off"
+                            placeholder="Enter city"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="nx-field">
+
+                        <label for="phone">
+                            Phone
+                        </label>
+
+                        <input
+                            class="nx-input"
+                            id="phone"
+                            name="phone"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            placeholder="Enter phone number"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="nx-field">
+
+                    <label for="email">
+                        Email address
+                    </label>
+
+                    <input
+                        class="nx-input"
+                        id="email"
+                        name="email"
+                        type="email"
+                        autocomplete="off"
+                        placeholder="Enter email address"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="nx-actions">
+
+                    <button
+                        type="reset"
+                        class="nx-button nx-clear"
+                    >
+                        Clear
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="nx-button nx-submit"
+                    >
+                        Submit &amp; Next
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <div class="nx-signout">
+
+                <a href="{{ url_for('logout') }}">
+                    Sign out of workspace
+                </a>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
     </div>
 
-    <div class="nx-eyebrow">
-        Sunday Holiday
-    </div>
-
-    <h1>
-        Operations are currently unavailable
-    </h1>
-
-    <p>
-        Data entry services are unavailable today.
-        Operations will resume on Monday.
-    </p>
-
-    <div class="nx-complete-stat"
-         style="
-            border-color:#dbe5f5;
-            background:
-                linear-gradient(
-                    135deg,
-                    #f5f8ff,
-                    #ffffff
-                );
-            color:#344054;
-         ">
-
-        Today · Sunday
-
-        <span style="
-            display:block;
-            margin-top:5px;
-            color:#2563eb;
-            font-size:11px;
-            font-weight:750;
-        ">
-            Work resumes Monday
-        </span>
-
-    </div>
-
-    <a
-        class="nx-complete-out"
-        href="{{ url_for('logout') }}"
-    >
-        Sign out of workspace
-    </a>
-
-</section>
-
-{% else %}
+</main>
 
         <!-- =================================================
              HEADER CONTENT
