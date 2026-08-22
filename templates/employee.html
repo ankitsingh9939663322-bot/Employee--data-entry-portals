@@ -1032,7 +1032,72 @@
 <main class="nx-page">
 
     <div class="nx-card">
+{% if holiday %}
 
+<section class="nx-complete">
+
+    <div class="nx-complete-icon"
+         style="
+            background:linear-gradient(
+                135deg,
+                #2563eb,
+                #4f46e5
+            );
+            box-shadow:
+                0 15px 30px rgba(37,99,235,.20);
+         ">
+        —
+    </div>
+
+    <div class="nx-eyebrow">
+        Sunday Holiday
+    </div>
+
+    <h1>
+        Operations are currently unavailable
+    </h1>
+
+    <p>
+        Data entry services are unavailable today.
+        Operations will resume on Monday.
+    </p>
+
+    <div class="nx-complete-stat"
+         style="
+            border-color:#dbe5f5;
+            background:
+                linear-gradient(
+                    135deg,
+                    #f5f8ff,
+                    #ffffff
+                );
+            color:#344054;
+         ">
+
+        Today · Sunday
+
+        <span style="
+            display:block;
+            margin-top:5px;
+            color:#2563eb;
+            font-size:11px;
+            font-weight:750;
+        ">
+            Work resumes Monday
+        </span>
+
+    </div>
+
+    <a
+        class="nx-complete-out"
+        href="{{ url_for('logout') }}"
+    >
+        Sign out of workspace
+    </a>
+
+</section>
+
+{% else %}
 
         <!-- =================================================
              HEADER CONTENT
