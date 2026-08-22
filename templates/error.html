@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Error</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .card {
+            width: min(90%, 520px);
+            padding: 32px;
+            text-align: center;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        p {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Something went wrong.</h1>
+        <p>{{ message }}</p>
+        <a href="{{ url_for('home') }}">Go to Home</a>
+    </div>
+</body>
+</html>
