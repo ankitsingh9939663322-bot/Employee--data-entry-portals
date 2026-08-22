@@ -598,12 +598,110 @@ def employee_report():
 @founder_required
 def founder():
     today = today_ist()
+
+    selected_month = request.args.get("month")
+
+    first_day, last_day = month_bounds(selected_month)
+
     employees = Employee.query.order_by(Employee.id.asc()).all()
-    daily_results = {e.id: DailyResult.query.filter_by(employee_id=e.id, work_date=today).first() for e in employees}
-    pending_employees = [e for e in employees if e.active and not e.approved]
-    return render_template("founder.html", employees=employees, daily_results=daily_results, pending_employees=pending_employees, pending_count=len(pending_employees), today=today, is_sunday=is_sunday(today), holiday_message=holiday_label(today), daily_target=DAILY_TARGET)
 
+    pending_employees = [
+        e for e in employees
+        if e.active and not e.approved
+    ]
 
+    rows = []
+
+    total_entries = 0
+    total_completed = 0
+    total_correct = 0
+
+    for employee in employees:
+
+        result = DailyResult.query.filter_by(
+            employee_id=employee.id,
+            work_date=today
+        ).first()
+
+        monthly_results = DailyResult.query.filter(
+            DailyResult.employee_id == employee.id,
+            DailyResult.work_date >= first_day,
+            DailyResult.work_date <= last_day
+        ).all()
+
+        completed = sum(
+            max(0, r.completed or 0)
+            for r in monthly_results
+        )
+
+        correct = sum(
+            max(0, r.correct or 0)
+            for r in monthly_results
+        )
+
+        wrong = sum(
+            max(0, r.wrong or 0)
+            for r in monthly_results
+        )
+
+        seconds = sum(
+            max(0, r.seconds or 0)
+            for r in monthly_results
+        )
+
+        total_completed += completed
+        total_correct += correct
+        total_entries += len(monthly_results)
+
+        if completed > 0:
+            raw_accuracy = (correct / completed) * 100
+            accuracy = display_accuracy(raw_accuracy)
+        else:
+            accuracy = 0
+
+        today_completed = result.completed if result else 0
+
+        today_completed = max(
+            0,
+            min(today_completed, DAILY_TARGET)
+        )
+
+        rows.append({
+            "employee": employee,
+            "result": result,
+            "completed": today_completed,
+            "monthly_completed": completed,
+            "monthly_correct": correct,
+            "monthly_wrong": wrong,
+            "monthly_seconds": seconds,
+            "accuracy": accuracy
+        })
+
+    if total_completed > 0:
+        overall_accuracy = display_accuracy(
+            (total_correct / total_completed) * 100
+        )
+    else:
+        overall_accuracy = 0
+
+    return render_template(
+        "founder.html",
+        rows=rows,
+        selected_month=(
+            selected_month
+            or first_day.strftime("%Y-%m")
+        ),
+        month_label=month_label(first_day),
+        total_entries=total_entries,
+        overall_accuracy=overall_accuracy,
+        daily_target=DAILY_TARGET,
+        pending_employees=pending_employees,
+        pending_count=len(pending_employees),
+        today=today,
+        is_sunday=is_sunday(today),
+        holiday_message=holiday_label(today)
+    )
+  
 @app.post("/founder/employee/<int:employee_id>/approve")
 @founder_required
 def approve_employee(employee_id):
