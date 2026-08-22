@@ -20,10 +20,6 @@
 
 <body>
 
-<!-- =========================================================
-     HEADER
-========================================================= -->
-
 <header class="header">
 
     <div class="brand">
@@ -33,15 +29,9 @@
 </header>
 
 
-<!-- =========================================================
-     MAIN CONTENT
-========================================================= -->
-
 <main class="container">
 
     <section class="card">
-
-        <!-- PAGE INTRO -->
 
         <div class="eyebrow">
             Founder / Admin · Employee History
@@ -56,9 +46,7 @@
         </p>
 
 
-        <!-- =================================================
-             EMPLOYEE SUMMARY
-        ================================================== -->
+        <!-- EMPLOYEE SUMMARY -->
 
         <div
             style="
@@ -115,18 +103,14 @@
                     font-weight:800;
                 "
             >
-
                 ID:
                 {{ employee.employee_code }}
-
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             MONTH FILTER
-        ================================================== -->
+        <!-- MONTH FILTER -->
 
         <div
             style="
@@ -195,61 +179,45 @@
         </div>
 
 
-        <!-- =================================================
-             PERFORMANCE STATS
-        ================================================== -->
+        <!-- PERFORMANCE STATS -->
 
         <div class="stats">
 
             <div class="stat">
-
                 Completed
-
                 <b>
                     {{ total_completed }}
                 </b>
-
             </div>
 
 
             <div class="stat">
-
                 Correct
-
                 <b>
                     {{ total_correct }}
                 </b>
-
             </div>
 
 
             <div class="stat">
-
                 Wrong
-
                 <b>
                     {{ total_wrong }}
                 </b>
-
             </div>
 
 
             <div class="stat">
-
                 Monthly Accuracy
-
                 <b>
                     {{ monthly_accuracy }}%
                 </b>
-
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             HISTORY SECTION
-        ================================================== -->
+        <!-- HISTORY SECTION -->
 
         <div
             style="
@@ -291,9 +259,7 @@
         </div>
 
 
-        <!-- =================================================
-             HISTORY TABLE
-        ================================================== -->
+        <!-- HISTORY TABLE -->
 
         <div
             style="
@@ -309,17 +275,11 @@
                     <tr>
 
                         <th>Date</th>
-
                         <th>Completed</th>
-
                         <th>Correct</th>
-
                         <th>Wrong</th>
-
                         <th>Accuracy</th>
-
                         <th>Time</th>
-
                         <th>Status</th>
 
                     </tr>
@@ -333,83 +293,174 @@
 
                     <tr>
 
-                        <!-- DATE -->
+                        {% if row.result %}
 
-                        <td>
-                            {{ row.result.work_date.strftime("%d %B %Y") }}
-                        </td>
+                            <!-- DATE -->
 
-
-                        <!-- COMPLETED -->
-
-                        <td>
-
-                            <strong>
-                                {{ row.result.completed }}
-                            </strong>
-
-                            /
-                            {{ daily_target }}
-
-                        </td>
+                            <td>
+                                {{ row.result.work_date.strftime("%d %B %Y") }}
+                            </td>
 
 
-                        <!-- CORRECT -->
+                            <!-- COMPLETED -->
 
-                        <td>
-                            {{ row.result.correct }}
-                        </td>
+                            <td>
 
+                                <strong>
+                                    {{ row.result.completed }}
+                                </strong>
 
-                        <!-- WRONG -->
+                                /
+                                {{ daily_target }}
 
-                        <td>
-                            {{ row.result.wrong }}
-                        </td>
-
-
-                        <!-- ACCURACY -->
-
-                        <td>
-
-                            <strong>
-                                {{ row.accuracy }}%
-                            </strong>
-
-                        </td>
+                            </td>
 
 
-                        <!-- TIME -->
+                            <!-- CORRECT -->
 
-                        <td>
-
-                            {% set minutes =
-                                row.result.seconds // 60
-                            %}
-
-                            {% set seconds =
-                                row.result.seconds % 60
-                            %}
-
-                            {% if minutes > 0 %}
-
-                                {{ minutes }} min
-                                {{ seconds }} sec
-
-                            {% else %}
-
-                                {{ seconds }} sec
-
-                            {% endif %}
-
-                        </td>
+                            <td>
+                                {{ row.result.correct }}
+                            </td>
 
 
-                        <!-- STATUS -->
+                            <!-- WRONG -->
 
-                        <td>
+                            <td>
+                                {{ row.result.wrong }}
+                            </td>
 
-                            {% if row.result.completed >= daily_target %}
+
+                            <!-- ACCURACY -->
+
+                            <td>
+
+                                <strong>
+                                    {{ row.accuracy }}%
+                                </strong>
+
+                            </td>
+
+
+                            <!-- TIME -->
+
+                            <td>
+
+                                {% set minutes =
+                                    row.result.seconds // 60
+                                %}
+
+                                {% set seconds =
+                                    row.result.seconds % 60
+                                %}
+
+                                {% if minutes > 0 %}
+
+                                    {{ minutes }} min
+                                    {{ seconds }} sec
+
+                                {% else %}
+
+                                    {{ seconds }} sec
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if row.result.completed >= daily_target %}
+
+                                    <span
+                                        style="
+                                            display:inline-flex;
+                                            align-items:center;
+                                            padding:6px 10px;
+                                            border-radius:999px;
+                                            background:#ecfdf3;
+                                            color:#15803d;
+                                            border:1px solid #bbf7d0;
+                                            font-size:11px;
+                                            font-weight:800;
+                                        "
+                                    >
+                                        Completed
+                                    </span>
+
+                                {% elif row.result.completed > 0 %}
+
+                                    <span
+                                        style="
+                                            display:inline-flex;
+                                            align-items:center;
+                                            padding:6px 10px;
+                                            border-radius:999px;
+                                            background:#eff6ff;
+                                            color:#2563eb;
+                                            border:1px solid #bfdbfe;
+                                            font-size:11px;
+                                            font-weight:800;
+                                        "
+                                    >
+                                        In progress
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        style="
+                                            display:inline-flex;
+                                            align-items:center;
+                                            padding:6px 10px;
+                                            border-radius:999px;
+                                            background:#f8fafc;
+                                            color:#64748b;
+                                            border:1px solid #e2e8f0;
+                                            font-size:11px;
+                                            font-weight:800;
+                                        "
+                                    >
+                                        Not started
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                        {% else %}
+
+                            <!-- SUNDAY / UNAVAILABLE -->
+
+                            <td>
+                                {{ row.holiday_date.strftime("%d %B %Y") }}
+                            </td>
+
+
+                            <td
+                                colspan="5"
+                                style="
+                                    text-align:center;
+                                    padding:18px 12px;
+                                "
+                            >
+
+                                <strong
+                                    style="
+                                        color:#344054;
+                                        font-size:12px;
+                                    "
+                                >
+                                    Portal is currently unavailable.
+                                    Work will resume from Monday.
+                                </strong>
+
+                            </td>
+
+
+                            <td>
 
                                 <span
                                     style="
@@ -417,55 +468,19 @@
                                         align-items:center;
                                         padding:6px 10px;
                                         border-radius:999px;
-                                        background:#ecfdf3;
-                                        color:#15803d;
-                                        border:1px solid #bbf7d0;
+                                        background:#fff7ed;
+                                        color:#c2410c;
+                                        border:1px solid #fed7aa;
                                         font-size:11px;
                                         font-weight:800;
                                     "
                                 >
-                                    Completed
+                                    Sunday — Holiday
                                 </span>
 
-                            {% elif row.result.completed > 0 %}
+                            </td>
 
-                                <span
-                                    style="
-                                        display:inline-flex;
-                                        align-items:center;
-                                        padding:6px 10px;
-                                        border-radius:999px;
-                                        background:#eff6ff;
-                                        color:#2563eb;
-                                        border:1px solid #bfdbfe;
-                                        font-size:11px;
-                                        font-weight:800;
-                                    "
-                                >
-                                    In progress
-                                </span>
-
-                            {% else %}
-
-                                <span
-                                    style="
-                                        display:inline-flex;
-                                        align-items:center;
-                                        padding:6px 10px;
-                                        border-radius:999px;
-                                        background:#f8fafc;
-                                        color:#64748b;
-                                        border:1px solid #e2e8f0;
-                                        font-size:11px;
-                                        font-weight:800;
-                                    "
-                                >
-                                    Not started
-                                </span>
-
-                            {% endif %}
-
-                        </td>
+                        {% endif %}
 
                     </tr>
 
@@ -515,9 +530,7 @@
         </div>
 
 
-        <!-- =================================================
-             NAVIGATION
-        ================================================== -->
+        <!-- NAVIGATION -->
 
         <div
             style="
@@ -563,10 +576,6 @@
 
 </main>
 
-
-<!-- =========================================================
-     FOOTER
-========================================================= -->
 
 <footer class="site-footer">
     Nexora Data Solutions · Secure internal workspace
