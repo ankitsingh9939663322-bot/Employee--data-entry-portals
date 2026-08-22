@@ -447,7 +447,7 @@ def login():
         )
         return render_template("login.html")
 
-    if not employee.approved:
+     if not employee.approved:
         flash(
             "Your account is waiting for founder approval.",
             "error"
@@ -460,21 +460,22 @@ def login():
         )
 
         return render_template("login.html")
-        session.clear()
-session["role"] = "employee"
-session["employee_id"] = employee.id
 
-employee.last_active = now_ist()
-db.session.commit()
+    session.clear()
+    session["role"] = "employee"
+    session["employee_id"] = employee.id
 
-audit(
-    "employee_login",
-    actor_role="employee",
-    actor_id=employee.id,
-    employee_id=employee.id
-)
+    employee.last_active = now_ist()
+    db.session.commit()
 
-return redirect(url_for("employee"))
+    audit(
+        "employee_login",
+        actor_role="employee",
+        actor_id=employee.id,
+        employee_id=employee.id
+    )
+
+    return redirect(url_for("employee"))
 
 
 @app.route("/logout")
