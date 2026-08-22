@@ -446,6 +446,7 @@ def login():
             "error"
         )
         return render_template("login.html")
+
 if not employee.approved:
         flash(
             "Your account is waiting for founder approval.",
