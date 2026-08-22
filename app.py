@@ -1680,6 +1680,52 @@ def approve_employee(employee_id):
         url_for("founder")
     )
 
+# =========================================================
+# REJECT EMPLOYEE REGISTRATION
+# =========================================================
+
+@app.post(
+    "/founder/employee/<int:employee_id>/reject"
+)
+@founder_required
+def reject_employee(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
+
+    # Reject is intended only for pending employees.
+    if employee.approved:
+
+        flash(
+            "An already approved employee cannot be rejected from this panel.",
+            "error",
+        )
+
+        return redirect(
+            url_for("founder")
+        )
+
+    employee.active = False
+
+    db.session.commit()
+
+    audit(
+        "employee_registration_rejected",
+        actor_role="founder",
+        employee_id=employee.id,
+    )
+
+    flash(
+        f"{employee.employee_name} registration rejected.",
+        "success",
+    )
+
+    return redirect(
+        url_for("founder")
+    )
+
 
 # =========================================================
 # DISABLE EMPLOYEE
