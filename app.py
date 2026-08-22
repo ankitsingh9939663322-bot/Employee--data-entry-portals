@@ -337,7 +337,7 @@ def login():
     if request.method == "POST":
         employee_code = normalize_text(request.form.get("employee_code")).upper()
         password = request.form.get("password", "")
-        founder_username = os.environ.get("FOUNDER_USERNAME", "founder")
+        founder_dob = os.environ.get("FOUNDER_DOB", "founder")
         founder_password = os.environ.get("FOUNDER_PASSWORD", "CHANGE_THIS_FOUNDER_PASSWORD")
         if employee_code == founder_username.upper() and secrets.compare_digest(password, founder_password):
             session.clear()
@@ -352,7 +352,7 @@ def login():
             flash("This employee account is inactive.", "error")
             return render_template("login.html")
         if not check_password_hash(employee.password_hash, password):
-            flash("Invalid employee ID or password.", "error")
+            flash("Invalid dob or password.", "error")
             return render_template("login.html")
         if not employee.approved:
             flash("Your account is waiting for founder approval.", "error")
