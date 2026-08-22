@@ -353,36 +353,132 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        employee_code = normalize_text(request.form.get("employee_code")).upper()
+
+        employee_code = normalize_text(
+            request.form.get("employee_code")
+        ).upper()
+
+        dob_value = normalize_text(
+            request.form.get("dob")
+        )
+
         password = request.form.get("password", "")
-        founder_username = os.environ.get("FOUNDER_USERNAME", "founder")
-        founder_password = os.environ.get("FOUNDER_PASSWORD", "CHANGE_THIS_FOUNDER_PASSWORD")
-        if employee_code == founder_username.upper() and secrets.compare_digest(password, founder_password):
-            session.clear()
-            session["role"] = "founder"
-            audit("founder_login", actor_role="founder")
-            return redirect(url_for("founder"))
-        employee = Employee.query.filter_by(employee_code=employee_code).first()
+
+        # =========================================================
+        # FOUNDER / ADMIN LOGIN
+        # DOB + PASSWORD
+        # =========================================================
+
+        founder_dob = normalize_text(
+            os.environ.get("FOUNDER_DOB", "")
+        )
+
+        founder_password = os.environ.get(
+            "FOUNDER_PASSWORD",
+            "CHANGE_THIS_FOUNDER_PASSWORD"
+        )
+
+        role = normalize_text(
+            request.form.get("role", "employee")
+        ).lower()
+
+        if role == "founder":
+
+            if (
+                founder_dob
+                and dob_value == founder_dob
+                and secrets.compare_digest(
+                    password,
+                    founder_password
+                )
+            ):
+                session.clear()
+                session["role"] = "founder"
+
+                audit(
+                    "founder_login",
+                    actor_role="founder"
+                )
+
+                return redirect(
+                    url_for("founder")
+                )
+
+            flash(
+                "Invalid date of birth or password.",
+                "error"
+            )
+
+            return render_template("login.html")
+
+
+        # =========================================================
+        # EMPLOYEE LOGIN
+        # EXISTING FUNCTIONALITY UNCHANGED
+        # =========================================================
+
+        employee = Employee.query.filter_by(
+            employee_code=employee_code
+        ).first()
+
         if not employee:
-            flash("Invalid employee ID or password.", "error")
+            flash(
+                "Invalid employee ID or password.",
+                "error"
+            )
             return render_template("login.html")
+
         if not employee.active:
-            flash("This employee account is inactive.", "error")
+            flash(
+                "This employee account is inactive.",
+                "error"
+            )
             return render_template("login.html")
-        if not check_password_hash(employee.password_hash, password):
-            flash("Invalid employee ID or password.", "error")
+
+        if not check_password_hash(
+            employee.password_hash,
+            password
+        ):
+            flash(
+                "Invalid employee ID or password.",
+                "error"
+            )
             return render_template("login.html")
+
         if not employee.approved:
-            flash("Your account is waiting for founder approval.", "error")
-            audit("employee_login_blocked_pending_approval", actor_role="employee", employee_id=employee.id)
+            flash(
+                "Your account is waiting for founder approval.",
+                "error"
+            )
+
+            audit(
+                "employee_login_blocked_pending_approval",
+                actor_role="employee",
+                employee_id=employee.id
+            )
+
             return render_template("login.html")
+
         session.clear()
+
         session["role"] = "employee"
         session["employee_id"] = employee.id
+
         employee.last_active = now_ist()
+
         db.session.commit()
-        audit("employee_login", actor_role="employee", actor_id=employee.id, employee_id=employee.id)
-        return redirect(url_for("employee"))
+
+        audit(
+            "employee_login",
+            actor_role="employee",
+            actor_id=employee.id,
+            employee_id=employee.id
+        )
+
+        return redirect(
+            url_for("employee")
+        )
+
     return render_template("login.html")
 
 
