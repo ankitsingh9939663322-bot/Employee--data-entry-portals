@@ -173,6 +173,36 @@
         }
 
         /* =====================================================
+           AVAILABILITY NOTICE
+           ===================================================== */
+
+        .nx-notice {
+            display: none;
+
+            margin: 18px auto 0;
+
+            width: min(1080px,100%);
+
+            padding: 14px 16px;
+
+            border:
+                1px solid #bfdbfe;
+
+            border-radius: 13px;
+
+            background: #eff6ff;
+
+            color: #1e3a8a;
+
+            text-align: center;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            line-height: 1.5;
+        }
+
+        /* =====================================================
            PAGE
            ===================================================== */
 
@@ -204,6 +234,10 @@
                 var(--nx-shadow),
                 0 6px 20px rgba(15,23,42,.035);
         }
+
+        /* =====================================================
+           CARD TOP
+           ===================================================== */
 
         .nx-card-top {
             padding: 35px 38px 28px;
@@ -375,34 +409,6 @@
 
         .nx-employee-id b {
             color: #344054;
-        }
-
-        /* =====================================================
-           SERVICE NOTICE
-           ===================================================== */
-
-        .nx-service-notice {
-            margin-top: 18px;
-
-            padding: 14px 16px;
-
-            border:
-                1px solid #bfdbfe;
-
-            border-radius: 13px;
-
-            background:
-                #eff6ff;
-
-            color:
-                #1e3a8a;
-
-            text-align: center;
-
-            font-size: 12px;
-            font-weight: 800;
-
-            line-height: 1.5;
         }
 
         /* =====================================================
@@ -590,8 +596,7 @@
 
             border-radius: 10px;
 
-            background:
-                rgba(255,255,255,.75);
+            background: rgba(255,255,255,.75);
         }
 
         .nx-reference-item small {
@@ -997,12 +1002,12 @@
             .nx-complete {
                 padding: 48px 20px;
             }
-
         }
 
     </style>
 
 </head>
+
 
 <body>
 
@@ -1022,7 +1027,9 @@
             </div>
 
             <div>
+
                 NEXORA DATA SOLUTIONS
+
                 <br>
 
                 <span style="
@@ -1033,6 +1040,7 @@
                 ">
                     TRAINING OPERATIONS PORTAL
                 </span>
+
             </div>
 
         </div>
@@ -1063,6 +1071,7 @@
 
     <div class="nx-card">
 
+
         {% if holiday %}
 
         <!-- =================================================
@@ -1074,11 +1083,12 @@
             <div
                 class="nx-complete-icon"
                 style="
-                    background:linear-gradient(
-                        135deg,
-                        #2563eb,
-                        #4f46e5
-                    );
+                    background:
+                        linear-gradient(
+                            135deg,
+                            #2563eb,
+                            #4f46e5
+                        );
 
                     box-shadow:
                         0 15px 30px rgba(37,99,235,.20);
@@ -1087,18 +1097,22 @@
                 —
             </div>
 
+
             <div class="nx-eyebrow">
                 Sunday Holiday
             </div>
+
 
             <h1>
                 Operations are currently unavailable
             </h1>
 
+
             <p>
                 Data entry services are unavailable today.
                 Operations will resume on Monday.
             </p>
+
 
             <div
                 class="nx-complete-stat"
@@ -1115,6 +1129,7 @@
                     color:#344054;
                 "
             >
+
                 Today · Sunday
 
                 <span
@@ -1128,7 +1143,9 @@
                 >
                     Work resumes Monday
                 </span>
+
             </div>
+
 
             <a
                 class="nx-complete-out"
@@ -1142,6 +1159,7 @@
 
         {% else %}
 
+
         <!-- =================================================
              NORMAL EMPLOYEE WORKSPACE
              ================================================= -->
@@ -1151,6 +1169,7 @@
             <div class="nx-eyebrow">
                 Employee workspace
             </div>
+
 
             <div class="nx-title-row">
 
@@ -1168,6 +1187,7 @@
 
                 </div>
 
+
                 <div class="nx-task-badge">
                     Daily task
                 </div>
@@ -1175,35 +1195,35 @@
             </div>
 
 
-            <!-- EMPLOYEE IDENTITY -->
+            <!-- Employee identity -->
 
             <div class="nx-employee">
 
                 <div class="nx-avatar">
+
                     {{ employee.employee_name[:1]|upper }}
+
                 </div>
+
 
                 <div>
 
                     <div class="nx-employee-name">
+
                         {{ employee.employee_name }}
+
                     </div>
 
+
                     <div class="nx-employee-id">
+
                         Employee ID:
                         <b>{{ employee.employee_code }}</b>
+
                     </div>
 
                 </div>
 
-            </div>
-
-
-            <!-- SERVICE NOTICE -->
-
-            <div class="nx-service-notice">
-                Data entry services are unavailable today.
-                Operations will resume on Monday.
             </div>
 
         </section>
@@ -1224,11 +1244,13 @@
                     {{ completed }} / {{ target }} completed
                 </div>
 
+
                 <div class="nx-progress-label">
                     Daily progress
                 </div>
 
             </div>
+
 
             <div class="nx-progress">
 
@@ -1253,6 +1275,7 @@
 
         <section class="nx-form-area">
 
+
             <div class="nx-section-title">
 
                 <span class="nx-section-number">
@@ -1264,15 +1287,16 @@
             </div>
 
 
-            <!-- REFERENCE -->
+            <!-- Reference data -->
 
             <div
                 class="nx-reference"
                 id="ref"
-            ></div>
+            >
+            </div>
 
 
-            <!-- DATA ENTRY FORM -->
+            <!-- Data entry form -->
 
             <form
                 method="post"
@@ -1280,11 +1304,13 @@
                 id="task"
             >
 
+
                 <input
                     type="hidden"
                     name="csrf_token"
                     value="{{ csrf_token() }}"
                 >
+
 
                 <input
                     type="hidden"
@@ -1292,6 +1318,7 @@
                     id="idx"
                     value="{{ completed }}"
                 >
+
 
                 <input
                     type="hidden"
@@ -1303,7 +1330,8 @@
 
                 <div class="nx-grid">
 
-                    <!-- NAME -->
+
+                    <!-- Name -->
 
                     <div class="nx-field">
 
@@ -1323,7 +1351,7 @@
                     </div>
 
 
-                    <!-- AGE -->
+                    <!-- Age -->
 
                     <div class="nx-field">
 
@@ -1346,7 +1374,7 @@
                     </div>
 
 
-                    <!-- CITY -->
+                    <!-- City -->
 
                     <div class="nx-field">
 
@@ -1366,7 +1394,7 @@
                     </div>
 
 
-                    <!-- PHONE -->
+                    <!-- Phone -->
 
                     <div class="nx-field">
 
@@ -1389,7 +1417,7 @@
                 </div>
 
 
-                <!-- EMAIL -->
+                <!-- Email -->
 
                 <div class="nx-field">
 
@@ -1410,7 +1438,7 @@
                 </div>
 
 
-                <!-- ACTIONS -->
+                <!-- Actions -->
 
                 <div class="nx-actions">
 
@@ -1420,6 +1448,7 @@
                     >
                         Clear
                     </button>
+
 
                     <button
                         type="submit"
@@ -1433,7 +1462,7 @@
             </form>
 
 
-            <!-- SIGN OUT -->
+            <!-- Sign out -->
 
             <div class="nx-signout">
 
@@ -1445,7 +1474,9 @@
 
         </section>
 
+
         {% endif %}
+
 
     </div>
 
@@ -1463,10 +1494,14 @@
 </footer>
 
 
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
 <script>
 
 /* =========================================================
-   DATA
+   DATA FROM FLASK
    ========================================================= */
 
 const records = {{ records | tojson }};
@@ -1484,9 +1519,20 @@ let start = Date.now();
 
 function show() {
 
+    /*
+     * If daily target has already been completed,
+     * show completion screen.
+     */
+
     if (i >= dailyTarget) {
 
-        document.querySelector(".nx-card").innerHTML = `
+        const card = document.querySelector(".nx-card");
+
+        if (!card) {
+            return;
+        }
+
+        card.innerHTML = `
 
             <section class="nx-complete">
 
@@ -1529,19 +1575,30 @@ function show() {
     }
 
 
-    if (!records[i]) {
+    /*
+     * Make sure the requested record exists.
+     */
 
-        document.getElementById("ref").innerHTML = `
+    if (!records || !records[i]) {
 
-            <div style="
-                color:#b42318;
-                font-size:12px;
-                font-weight:750;
-            ">
-                Unable to load this record.
-            </div>
+        const reference =
+            document.getElementById("ref");
 
-        `;
+        if (reference) {
+
+            reference.innerHTML = `
+
+                <div style="
+                    color:#b42318;
+                    font-size:12px;
+                    font-weight:750;
+                ">
+                    Unable to load this record.
+                </div>
+
+            `;
+
+        }
 
         return;
     }
@@ -1549,6 +1606,10 @@ function show() {
 
     const x = records[i];
 
+
+    /*
+     * Display reference record.
+     */
 
     document.getElementById("ref").innerHTML = `
 
@@ -1563,9 +1624,12 @@ function show() {
 
         <div class="nx-reference-grid">
 
+
             <div class="nx-reference-item">
 
-                <small>Name</small>
+                <small>
+                    Name
+                </small>
 
                 <strong>
                     ${escapeHtml(x.name)}
@@ -1576,7 +1640,9 @@ function show() {
 
             <div class="nx-reference-item">
 
-                <small>Age</small>
+                <small>
+                    Age
+                </small>
 
                 <strong>
                     ${escapeHtml(x.age)}
@@ -1587,7 +1653,9 @@ function show() {
 
             <div class="nx-reference-item">
 
-                <small>City</small>
+                <small>
+                    City
+                </small>
 
                 <strong>
                     ${escapeHtml(x.city)}
@@ -1598,7 +1666,9 @@ function show() {
 
             <div class="nx-reference-item">
 
-                <small>Phone</small>
+                <small>
+                    Phone
+                </small>
 
                 <strong>
                     ${escapeHtml(x.phone)}
@@ -1612,7 +1682,9 @@ function show() {
                 style="grid-column:1/-1;"
             >
 
-                <small>Email</small>
+                <small>
+                    Email
+                </small>
 
                 <strong>
                     ${escapeHtml(x.email)}
@@ -1620,19 +1692,52 @@ function show() {
 
             </div>
 
+
         </div>
 
     `;
 
 
-    document.getElementById("idx").value = i;
+    /*
+     * Update hidden fields.
+     */
 
-    document.getElementById("secs").value = 0;
+    const indexInput =
+        document.getElementById("idx");
+
+    const secondsInput =
+        document.getElementById("secs");
+
+    if (indexInput) {
+        indexInput.value = i;
+    }
+
+    if (secondsInput) {
+        secondsInput.value = 0;
+    }
 
 
-    document.getElementById("count").innerText =
-        i + " / " + dailyTarget + " completed";
+    /*
+     * Update progress text.
+     */
 
+    const count =
+        document.getElementById("count");
+
+    if (count) {
+
+        count.innerText =
+            i +
+            " / " +
+            dailyTarget +
+            " completed";
+
+    }
+
+
+    /*
+     * Update progress bar.
+     */
 
     const percentage =
         dailyTarget
@@ -1640,11 +1745,21 @@ function show() {
             : 0;
 
 
-    document.getElementById(
-        "progressFill"
-    ).style.width =
-        percentage + "%";
+    const progressFill =
+        document.getElementById("progressFill");
 
+
+    if (progressFill) {
+
+        progressFill.style.width =
+            percentage + "%";
+
+    }
+
+
+    /*
+     * Start timer for current record.
+     */
 
     start = Date.now();
 
@@ -1657,17 +1772,32 @@ function show() {
 
 function escapeHtml(value) {
 
-    return String(value)
+    return String(value ?? "")
 
-        .replace(/&/g, "&amp;")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-        .replace(/</g, "&lt;")
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-        .replace(/>/g, "&gt;")
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-        .replace(/"/g, "&quot;")
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-        .replace(/'/g, "&#039;");
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -1676,7 +1806,9 @@ function escapeHtml(value) {
    SAVE TIME BEFORE SUBMIT
    ========================================================= */
 
-const taskForm = document.getElementById("task");
+const taskForm =
+    document.getElementById("task");
+
 
 if (taskForm) {
 
@@ -1684,13 +1816,25 @@ if (taskForm) {
         "submit",
         function () {
 
-            document.getElementById("secs").value =
+            const seconds =
                 Math.max(
                     0,
                     Math.floor(
                         (Date.now() - start) / 1000
                     )
                 );
+
+
+            const secondsInput =
+                document.getElementById("secs");
+
+
+            if (secondsInput) {
+
+                secondsInput.value =
+                    seconds;
+
+            }
 
         }
     );
@@ -1702,10 +1846,16 @@ if (taskForm) {
    INITIAL LOAD
    ========================================================= */
 
+{% if not holiday %}
+
 show();
+
+{% endif %}
+
 
 </script>
 
 
 </body>
+
 </html>
