@@ -321,7 +321,25 @@ def init_db():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+@app.get("/db-check")
+def db_check():
+    try:
+        employee_count = Employee.query.count()
+        emp = Employee.query.filter_by(employee_code="EMP0001").first()
 
+        return {
+            "database": "CONNECTED",
+            "employee_table": "OK",
+            "employee_count": employee_count,
+            "EMP0001_exists": bool(emp),
+            "EMP0001_active": emp.active if emp else None,
+            "EMP0001_approved": emp.approved if emp else None
+        }
+    except Exception as e:
+        return {
+            "database": "ERROR",
+            "error": str(e)
+        }, 500
 
 @app.get("/")
 def home():
