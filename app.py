@@ -2151,10 +2151,20 @@ def founder_report_data():
 # =========================================================
 # FOUNDER PDF REPORT
 # =========================================================
+# =========================================================
+# FOUNDER INDIVIDUAL EMPLOYEE PDF REPORT
+# =========================================================
 
-@app.route("/founder/report/pdf")
+@app.route(
+    "/founder/employee/<int:employee_id>/report/pdf"
+)
 @founder_required
-def founder_report_pdf():
+def founder_employee_report_pdf(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
 
     selected_month = request.args.get(
         "month"
@@ -2164,10 +2174,49 @@ def founder_report_pdf():
         selected_month
     )
 
-    employees = (
-        Employee.query
-        .order_by(Employee.id.asc())
+    results = (
+        DailyResult.query
+        .filter(
+            DailyResult.employee_id == employee.id,
+            DailyResult.work_date >= first_day,
+            DailyResult.work_date <= last_day,
+        )
+        .order_by(
+            DailyResult.work_date.asc()
+        )
         .all()
+    )
+
+    completed = sum(
+        r.completed
+        for r in results
+    )
+
+    correct = sum(
+        r.correct
+        for r in results
+    )
+
+    wrong = sum(
+        r.wrong
+        for r in results
+    )
+
+    seconds = sum(
+        r.seconds
+        for r in results
+    )
+
+    raw_accuracy = (
+        correct / completed * 100
+        if completed
+        else 0
+    )
+
+    accuracy = (
+        display_accuracy(raw_accuracy)
+        if completed
+        else 0
     )
 
     buffer = BytesIO()
@@ -2184,15 +2233,22 @@ def founder_report_pdf():
     styles = getSampleStyleSheet()
 
     title = ParagraphStyle(
-        "ReportTitle",
+        "IndividualReportTitle",
         parent=styles["Title"],
         alignment=TA_CENTER,
         fontSize=16,
         leading=20,
     )
 
+    heading = ParagraphStyle(
+        "IndividualReportHeading",
+        parent=styles["Heading2"],
+        fontSize=11,
+        leading=14,
+    )
+
     body = ParagraphStyle(
-        "ReportBody",
+        "IndividualReportBody",
         parent=styles["BodyText"],
         fontSize=8,
         leading=10,
@@ -2208,6 +2264,14 @@ def founder_report_pdf():
             5 * mm,
         ),
         Paragraph(
+            f"Employee: {employee.employee_name}",
+            body,
+        ),
+        Paragraph(
+            f"Employee ID: {employee.employee_code or ''}",
+            body,
+        ),
+        Paragraph(
             f"Period: {month_label(first_day)}",
             body,
         ),
@@ -2217,118 +2281,225 @@ def founder_report_pdf():
         ),
         Spacer(
             1,
-            4 * mm,
+            5 * mm,
+        ),
+        Paragraph(
+            "Monthly Summary",
+            heading,
+        ),
+        Spacer(
+            1,
+            2 * mm,
         ),
     ]
 
-    table_data = [
+    summary_data = [
         [
-            "Employee",
-            "ID",
             "Completed",
             "Correct",
             "Wrong",
             "Accuracy",
-        ]
+            "Time",
+        ],
+        [
+            str(completed),
+            str(correct),
+            str(wrong),
+            f"{accuracy:.1f}%",
+            (
+                f"{seconds // 3600}h "
+                f"{(seconds % 3600) // 60}m"
+            ),
+        ],
     ]
 
-    for employee in employees:
+    summary_table = Table(
+        summary_data,
+        colWidths=[
+            32 * mm,
+            32 * mm,
+            32 * mm,
+            32 * mm,
+            32 * mm,
+        ],
+    )
 
-        results = (
-            DailyResult.query
-            .filter(
-                DailyResult.employee_id
-                == employee.id,
-                DailyResult.work_date
-                >= first_day,
-                DailyResult.work_date
-                <= last_day,
-            )
-            .all()
-        )
-
-        completed = sum(
-            r.completed
-            for r in results
-        )
-
-        correct = sum(
-            r.correct
-            for r in results
-        )
-
-        wrong = sum(
-            r.wrong
-            for r in results
-        )
-
-        acc = (
-            correct / completed * 100
-            if completed
-            else 0
-        )
-
-        table_data.append(
+    summary_table.setStyle(
+        TableStyle(
             [
-                employee.employee_name,
-                employee.employee_code or "",
-                str(completed),
-                str(correct),
-                str(wrong),
                 (
-                    f"{display_accuracy(acc):.1f}%"
-                    if completed
-                    else "0.0%"
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "FONTSIZE",
+                    (0, 0),
+                    (-1, -1),
+                    8,
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "ALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "CENTER",
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "MIDDLE",
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
                 ),
             ]
         )
+    )
 
-    sundays = []
+    story.append(
+        summary_table
+    )
+
+    story.append(
+        Spacer(
+            1,
+            6 * mm,
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Daily Work Details",
+            heading,
+        )
+    )
+
+    story.append(
+        Spacer(
+            1,
+            2 * mm,
+        )
+    )
+
+    daily_table_data = [
+        [
+            "Date",
+            "Completed",
+            "Correct",
+            "Wrong",
+            "Accuracy",
+            "Time",
+        ]
+    ]
+
+    existing_dates = set()
+
+    for result in results:
+
+        existing_dates.add(
+            result.work_date
+        )
+
+        daily_accuracy = (
+            result.correct
+            / result.completed
+            * 100
+            if result.completed
+            else 0
+        )
+
+        daily_table_data.append(
+            [
+                result.work_date.strftime(
+                    "%d %b %Y"
+                ),
+                str(result.completed),
+                str(result.correct),
+                str(result.wrong),
+                (
+                    f"{display_accuracy(daily_accuracy):.1f}%"
+                    if result.completed
+                    else "0.0%"
+                ),
+                (
+                    f"{result.seconds // 3600}h "
+                    f"{(result.seconds % 3600) // 60}m"
+                ),
+            ]
+        )
 
     current = first_day
 
     while current <= last_day:
 
-        if is_sunday(current):
+        if (
+            is_sunday(current)
+            and current not in existing_dates
+        ):
 
-            sundays.append(
-                current.strftime(
-                    "%d %B %Y"
-                )
+            daily_table_data.append(
+                [
+                    current.strftime(
+                        "%d %b %Y"
+                    ),
+                    "Holiday",
+                    "—",
+                    "—",
+                    "—",
+                    "—",
+                ]
             )
 
         current += datetime.timedelta(
             days=1
         )
 
-    if sundays:
+    daily_table_data[1:] = sorted(
+        daily_table_data[1:],
+        key=lambda row: datetime.datetime.strptime(
+            row[0],
+            "%d %b %Y",
+        ).date(),
+    )
 
-        story += [
-            Paragraph(
-                "Sunday Holidays: "
-                + ", ".join(sundays),
-                body,
-            ),
-            Spacer(
-                1,
-                3 * mm,
-            ),
-        ]
-
-    table = Table(
-        table_data,
+    daily_table = Table(
+        daily_table_data,
         repeatRows=1,
         colWidths=[
-            45 * mm,
-            25 * mm,
-            22 * mm,
-            20 * mm,
-            18 * mm,
-            22 * mm,
+            32 * mm,
+            27 * mm,
+            27 * mm,
+            27 * mm,
+            27 * mm,
+            28 * mm,
         ],
     )
 
-    table.setStyle(
+    daily_table.setStyle(
         TableStyle(
             [
                 (
@@ -2384,15 +2555,35 @@ def founder_report_pdf():
         )
     )
 
-    story.append(table)
+    story.append(
+        daily_table
+    )
 
-    document.build(story)
+    story.append(
+        Spacer(
+            1,
+            5 * mm,
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Sunday Holidays: Sunday is a weekly holiday. "
+            "No employee work is required on Sundays.",
+            body,
+        )
+    )
+
+    document.build(
+        story
+    )
 
     buffer.seek(0)
 
     audit(
-        "founder_report_pdf_generated",
+        "founder_employee_report_pdf_generated",
         actor_role="founder",
+        employee_id=employee.id,
         metadata=(
             f"month={first_day.strftime('%Y-%m')}"
         ),
@@ -2403,7 +2594,8 @@ def founder_report_pdf():
         mimetype="application/pdf",
         as_attachment=True,
         download_name=(
-            f"employee-report-"
+            f"{employee.employee_code or 'employee'}-"
+            f"report-"
             f"{first_day.strftime('%Y-%m')}.pdf"
         ),
     )
