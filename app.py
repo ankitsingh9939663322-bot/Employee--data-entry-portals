@@ -460,6 +460,21 @@ def login():
         )
 
         return render_template("login.html")
+        session.clear()
+session["role"] = "employee"
+session["employee_id"] = employee.id
+
+employee.last_active = now_ist()
+db.session.commit()
+
+audit(
+    "employee_login",
+    actor_role="employee",
+    actor_id=employee.id,
+    employee_id=employee.id
+)
+
+return redirect(url_for("employee"))
 
 
 @app.route("/logout")
