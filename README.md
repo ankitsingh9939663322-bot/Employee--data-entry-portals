@@ -1,4 +1,4 @@
-# Nexora Data Solutions — Employee Training Portal
+# Nexora Data Solutions — Employee Portal
 
 A deployable Flask + PostgreSQL application for a **fictional, simulated data-entry
 training environment**.
