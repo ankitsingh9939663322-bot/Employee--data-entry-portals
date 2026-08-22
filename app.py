@@ -895,7 +895,7 @@ def login():
                         "dob",
                         "",
                     ).strip(),
-                    "%d-%m-%Y",
+                    "%Y-%m-%d",
                 ).date()
 
             except ValueError:
@@ -917,7 +917,7 @@ def login():
                 configured_founder_dob = (
                     datetime.datetime.strptime(
                         founder_dob_value.strip(),
-                        "%d-%m-%Y",
+                        "%Y-%m-%d",
                     ).date()
                 )
 
