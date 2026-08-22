@@ -38,7 +38,7 @@
         }
 
         .dashboard-title {
-            max-width:720px;
+            max-width:760px;
         }
 
         .dashboard-title h1 {
@@ -49,36 +49,17 @@
             margin-bottom:0;
         }
 
-        .month-panel {
-            background:linear-gradient(
-                135deg,
-                #f8faff,
-                #ffffff
-            );
-            border:1px solid #e2e8f1;
-            border-radius:16px;
-            padding:15px;
-            min-width:250px;
-            box-shadow:var(--shadow-sm);
+        /* =================================================
+           STATS
+        ================================================= */
+
+        .stats {
+            margin-bottom:28px;
         }
 
-        .month-panel label {
-            margin:0 0 7px;
-        }
-
-        .month-controls {
-            display:flex;
-            gap:8px;
-            align-items:center;
-        }
-
-        .month-controls input {
-            min-width:0;
-        }
-
-        .month-controls button {
-            white-space:nowrap;
-        }
+        /* =================================================
+           SECTION HEADINGS
+        ================================================= */
 
         .section-heading {
             display:flex;
@@ -161,16 +142,27 @@
         .employee-table-wrap {
             overflow-x:auto;
             border-radius:17px;
+            border:1px solid #e5eaf1;
         }
 
         .employee-table {
-            min-width:1100px;
+            min-width:1320px;
+            width:100%;
+        }
+
+        .employee-table th {
+            white-space:nowrap;
+        }
+
+        .employee-table td {
+            vertical-align:middle;
         }
 
         .employee-name {
             display:flex;
             align-items:center;
             gap:11px;
+            min-width:220px;
         }
 
         .employee-avatar {
@@ -217,6 +209,7 @@
             color:#475467;
             font-size:12px;
             font-weight:750;
+            white-space:nowrap;
         }
 
         /* =================================================
@@ -260,6 +253,7 @@
                 var(--primary),
                 var(--primary-2)
             );
+            max-width:100%;
         }
 
         /* =================================================
@@ -338,14 +332,89 @@
             background:#d92d20;
         }
 
+        /* =================================================
+           HISTORY SUMMARY
+        ================================================= */
+
         .history-summary {
             font-size:11px;
             color:#667085;
-            line-height:1.5;
+            line-height:1.55;
         }
 
         .history-summary strong {
             color:#344054;
+        }
+
+        .history-latest {
+            display:inline-flex;
+            margin-top:6px;
+            padding:4px 7px;
+            border-radius:7px;
+            background:#f8faff;
+            border:1px solid #e2e8f4;
+            color:#475467;
+            font-size:10px;
+            font-weight:700;
+        }
+
+        /* =================================================
+           HISTORY BUTTON
+        ================================================= */
+
+        .history-button {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            padding:8px 11px;
+            border-radius:9px;
+            background:#eff5ff;
+            border:1px solid #dce8ff;
+            color:#315fd5;
+            font-size:11px;
+            font-weight:800;
+            text-decoration:none;
+            white-space:nowrap;
+        }
+
+        .history-button:hover {
+            background:#e6efff;
+            color:#244fb8;
+            text-decoration:none;
+        }
+
+        /* =================================================
+           ACTIONS
+        ================================================= */
+
+        .employee-actions {
+            display:flex;
+            flex-direction:column;
+            gap:7px;
+            min-width:115px;
+        }
+
+        .employee-actions form {
+            margin:0;
+        }
+
+        .employee-actions button {
+            width:100%;
+            font-size:11px;
+            padding:7px 9px;
+        }
+
+        .disable-button {
+            background:#fff !important;
+            color:#b42318 !important;
+            border:1px solid #f1b5b0 !important;
+        }
+
+        .enable-button {
+            background:#ecfdf3 !important;
+            color:#166534 !important;
+            border:1px solid #b7ebc6 !important;
         }
 
         /* =================================================
@@ -383,6 +452,57 @@
             font-weight:900;
         }
 
+        /* =================================================
+           MONTHLY REPORT
+        ================================================= */
+
+        .report-panel {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:18px;
+            flex-wrap:wrap;
+            padding:17px;
+            border:1px solid #e2e8f1;
+            border-radius:15px;
+            background:linear-gradient(
+                135deg,
+                #f8faff,
+                #ffffff
+            );
+        }
+
+        .report-panel-title {
+            font-weight:800;
+            color:#182230;
+        }
+
+        .report-panel-text {
+            margin-top:4px;
+            color:#667085;
+            font-size:12px;
+            line-height:1.5;
+        }
+
+        .report-button {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:10px 15px;
+            border-radius:10px;
+            background:var(--primary);
+            color:#fff !important;
+            font-size:12px;
+            font-weight:800;
+            text-decoration:none;
+            white-space:nowrap;
+        }
+
+        .report-button:hover {
+            text-decoration:none;
+            opacity:.94;
+        }
+
         .logout-link {
             display:inline-flex;
             margin-top:22px;
@@ -398,18 +518,6 @@
 
             .dashboard-hero {
                 align-items:stretch;
-            }
-
-            .month-panel {
-                width:100%;
-            }
-
-            .month-controls {
-                width:100%;
-            }
-
-            .month-controls button {
-                flex:1;
             }
 
             .section-heading {
@@ -433,6 +541,14 @@
             }
 
             .approval-actions button {
+                width:100%;
+            }
+
+            .report-panel {
+                align-items:flex-start;
+            }
+
+            .report-button {
                 width:100%;
             }
 
@@ -486,8 +602,8 @@
 
                 <p class="muted">
 
-                    Current and historical employee
-                    performance overview.
+                    Current-day activity, complete historical
+                    work records and employee account status.
 
                 </p>
 
@@ -789,7 +905,7 @@
                 </h2>
 
                 <span>
-                    Current day and complete historical
+                    Today's work + complete historical
                     performance summary
                 </span>
 
@@ -835,7 +951,15 @@
                         </th>
 
                         <th>
+                            History
+                        </th>
+
+                        <th>
                             Status
+                        </th>
+
+                        <th>
+                            Account
                         </th>
 
                     </tr>
@@ -892,8 +1016,8 @@
                                         style="margin-top:4px;"
                                     >
 
-                                        Click name for
-                                        complete date-wise history
+                                        Open complete
+                                        date-wise history
 
                                     </div>
 
@@ -948,9 +1072,10 @@
 
                                             {{
                                                 (
-                                                    today_result.completed
-                                                    / daily_target
-                                                    * 100
+                                                    (
+                                                        today_result.completed
+                                                        / daily_target
+                                                    ) * 100
                                                 )|round(0)
                                             }}%
 
@@ -1103,6 +1228,21 @@
                                         {{ totals.record_count }}
                                     </strong>
 
+                                    {% if totals.latest_date %}
+
+                                        <div
+                                            class="history-latest"
+                                        >
+
+                                            Latest:
+                                            {{ totals.latest_date.strftime(
+                                                "%d %b %Y"
+                                            ) }}
+
+                                        </div>
+
+                                    {% endif %}
+
                                 </div>
 
                             {% else %}
@@ -1112,6 +1252,27 @@
                                 </span>
 
                             {% endif %}
+
+                        </td>
+
+
+                        <!-- =================================================
+                             COMPLETE HISTORY
+                        ================================================== -->
+
+                        <td>
+
+                            <a
+                                href="{{ url_for(
+                                    'employee_history',
+                                    employee_id=employee.id
+                                ) }}"
+                                class="history-button"
+                            >
+
+                                View History
+
+                            </a>
 
                         </td>
 
@@ -1144,6 +1305,17 @@
 
                                 </span>
 
+                            {% elif is_sunday %}
+
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
+
+                                    Sunday Holiday
+
+                                </span>
+
                             {% elif today_result
                                 and today_result.completed
                                 >= daily_target %}
@@ -1165,35 +1337,99 @@
                                     status-progress
                                 ">
 
-                                    In progress
+                                    In Progress
 
                                 </span>
 
                             {% else %}
 
-                                {% if is_sunday %}
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
 
-                                    <span class="
-                                        status-badge
-                                        status-not-started
-                                    ">
+                                    Not Started
 
-                                        Sunday Holiday
+                                </span>
 
-                                    </span>
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- =================================================
+                             ACCOUNT ACTION
+                        ================================================== -->
+
+                        <td>
+
+                            {% if employee.approved %}
+
+                                {% if employee.active %}
+
+                                    <div class="employee-actions">
+
+                                        <form
+                                            method="post"
+                                            action="{{ url_for(
+                                                'disable_employee',
+                                                employee_id=employee.id
+                                            ) }}"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="disable-button"
+                                            >
+                                                Disable
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                                 {% else %}
 
-                                    <span class="
-                                        status-badge
-                                        status-not-started
-                                    ">
+                                    <div class="employee-actions">
 
-                                        Not started
+                                        <form
+                                            method="post"
+                                            action="{{ url_for(
+                                                'enable_employee',
+                                                employee_id=employee.id
+                                            ) }}"
+                                        >
 
-                                    </span>
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="enable-button"
+                                            >
+                                                Enable
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                                 {% endif %}
+
+                            {% else %}
+
+                                <span class="muted">
+                                    Awaiting approval
+                                </span>
 
                             {% endif %}
 
@@ -1209,7 +1445,7 @@
                     <tr>
 
                         <td
-                            colspan="7"
+                            colspan="9"
                             style="
                                 text-align:center;
                                 padding:35px;
@@ -1264,11 +1500,13 @@
 
                 <br>
 
-                Today's progress is taken from the employee's
+                Today's progress comes from the employee's
                 current DailyResult. Historical totals include
-                all saved daily work records for that employee.
-                Click an employee's name to open the complete
-                date-wise history and monthly view.
+                all saved DailyResult records for that employee.
+                The latest recorded work date is also shown.
+                Use <strong>View History</strong> or click the
+                employee name to see the complete date-wise
+                monthly history.
 
             </div>
 
@@ -1288,7 +1526,8 @@
                 </h2>
 
                 <span>
-                    View monthly historical performance
+                    Monthly historical performance and
+                    detailed reporting
                 </span>
 
             </div>
@@ -1296,20 +1535,34 @@
         </div>
 
 
-        <div
-            style="
-                display:flex;
-                gap:10px;
-                flex-wrap:wrap;
-                align-items:center;
-            "
-        >
+        <div class="report-panel">
+
+            <div>
+
+                <div class="report-panel-title">
+
+                    Monthly Employee Report
+
+                </div>
+
+                <div class="report-panel-text">
+
+                    Review employee performance month-by-month,
+                    including completed, correct, wrong and
+                    accuracy data.
+
+                </div>
+
+            </div>
+
 
             <a
                 href="{{ url_for('founder_report') }}"
-                class="button"
+                class="report-button"
             >
+
                 Open Monthly Report
+
             </a>
 
         </div>
