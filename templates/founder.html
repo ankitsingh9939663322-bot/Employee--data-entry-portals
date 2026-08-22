@@ -10,6 +10,11 @@
         content="width=device-width, initial-scale=1"
     >
 
+    <meta
+        name="theme-color"
+        content="#0b1220"
+    >
+
     <title>Nexora · Founder Dashboard</title>
 
     <link
@@ -19,9 +24,9 @@
 
     <style>
 
-        /* -------------------------------------------------
+        /* =================================================
            PREMIUM FOUNDER DASHBOARD
-        ------------------------------------------------- */
+        ================================================= */
 
         .dashboard-hero {
             display:flex;
@@ -45,7 +50,11 @@
         }
 
         .month-panel {
-            background:linear-gradient(135deg,#f8faff,#ffffff);
+            background:linear-gradient(
+                135deg,
+                #f8faff,
+                #ffffff
+            );
             border:1px solid #e2e8f1;
             border-radius:16px;
             padding:15px;
@@ -90,13 +99,72 @@
             font-size:12px;
         }
 
+        /* =================================================
+           APPROVAL PANEL
+        ================================================= */
+
+        .approval-panel {
+            margin-bottom:28px;
+        }
+
+        .approval-card {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:18px;
+            flex-wrap:wrap;
+            padding:16px;
+            border:1px solid #e2e8f1;
+            border-radius:15px;
+            background:#fafcff;
+        }
+
+        .approval-employee {
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .approval-name {
+            display:block;
+            color:#182230;
+            font-weight:800;
+        }
+
+        .approval-id {
+            display:block;
+            margin-top:3px;
+            color:#667085;
+            font-size:12px;
+        }
+
+        .approval-actions {
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+
+        .approval-actions form {
+            margin:0;
+        }
+
+        .reject-button {
+            background:#fff !important;
+            color:#b42318 !important;
+            border:1px solid #f1b5b0 !important;
+        }
+
+        /* =================================================
+           EMPLOYEE TABLE
+        ================================================= */
+
         .employee-table-wrap {
             overflow-x:auto;
             border-radius:17px;
         }
 
         .employee-table {
-            min-width:850px;
+            min-width:1100px;
         }
 
         .employee-name {
@@ -120,7 +188,12 @@
             color:#fff;
             font-weight:850;
             font-size:13px;
-            box-shadow:0 7px 16px rgba(37,99,235,.18);
+            box-shadow:0 7px 16px rgba(
+                37,
+                99,
+                235,
+                .18
+            );
         }
 
         .employee-name a {
@@ -145,6 +218,10 @@
             font-size:12px;
             font-weight:750;
         }
+
+        /* =================================================
+           PROGRESS
+        ================================================= */
 
         .progress-cell {
             min-width:160px;
@@ -184,6 +261,10 @@
                 var(--primary-2)
             );
         }
+
+        /* =================================================
+           BADGES
+        ================================================= */
 
         .accuracy-badge {
             display:inline-flex;
@@ -247,6 +328,30 @@
             background:#98a2b3;
         }
 
+        .status-disabled {
+            color:#b42318;
+            background:#fff1f0;
+            border:1px solid #f5c2bd;
+        }
+
+        .status-disabled:before {
+            background:#d92d20;
+        }
+
+        .history-summary {
+            font-size:11px;
+            color:#667085;
+            line-height:1.5;
+        }
+
+        .history-summary strong {
+            color:#344054;
+        }
+
+        /* =================================================
+           NOTE
+        ================================================= */
+
         .dashboard-note {
             display:flex;
             align-items:flex-start;
@@ -285,66 +390,9 @@
             font-size:13px;
         }
 
-
-        /* -------------------------------------------------
-           FOUNDER APPROVAL PANEL
-        ------------------------------------------------- */
-
-        .approval-panel {
-            margin-bottom:28px;
-        }
-
-        .approval-card {
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:18px;
-            flex-wrap:wrap;
-            padding:16px;
-            border:1px solid #e2e8f1;
-            border-radius:15px;
-            background:#fafcff;
-        }
-
-        .approval-employee {
-            display:flex;
-            align-items:center;
-            gap:12px;
-        }
-
-        .approval-name {
-            display:block;
-            color:#182230;
-            font-weight:800;
-        }
-
-        .approval-id {
-            display:block;
-            margin-top:3px;
-            color:#667085;
-            font-size:12px;
-        }
-
-        .approval-actions {
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-        }
-
-        .approval-actions form {
-            margin:0;
-        }
-
-        .reject-button {
-            background:#fff !important;
-            color:#b42318 !important;
-            border:1px solid #f1b5b0 !important;
-        }
-
-
-        /* -------------------------------------------------
+        /* =================================================
            MOBILE
-        ------------------------------------------------- */
+        ================================================= */
 
         @media(max-width:700px) {
 
@@ -412,7 +460,7 @@
 
 
 <!-- =====================================================
-     MAIN CONTAINER
+     MAIN
 ===================================================== -->
 
 <div class="container">
@@ -421,7 +469,7 @@
 
 
         <!-- =================================================
-             DASHBOARD HERO
+             HERO
         ================================================== -->
 
         <div class="dashboard-hero">
@@ -437,40 +485,11 @@
                 </h1>
 
                 <p class="muted">
-                    Employee performance overview for
-                    <b>{{ month_label }}</b>
+
+                    Current and historical employee
+                    performance overview.
+
                 </p>
-
-            </div>
-
-
-            <!-- MONTH SELECTOR -->
-
-            <div class="month-panel">
-
-                <form method="get">
-
-                    <label for="month">
-                        Performance period
-                    </label>
-
-                    <div class="month-controls">
-
-                        <input
-                            id="month"
-                            type="month"
-                            name="month"
-                            value="{{ selected_month }}"
-                            required
-                        >
-
-                        <button type="submit">
-                            View
-                        </button>
-
-                    </div>
-
-                </form>
 
             </div>
 
@@ -491,20 +510,43 @@
                 Employees
 
                 <b>
-                    {{ rows|length }}
+                    {{ employees|length }}
                 </b>
 
             </div>
 
 
-            <!-- ENTRIES -->
+            <!-- TODAY'S ENTRIES -->
 
             <div class="stat">
 
-                Entries
+                Today's Entries
 
                 <b>
-                    {{ total_entries }}
+
+                    {% set today_entries = namespace(
+                        value=0
+                    ) %}
+
+                    {% for employee in employees %}
+
+                        {% set result =
+                            daily_results.get(employee.id)
+                        %}
+
+                        {% if result %}
+
+                            {% set today_entries.value =
+                                today_entries.value
+                                + result.completed
+                            %}
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {{ today_entries.value }}
+
                 </b>
 
             </div>
@@ -523,20 +565,43 @@
             </div>
 
 
-            <!-- ACCURACY -->
+            <!-- TOTAL HISTORICAL -->
 
             <div class="stat">
 
-                Monthly Accuracy
+                All-Time Entries
 
                 <b>
-                    {{ overall_accuracy }}%
+
+                    {% set all_entries = namespace(
+                        value=0
+                    ) %}
+
+                    {% for employee in employees %}
+
+                        {% set totals =
+                            historical_totals.get(employee.id)
+                        %}
+
+                        {% if totals %}
+
+                            {% set all_entries.value =
+                                all_entries.value
+                                + totals.completed
+                            %}
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {{ all_entries.value }}
+
                 </b>
 
             </div>
 
 
-            <!-- ACTIVE EMPLOYEES -->
+            <!-- ACTIVE -->
 
             <div class="stat">
 
@@ -544,20 +609,24 @@
 
                 <b>
 
-                    {% set active_count = 0 %}
+                    {% set active_count = namespace(
+                        value=0
+                    ) %}
 
-                    {% for row in rows %}
+                    {% for employee in employees %}
 
-                        {% if row.completed > 0 %}
+                        {% if employee.active
+                            and employee.approved %}
 
-                            {% set active_count =
-                                active_count + 1 %}
+                            {% set active_count.value =
+                                active_count.value + 1
+                            %}
 
                         {% endif %}
 
                     {% endfor %}
 
-                    {{ active_count }}
+                    {{ active_count.value }}
 
                 </b>
 
@@ -568,7 +637,7 @@
 
 
         <!-- =================================================
-             PENDING FOUNDER APPROVALS
+             PENDING APPROVALS
         ================================================== -->
 
         {% if pending_employees %}
@@ -584,13 +653,19 @@
                     </h2>
 
                     <span>
-                        Employees cannot start work until founder approval.
+                        Employees cannot start work until
+                        founder approval.
                     </span>
 
                 </div>
 
-                <span class="status-badge status-progress">
+                <span class="
+                    status-badge
+                    status-progress
+                ">
+
                     {{ pending_count }} Pending
+
                 </span>
 
             </div>
@@ -608,31 +683,33 @@
                 <div class="approval-card">
 
 
-                    <!-- EMPLOYEE INFORMATION -->
-
                     <div class="approval-employee">
 
                         <div class="employee-avatar">
+
                             {{ employee.employee_name[0]|upper }}
+
                         </div>
 
                         <div>
 
                             <strong class="approval-name">
+
                                 {{ employee.employee_name }}
+
                             </strong>
 
                             <span class="approval-id">
+
                                 Employee ID:
                                 {{ employee.employee_code }}
+
                             </span>
 
                         </div>
 
                     </div>
 
-
-                    <!-- APPROVAL ACTIONS -->
 
                     <div class="approval-actions">
 
@@ -700,7 +777,7 @@
 
 
         <!-- =================================================
-             EMPLOYEE SECTION HEADER
+             EMPLOYEE PERFORMANCE
         ================================================== -->
 
         <div class="section-heading">
@@ -712,7 +789,8 @@
                 </h2>
 
                 <span>
-                    Select an employee to view detailed history
+                    Current day and complete historical
+                    performance summary
                 </span>
 
             </div>
@@ -741,15 +819,19 @@
                         </th>
 
                         <th>
-                            Progress
+                            Today's Progress
                         </th>
 
                         <th>
-                            Accuracy
+                            Today's Accuracy
                         </th>
 
                         <th>
-                            Time
+                            Today's Time
+                        </th>
+
+                        <th>
+                            Historical Work
                         </th>
 
                         <th>
@@ -764,12 +846,23 @@
                 <tbody>
 
 
-                {% for row in rows %}
+                {% for employee in employees %}
+
+                    {% set today_result =
+                        daily_results.get(employee.id)
+                    %}
+
+                    {% set totals =
+                        historical_totals.get(employee.id)
+                    %}
+
 
                     <tr>
 
 
-                        <!-- EMPLOYEE -->
+                        <!-- =================================================
+                             EMPLOYEE
+                        ================================================== -->
 
                         <td>
 
@@ -777,7 +870,7 @@
 
                                 <div class="employee-avatar">
 
-                                    {{ row.employee.employee_name[0]|upper }}
+                                    {{ employee.employee_name[0]|upper }}
 
                                 </div>
 
@@ -785,14 +878,24 @@
 
                                     <a
                                         href="{{ url_for(
-                                            'founder_employee',
-                                            employee_id=row.employee.id
+                                            'employee_history',
+                                            employee_id=employee.id
                                         ) }}"
                                     >
 
-                                        {{ row.employee.employee_name }}
+                                        {{ employee.employee_name }}
 
                                     </a>
+
+                                    <div
+                                        class="history-summary"
+                                        style="margin-top:4px;"
+                                    >
+
+                                        Click name for
+                                        complete date-wise history
+
+                                    </div>
 
                                 </div>
 
@@ -801,20 +904,24 @@
                         </td>
 
 
-                        <!-- EMPLOYEE ID -->
+                        <!-- =================================================
+                             EMPLOYEE ID
+                        ================================================== -->
 
                         <td>
 
                             <span class="employee-code">
 
-                                {{ row.employee.employee_code }}
+                                {{ employee.employee_code }}
 
                             </span>
 
                         </td>
 
 
-                        <!-- PROGRESS -->
+                        <!-- =================================================
+                             TODAY PROGRESS
+                        ================================================== -->
 
                         <td>
 
@@ -823,21 +930,29 @@
                                 <div class="progress-meta">
 
                                     <strong>
-                                        {{ row.completed }}
+
+                                        {{
+                                            today_result.completed
+                                            if today_result
+                                            else 0
+                                        }}
                                         /
                                         {{ daily_target }}
+
                                     </strong>
 
                                     <span>
 
-                                        {% if daily_target %}
+                                        {% if today_result
+                                            and daily_target %}
 
-                                            {{ (
-                                                row.completed
-                                                /
-                                                daily_target
-                                                * 100
-                                            )|round(0) }}%
+                                            {{
+                                                (
+                                                    today_result.completed
+                                                    / daily_target
+                                                    * 100
+                                                )|round(0)
+                                            }}%
 
                                         {% else %}
 
@@ -856,12 +971,17 @@
                                         class="mini-progress-fill"
                                         style="
                                             width:
-                                            {{ (
-                                                row.completed
-                                                /
-                                                daily_target
-                                                * 100
-                                            ) if daily_target else 0 }}%;
+                                            {{
+                                                (
+                                                    (
+                                                        today_result.completed
+                                                        / daily_target
+                                                    ) * 100
+                                                )
+                                                if today_result
+                                                and daily_target
+                                                else 0
+                                            }}%;
                                         "
                                     ></div>
 
@@ -872,24 +992,31 @@
                         </td>
 
 
-                        <!-- ACCURACY -->
+                        <!-- =================================================
+                             TODAY ACCURACY
+                        ================================================== -->
 
                         <td>
 
-                            {% if row.completed > 0 %}
+                            {% if today_result
+                                and today_result.completed > 0 %}
 
                                 <span class="accuracy-badge">
 
-                                    {{ row.accuracy }}%
+                                    {{
+                                        (
+                                            today_result.correct
+                                            / today_result.completed
+                                            * 100
+                                        )|round(1)
+                                    }}%
 
                                 </span>
 
                             {% else %}
 
                                 <span class="accuracy-badge">
-
                                     0%
-
                                 </span>
 
                             {% endif %}
@@ -897,18 +1024,20 @@
                         </td>
 
 
-                        <!-- TIME -->
+                        <!-- =================================================
+                             TODAY TIME
+                        ================================================== -->
 
                         <td>
 
-                            {% if row.result %}
+                            {% if today_result %}
 
                                 {% set minutes =
-                                    row.result.seconds // 60
+                                    today_result.seconds // 60
                                 %}
 
                                 {% set seconds =
-                                    row.result.seconds % 60
+                                    today_result.seconds % 60
                                 %}
 
                                 {% if minutes > 0 %}
@@ -931,11 +1060,93 @@
                         </td>
 
 
-                        <!-- STATUS -->
+                        <!-- =================================================
+                             HISTORICAL WORK
+                        ================================================== -->
 
                         <td>
 
-                            {% if row.completed >= daily_target %}
+                            {% if totals %}
+
+                                <div
+                                    class="history-summary"
+                                >
+
+                                    <strong>
+                                        {{ totals.completed }}
+                                    </strong>
+                                    total records
+
+                                    <br>
+
+                                    Correct:
+                                    <strong>
+                                        {{ totals.correct }}
+                                    </strong>
+
+                                    · Wrong:
+                                    <strong>
+                                        {{ totals.wrong }}
+                                    </strong>
+
+                                    <br>
+
+                                    Accuracy:
+                                    <strong>
+                                        {{ totals.accuracy }}%
+                                    </strong>
+
+                                    <br>
+
+                                    Days recorded:
+                                    <strong>
+                                        {{ totals.record_count }}
+                                    </strong>
+
+                                </div>
+
+                            {% else %}
+
+                                <span class="muted">
+                                    No work history
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- =================================================
+                             STATUS
+                        ================================================== -->
+
+                        <td>
+
+                            {% if not employee.active %}
+
+                                <span class="
+                                    status-badge
+                                    status-disabled
+                                ">
+
+                                    Disabled
+
+                                </span>
+
+                            {% elif not employee.approved %}
+
+                                <span class="
+                                    status-badge
+                                    status-not-started
+                                ">
+
+                                    Pending Approval
+
+                                </span>
+
+                            {% elif today_result
+                                and today_result.completed
+                                >= daily_target %}
 
                                 <span class="
                                     status-badge
@@ -946,7 +1157,8 @@
 
                                 </span>
 
-                            {% elif row.completed > 0 %}
+                            {% elif today_result
+                                and today_result.completed > 0 %}
 
                                 <span class="
                                     status-badge
@@ -959,14 +1171,29 @@
 
                             {% else %}
 
-                                <span class="
-                                    status-badge
-                                    status-not-started
-                                ">
+                                {% if is_sunday %}
 
-                                    Not started
+                                    <span class="
+                                        status-badge
+                                        status-not-started
+                                    ">
 
-                                </span>
+                                        Sunday Holiday
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="
+                                        status-badge
+                                        status-not-started
+                                    ">
+
+                                        Not started
+
+                                    </span>
+
+                                {% endif %}
 
                             {% endif %}
 
@@ -982,8 +1209,11 @@
                     <tr>
 
                         <td
-                            colspan="6"
-                            style="text-align:center;padding:35px;"
+                            colspan="7"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                            "
                         >
 
                             <strong>
@@ -994,8 +1224,11 @@
                                 class="muted"
                                 style="margin-top:5px;"
                             >
-                                Employee records will appear here
-                                once registrations are completed.
+
+                                Employee records will appear
+                                here once registrations are
+                                completed.
+
                             </div>
 
                         </td>
@@ -1014,7 +1247,7 @@
 
 
         <!-- =================================================
-             INFORMATION NOTE
+             HISTORICAL INFORMATION
         ================================================== -->
 
         <div class="dashboard-note">
@@ -1026,16 +1259,16 @@
             <div>
 
                 <strong>
-                    Performance information
+                    Current + historical performance
                 </strong>
 
                 <br>
 
-                Monthly accuracy is calculated from the saved
-                records for the selected month and displayed
-                within the configured 80–90% performance range.
-                Underlying daily task results remain stored
-                separately.
+                Today's progress is taken from the employee's
+                current DailyResult. Historical totals include
+                all saved daily work records for that employee.
+                Click an employee's name to open the complete
+                date-wise history and monthly view.
 
             </div>
 
@@ -1043,8 +1276,48 @@
 
 
         <!-- =================================================
+             MONTHLY REPORT
+        ================================================== -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Founder Reports
+                </h2>
+
+                <span>
+                    View monthly historical performance
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                flex-wrap:wrap;
+                align-items:center;
+            "
+        >
+
+            <a
+                href="{{ url_for('founder_report') }}"
+                class="button"
+            >
+                Open Monthly Report
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
              LOGOUT
-        ================================================= -->
+        ================================================== -->
 
         <a
             class="logout-link"
@@ -1064,7 +1337,9 @@
 ===================================================== -->
 
 <div class="site-footer">
+
     Nexora Data Solutions · Secure internal workspace
+
 </div>
 
 
