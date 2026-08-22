@@ -378,6 +378,34 @@
         }
 
         /* =====================================================
+           SERVICE NOTICE
+           ===================================================== */
+
+        .nx-service-notice {
+            margin-top: 18px;
+
+            padding: 14px 16px;
+
+            border:
+                1px solid #bfdbfe;
+
+            border-radius: 13px;
+
+            background:
+                #eff6ff;
+
+            color:
+                #1e3a8a;
+
+            text-align: center;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            line-height: 1.5;
+        }
+
+        /* =====================================================
            PROGRESS
            ===================================================== */
 
@@ -547,6 +575,7 @@
 
         .nx-reference-grid {
             display: grid;
+
             grid-template-columns:
                 repeat(2,minmax(0,1fr));
 
@@ -561,7 +590,8 @@
 
             border-radius: 10px;
 
-            background: rgba(255,255,255,.75);
+            background:
+                rgba(255,255,255,.75);
         }
 
         .nx-reference-item small {
@@ -1019,19 +1049,7 @@
             </div>
 
         </div>
-    margin-top:18px;
-    padding:14px 16px;
-    border:1px solid #bfdbfe;
-    border-radius:13px;
-    background:#eff6ff;
-    color:#1e3a8a;
-    text-align:center;
-    font-size:12px;
-    font-weight:800;
-    line-height:1.5;
-">
-    Data entry services are unavailable today.
-    Operations will resume on Monday
+
     </div>
 
 </header>
@@ -1041,9 +1059,6 @@
      MAIN
      ========================================================= -->
 
-<main class="nx-page">
-
-    <div class="nx-card">
 <main class="nx-page">
 
     <div class="nx-card">
@@ -1159,6 +1174,9 @@
 
             </div>
 
+
+            <!-- EMPLOYEE IDENTITY -->
+
             <div class="nx-employee">
 
                 <div class="nx-avatar">
@@ -1178,6 +1196,14 @@
 
                 </div>
 
+            </div>
+
+
+            <!-- SERVICE NOTICE -->
+
+            <div class="nx-service-notice">
+                Data entry services are unavailable today.
+                Operations will resume on Monday.
             </div>
 
         </section>
@@ -1238,11 +1264,15 @@
             </div>
 
 
+            <!-- REFERENCE -->
+
             <div
                 class="nx-reference"
                 id="ref"
             ></div>
 
+
+            <!-- DATA ENTRY FORM -->
 
             <form
                 method="post"
@@ -1270,7 +1300,10 @@
                     value="0"
                 >
 
+
                 <div class="nx-grid">
+
+                    <!-- NAME -->
 
                     <div class="nx-field">
 
@@ -1289,6 +1322,8 @@
 
                     </div>
 
+
+                    <!-- AGE -->
 
                     <div class="nx-field">
 
@@ -1311,6 +1346,8 @@
                     </div>
 
 
+                    <!-- CITY -->
+
                     <div class="nx-field">
 
                         <label for="city">
@@ -1328,6 +1365,8 @@
 
                     </div>
 
+
+                    <!-- PHONE -->
 
                     <div class="nx-field">
 
@@ -1350,6 +1389,8 @@
                 </div>
 
 
+                <!-- EMAIL -->
+
                 <div class="nx-field">
 
                     <label for="email">
@@ -1368,6 +1409,8 @@
 
                 </div>
 
+
+                <!-- ACTIONS -->
 
                 <div class="nx-actions">
 
@@ -1389,6 +1432,8 @@
 
             </form>
 
+
+            <!-- SIGN OUT -->
 
             <div class="nx-signout">
 
@@ -1406,317 +1451,10 @@
 
 </main>
 
-        <!-- =================================================
-             HEADER CONTENT
-             ================================================= -->
 
-        <section class="nx-card-top">
-
-            <div class="nx-eyebrow">
-                Employee workspace
-            </div>
-
-
-            <div class="nx-title-row">
-
-                <div class="nx-title">
-
-                    <h1>
-                        Daily Data Entry
-                    </h1>
-
-                    <p>
-                        Complete today's assigned records carefully.
-                        Your performance is securely recorded for
-                        authorized review.
-                    </p>
-
-                </div>
-
-
-                <div class="nx-task-badge">
-                    Daily task
-                </div>
-
-            </div>
-
-
-            <!-- Employee -->
-
-            <div class="nx-employee">
-
-                <div class="nx-avatar">
-
-                    {{ employee.employee_name[:1]|upper }}
-
-                </div>
-
-
-                <div>
-
-                    <div class="nx-employee-name">
-
-                        {{ employee.employee_name }}
-
-                    </div>
-
-                    <div class="nx-employee-id">
-
-                        Employee ID:
-                        <b>{{ employee.employee_code }}</b>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             PROGRESS
-             ================================================= -->
-
-        <section class="nx-progress-section">
-
-            <div class="nx-progress-head">
-
-                <div
-                    class="nx-progress-count"
-                    id="count"
-                >
-                    {{ completed }} / {{ target }} completed
-                </div>
-
-                <div class="nx-progress-label">
-                    Daily progress
-                </div>
-
-            </div>
-
-
-            <div class="nx-progress">
-
-                <div
-                    class="nx-progress-fill"
-                    id="progressFill"
-                    style="
-                        width:
-                        {{ (completed / target * 100)
-                           if target else 0 }}%
-                    "
-                ></div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             FORM
-             ================================================= -->
-
-        <section class="nx-form-area">
-
-            <div class="nx-section-title">
-
-                <span class="nx-section-number">
-                    01
-                </span>
-
-                Verify reference data and enter the matching details
-
-            </div>
-
-
-            <!-- Reference -->
-
-            <div
-                class="nx-reference"
-                id="ref"
-            >
-            </div>
-
-
-            <!-- Data Entry -->
-
-            <form
-                method="post"
-                action="{{ url_for('employee_submit') }}"
-                id="task"
-            >
-
-                <input
-                    type="hidden"
-                    name="csrf_token"
-                    value="{{ csrf_token() }}"
-                >
-
-                <input
-                    type="hidden"
-                    name="index"
-                    id="idx"
-                    value="{{ completed }}"
-                >
-
-                <input
-                    type="hidden"
-                    name="seconds"
-                    id="secs"
-                    value="0"
-                >
-
-
-                <div class="nx-grid">
-
-
-                    <!-- Name -->
-
-                    <div class="nx-field">
-
-                        <label for="name">
-                            Name
-                        </label>
-
-                        <input
-                            class="nx-input"
-                            id="name"
-                            name="name"
-                            autocomplete="off"
-                            placeholder="Enter full name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Age -->
-
-                    <div class="nx-field">
-
-                        <label for="age">
-                            Age
-                        </label>
-
-                        <input
-                            class="nx-input"
-                            id="age"
-                            name="age"
-                            type="number"
-                            min="1"
-                            max="120"
-                            autocomplete="off"
-                            placeholder="Enter age"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- City -->
-
-                    <div class="nx-field">
-
-                        <label for="city">
-                            City
-                        </label>
-
-                        <input
-                            class="nx-input"
-                            id="city"
-                            name="city"
-                            autocomplete="off"
-                            placeholder="Enter city"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Phone -->
-
-                    <div class="nx-field">
-
-                        <label for="phone">
-                            Phone
-                        </label>
-
-                        <input
-                            class="nx-input"
-                            id="phone"
-                            name="phone"
-                            inputmode="numeric"
-                            autocomplete="off"
-                            placeholder="Enter phone number"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- Email -->
-
-                <div class="nx-field">
-
-                    <label for="email">
-                        Email address
-                    </label>
-
-                    <input
-                        class="nx-input"
-                        id="email"
-                        name="email"
-                        type="email"
-                        autocomplete="off"
-                        placeholder="Enter email address"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- Actions -->
-
-                <div class="nx-actions">
-
-                    <button
-                        type="reset"
-                        class="nx-button nx-clear"
-                    >
-                        Clear
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="nx-button nx-submit"
-                    >
-                        Submit &amp; Next
-                    </button>
-
-                </div>
-
-            </form>
-
-
-            <!-- Sign out -->
-
-            <div class="nx-signout">
-
-                <a href="{{ url_for('logout') }}">
-                    Sign out of workspace
-                </a>
-
-            </div>
-
-        </section>
-
-    </div>
-
-</main>
-
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
 
 <footer class="nx-footer">
 
@@ -1938,20 +1676,26 @@ function escapeHtml(value) {
    SAVE TIME BEFORE SUBMIT
    ========================================================= */
 
-document.getElementById("task").addEventListener(
-    "submit",
-    function () {
+const taskForm = document.getElementById("task");
 
-        document.getElementById("secs").value =
-            Math.max(
-                0,
-                Math.floor(
-                    (Date.now() - start) / 1000
-                )
-            );
+if (taskForm) {
 
-    }
-);
+    taskForm.addEventListener(
+        "submit",
+        function () {
+
+            document.getElementById("secs").value =
+                Math.max(
+                    0,
+                    Math.floor(
+                        (Date.now() - start) / 1000
+                    )
+                );
+
+        }
+    );
+
+}
 
 
 /* =========================================================
