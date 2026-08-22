@@ -1561,6 +1561,69 @@ def founder():
         for e in employees
     }
 
+    historical_results = {
+        e.id: (
+            DailyResult.query
+            .filter_by(employee_id=e.id)
+            .order_by(DailyResult.work_date.desc())
+            .all()
+        )
+        for e in employees
+    }
+
+    historical_totals = {}
+
+    for employee in employees:
+
+        results = historical_results.get(
+            employee.id,
+            [],
+        )
+
+        completed = sum(
+            r.completed
+            for r in results
+        )
+
+        correct = sum(
+            r.correct
+            for r in results
+        )
+
+        wrong = sum(
+            r.wrong
+            for r in results
+        )
+
+        seconds = sum(
+            r.seconds
+            for r in results
+        )
+
+        raw_accuracy = (
+            correct / completed * 100
+            if completed
+            else 0
+        )
+
+        historical_totals[employee.id] = {
+            "completed": completed,
+            "correct": correct,
+            "wrong": wrong,
+            "seconds": seconds,
+            "accuracy": (
+                display_accuracy(raw_accuracy)
+                if completed
+                else 0
+            ),
+            "record_count": len(results),
+            "latest_date": (
+                results[0].work_date
+                if results
+                else None
+            ),
+        }
+
     pending_employees = [
         e
         for e in employees
@@ -1571,6 +1634,8 @@ def founder():
         "founder.html",
         employees=employees,
         daily_results=daily_results,
+        historical_results=historical_results,
+        historical_totals=historical_totals,
         pending_employees=pending_employees,
         pending_count=len(pending_employees),
         today=today,
