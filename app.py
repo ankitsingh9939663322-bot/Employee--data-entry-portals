@@ -347,7 +347,6 @@ def audit(
 # =========================================================
 
 def setup_database():
-    db.create_all()
 
     try:
         inspector = db.inspect(db.engine)
