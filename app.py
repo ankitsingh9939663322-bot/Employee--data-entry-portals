@@ -40,6 +40,11 @@ app.config["SECRET_KEY"] = (
     or "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET_KEY"
 )
 
+
+# =========================================================
+# DATABASE CONFIGURATION
+# =========================================================
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if not DATABASE_URL:
@@ -54,11 +59,26 @@ if not DATABASE_URL:
 
     DATABASE_URL = "sqlite:///nexora.db"
 
+
+# Render/Supabase may provide postgres://.
+# SQLAlchemy expects postgresql://.
 DATABASE_URL = DATABASE_URL.replace(
     "postgres://",
     "postgresql://",
     1,
 )
+
+
+# Supabase PostgreSQL requires SSL.
+# Add sslmode=require only if it is not already present.
+if DATABASE_URL.startswith("postgresql://"):
+    if "sslmode=" not in DATABASE_URL:
+        DATABASE_URL += (
+            "&sslmode=require"
+            if "?" in DATABASE_URL
+            else "?sslmode=require"
+        )
+
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -358,6 +378,11 @@ def audit(
 def setup_database():
 
     try:
+        # Important for a fresh Supabase PostgreSQL database.
+        # The previous code returned immediately when the employee
+        # table did not exist, leaving all tables uncreated.
+        db.create_all()
+
         inspector = db.inspect(db.engine)
         tables = inspector.get_table_names()
 
@@ -448,6 +473,7 @@ def setup_database():
             db.session.commit()
 
     except Exception as exc:
+        db.session.rollback()
         print(
             "Database migration warning:",
             exc,
@@ -868,9 +894,7 @@ def home():
         return redirect(url_for("founder"))
 
     return redirect(url_for("login"))
-
-
-# =========================================================
+    # =========================================================
 # LOGIN
 # =========================================================
 
@@ -1688,6 +1712,7 @@ def approve_employee(employee_id):
         url_for("founder")
     )
 
+
 # =========================================================
 # REJECT EMPLOYEE REGISTRATION
 # =========================================================
@@ -1704,6 +1729,470 @@ def reject_employee(employee_id):
     )
 
     # Reject is intended only for pending employees.
+    if employee.approved:
+
+        flash(
+            "An already approved employee cannot be rejected from this panel.",
+            "error",
+        )
+
+        return redirect(
+            url_for("founder")
+        )
+
+    employee.active = False
+
+    db.session.commit()
+
+    audit(
+        "employee_registration_rejected",
+        actor_role="founder",
+        employee_id=employee.id,
+    )
+
+    flash(
+        f"{employee.employee_name} registration rejected.",
+        "success",
+    )
+
+    return redirect(
+        url_for("founder")
+    )
+
+
+# =========================================================
+# DISABLE EMPLOYEE
+# =========================================================
+
+@app.post(
+    "/founder/employee/<int:employee_id>/disable"
+)
+@founder_required
+def disable_employee(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
+
+    employee.active = False
+
+    db.session.commit()
+
+    audit(
+        "employee_disabled",
+        actor_role="founder",
+        employee_id=employee.id,
+    )
+
+    flash(
+        f"{employee.employee_name} disabled.",
+        "success",
+    )
+
+    return redirect(
+        url_for("founder")
+    )
+
+
+# =========================================================
+# ENABLE EMPLOYEE
+# =========================================================
+
+@app.post(
+    "/founder/employee/<int:employee_id>/enable"
+)
+@founder_required
+def enable_employee(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
+
+    employee.active = True
+
+    db.session.commit()
+
+    audit(
+        "employee_enabled",
+        actor_role="founder",
+        employee_id=employee.id,
+    )
+
+    flash(
+        f"{employee.employee_name} enabled.",
+        "success",
+    )
+
+    return redirect(
+        url_for("founder")
+    )
+    # =========================================================
+# EMPLOYEE SUBMIT
+# =========================================================
+
+@app.route(
+    "/employee/submit",
+    methods=["POST"],
+)
+@employee_required
+def employee_submit():
+
+    employee_obj = db.session.get(
+        Employee,
+        session.get("employee_id"),
+    )
+
+    today = today_ist()
+
+    if is_sunday(today):
+
+        flash(
+            "Sunday is a holiday. No work is required today.",
+            "info",
+        )
+
+        return redirect(
+            url_for("employee")
+        )
+
+    records = daily_records(today)
+
+    result = get_or_create_daily_result(
+        employee_obj.id,
+        today,
+    )
+
+    if result.completed >= len(records):
+
+        flash(
+            "Today's work is already completed.",
+            "success",
+        )
+
+        return redirect(
+            url_for("employee")
+        )
+
+    idx = result.completed
+
+    reference = records[idx]
+
+    submitted_name = normalize_text(
+        request.form.get("name")
+    )
+
+    submitted_age = normalize_text(
+        request.form.get("age")
+    )
+
+    submitted_city = normalize_text(
+        request.form.get("city")
+    )
+
+    submitted_phone = normalize_text(
+        request.form.get("phone")
+    )
+
+    submitted_email = normalize_text(
+        request.form.get("email")
+    ).lower()
+
+    correct = (
+        submitted_name.lower()
+        == reference["name"].lower()
+        and submitted_age
+        == str(reference["age"])
+        and submitted_city.lower()
+        == reference["city"].lower()
+        and submitted_phone
+        == reference["phone"]
+        and submitted_email
+        == reference["email"].lower()
+    )
+
+    result.completed += 1
+
+    if correct:
+        result.correct += 1
+
+    result.wrong = (
+        result.completed
+        - result.correct
+    )
+
+    result.seconds += min(
+        max(
+            safe_int(
+                request.form.get(
+                    "seconds"
+                ),
+                0,
+            ),
+            0,
+        ),
+        86400,
+    )
+
+    employee_obj.current_index = (
+        result.completed
+    )
+
+    employee_obj.last_active = now_ist()
+
+    db.session.commit()
+
+    audit(
+        "employee_record_submitted",
+        actor_role="employee",
+        actor_id=employee_obj.id,
+        employee_id=employee_obj.id,
+        metadata=(
+            f"record_index={idx};"
+            f"correct={correct}"
+        ),
+    )
+
+    if result.completed >= len(records):
+
+        flash(
+            "Today's 250 records are completed.",
+            "success",
+        )
+
+    else:
+
+        flash(
+            "Correct." if correct else "Record submitted.",
+            "success" if correct else "info",
+        )
+
+    return redirect(
+        url_for("employee")
+    )
+
+
+# =========================================================
+# EMPLOYEE REPORT
+# =========================================================
+
+@app.route("/employee/report")
+@employee_required
+def employee_report():
+
+    employee_obj = db.session.get(
+        Employee,
+        session.get("employee_id"),
+    )
+
+    today = today_ist()
+
+    if is_sunday(today):
+
+        return render_template(
+            "employee_report.html",
+            employee=employee_obj,
+            result=None,
+            completed=0,
+            correct=0,
+            wrong=0,
+            seconds=0,
+            accuracy=0,
+            holiday=True,
+            holiday_message="Sunday — Holiday",
+            today=today,
+        )
+
+    result = get_or_create_daily_result(
+        employee_obj.id,
+        today,
+    )
+
+    accuracy = (
+        display_accuracy(
+            result.correct
+            / result.completed
+            * 100
+        )
+        if result.completed
+        else 0
+    )
+
+    return render_template(
+        "employee_report.html",
+        employee=employee_obj,
+        result=result,
+        completed=result.completed,
+        correct=result.correct,
+        wrong=result.wrong,
+        seconds=result.seconds,
+        accuracy=accuracy,
+        holiday=False,
+        holiday_message="",
+        today=today,
+    )
+
+
+# =========================================================
+# FOUNDER DASHBOARD
+# =========================================================
+
+@app.route("/founder")
+@founder_required
+def founder():
+
+    today = today_ist()
+
+    employees = (
+        Employee.query
+        .order_by(Employee.id.asc())
+        .all()
+    )
+
+    daily_results = {
+        e.id: DailyResult.query.filter_by(
+            employee_id=e.id,
+            work_date=today,
+        ).first()
+        for e in employees
+    }
+
+    historical_results = {
+        e.id: (
+            DailyResult.query
+            .filter_by(employee_id=e.id)
+            .order_by(DailyResult.work_date.desc())
+            .all()
+        )
+        for e in employees
+    }
+
+    historical_totals = {}
+
+    for employee in employees:
+
+        results = historical_results.get(
+            employee.id,
+            [],
+        )
+
+        completed = sum(
+            r.completed
+            for r in results
+        )
+
+        correct = sum(
+            r.correct
+            for r in results
+        )
+
+        wrong = sum(
+            r.wrong
+            for r in results
+        )
+
+        seconds = sum(
+            r.seconds
+            for r in results
+        )
+
+        raw_accuracy = (
+            correct / completed * 100
+            if completed
+            else 0
+        )
+
+        historical_totals[employee.id] = {
+            "completed": completed,
+            "correct": correct,
+            "wrong": wrong,
+            "seconds": seconds,
+            "accuracy": (
+                display_accuracy(raw_accuracy)
+                if completed
+                else 0
+            ),
+            "record_count": len(results),
+            "latest_date": (
+                results[0].work_date
+                if results
+                else None
+            ),
+        }
+
+    pending_employees = [
+        e
+        for e in employees
+        if e.active and not e.approved
+    ]
+
+    return render_template(
+        "founder.html",
+        employees=employees,
+        daily_results=daily_results,
+        historical_results=historical_results,
+        historical_totals=historical_totals,
+        pending_employees=pending_employees,
+        pending_count=len(pending_employees),
+        today=today,
+        is_sunday=is_sunday(today),
+        holiday_message=holiday_label(today),
+        daily_target=DAILY_TARGET,
+    )
+
+
+# =========================================================
+# APPROVE EMPLOYEE
+# =========================================================
+
+@app.post(
+    "/founder/employee/<int:employee_id>/approve"
+)
+@founder_required
+def approve_employee(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
+
+    employee.approved = True
+    employee.active = True
+
+    db.session.commit()
+
+    audit(
+        "employee_approved",
+        actor_role="founder",
+        employee_id=employee.id,
+    )
+
+    flash(
+        f"{employee.employee_name} approved successfully.",
+        "success",
+    )
+
+    return redirect(
+        url_for("founder")
+    )
+
+
+# =========================================================
+# REJECT EMPLOYEE REGISTRATION
+# =========================================================
+
+@app.post(
+    "/founder/employee/<int:employee_id>/reject"
+)
+@founder_required
+def reject_employee(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
+
     if employee.approved:
 
         flash(
@@ -2156,9 +2645,6 @@ def founder_report_data():
     }
 
 
-# =========================================================
-# FOUNDER PDF REPORT
-# =========================================================
 # =========================================================
 # FOUNDER INDIVIDUAL EMPLOYEE PDF REPORT
 # =========================================================
