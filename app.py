@@ -378,9 +378,6 @@ def audit(
 def setup_database():
 
     try:
-        # Important for a fresh Supabase PostgreSQL database.
-        # The previous code returned immediately when the employee
-        # table did not exist, leaving all tables uncreated.
         db.create_all()
 
         inspector = db.inspect(db.engine)
@@ -894,7 +891,9 @@ def home():
         return redirect(url_for("founder"))
 
     return redirect(url_for("login"))
-    # =========================================================
+
+
+# =========================================================
 # LOGIN
 # =========================================================
 
@@ -914,8 +913,6 @@ def login():
 
         # =====================================================
         # FOUNDER LOGIN
-        # Founder = DOB + Password
-        # DOB = DD-MM-YYYY
         # =====================================================
 
         if role == "founder":
@@ -991,7 +988,6 @@ def login():
 
         # =====================================================
         # EMPLOYEE LOGIN
-        # Employee = Employee ID + Password
         # =====================================================
 
         employee_code = normalize_text(
@@ -1567,8 +1563,6 @@ def employee_report():
         holiday_message="",
         today=today,
     )
-
-
 # =========================================================
 # FOUNDER DASHBOARD
 # =========================================================
@@ -1729,470 +1723,6 @@ def reject_employee(employee_id):
     )
 
     # Reject is intended only for pending employees.
-    if employee.approved:
-
-        flash(
-            "An already approved employee cannot be rejected from this panel.",
-            "error",
-        )
-
-        return redirect(
-            url_for("founder")
-        )
-
-    employee.active = False
-
-    db.session.commit()
-
-    audit(
-        "employee_registration_rejected",
-        actor_role="founder",
-        employee_id=employee.id,
-    )
-
-    flash(
-        f"{employee.employee_name} registration rejected.",
-        "success",
-    )
-
-    return redirect(
-        url_for("founder")
-    )
-
-
-# =========================================================
-# DISABLE EMPLOYEE
-# =========================================================
-
-@app.post(
-    "/founder/employee/<int:employee_id>/disable"
-)
-@founder_required
-def disable_employee(employee_id):
-
-    employee = db.get_or_404(
-        Employee,
-        employee_id,
-    )
-
-    employee.active = False
-
-    db.session.commit()
-
-    audit(
-        "employee_disabled",
-        actor_role="founder",
-        employee_id=employee.id,
-    )
-
-    flash(
-        f"{employee.employee_name} disabled.",
-        "success",
-    )
-
-    return redirect(
-        url_for("founder")
-    )
-
-
-# =========================================================
-# ENABLE EMPLOYEE
-# =========================================================
-
-@app.post(
-    "/founder/employee/<int:employee_id>/enable"
-)
-@founder_required
-def enable_employee(employee_id):
-
-    employee = db.get_or_404(
-        Employee,
-        employee_id,
-    )
-
-    employee.active = True
-
-    db.session.commit()
-
-    audit(
-        "employee_enabled",
-        actor_role="founder",
-        employee_id=employee.id,
-    )
-
-    flash(
-        f"{employee.employee_name} enabled.",
-        "success",
-    )
-
-    return redirect(
-        url_for("founder")
-    )
-    # =========================================================
-# EMPLOYEE SUBMIT
-# =========================================================
-
-@app.route(
-    "/employee/submit",
-    methods=["POST"],
-)
-@employee_required
-def employee_submit():
-
-    employee_obj = db.session.get(
-        Employee,
-        session.get("employee_id"),
-    )
-
-    today = today_ist()
-
-    if is_sunday(today):
-
-        flash(
-            "Sunday is a holiday. No work is required today.",
-            "info",
-        )
-
-        return redirect(
-            url_for("employee")
-        )
-
-    records = daily_records(today)
-
-    result = get_or_create_daily_result(
-        employee_obj.id,
-        today,
-    )
-
-    if result.completed >= len(records):
-
-        flash(
-            "Today's work is already completed.",
-            "success",
-        )
-
-        return redirect(
-            url_for("employee")
-        )
-
-    idx = result.completed
-
-    reference = records[idx]
-
-    submitted_name = normalize_text(
-        request.form.get("name")
-    )
-
-    submitted_age = normalize_text(
-        request.form.get("age")
-    )
-
-    submitted_city = normalize_text(
-        request.form.get("city")
-    )
-
-    submitted_phone = normalize_text(
-        request.form.get("phone")
-    )
-
-    submitted_email = normalize_text(
-        request.form.get("email")
-    ).lower()
-
-    correct = (
-        submitted_name.lower()
-        == reference["name"].lower()
-        and submitted_age
-        == str(reference["age"])
-        and submitted_city.lower()
-        == reference["city"].lower()
-        and submitted_phone
-        == reference["phone"]
-        and submitted_email
-        == reference["email"].lower()
-    )
-
-    result.completed += 1
-
-    if correct:
-        result.correct += 1
-
-    result.wrong = (
-        result.completed
-        - result.correct
-    )
-
-    result.seconds += min(
-        max(
-            safe_int(
-                request.form.get(
-                    "seconds"
-                ),
-                0,
-            ),
-            0,
-        ),
-        86400,
-    )
-
-    employee_obj.current_index = (
-        result.completed
-    )
-
-    employee_obj.last_active = now_ist()
-
-    db.session.commit()
-
-    audit(
-        "employee_record_submitted",
-        actor_role="employee",
-        actor_id=employee_obj.id,
-        employee_id=employee_obj.id,
-        metadata=(
-            f"record_index={idx};"
-            f"correct={correct}"
-        ),
-    )
-
-    if result.completed >= len(records):
-
-        flash(
-            "Today's 250 records are completed.",
-            "success",
-        )
-
-    else:
-
-        flash(
-            "Correct." if correct else "Record submitted.",
-            "success" if correct else "info",
-        )
-
-    return redirect(
-        url_for("employee")
-    )
-
-
-# =========================================================
-# EMPLOYEE REPORT
-# =========================================================
-
-@app.route("/employee/report")
-@employee_required
-def employee_report():
-
-    employee_obj = db.session.get(
-        Employee,
-        session.get("employee_id"),
-    )
-
-    today = today_ist()
-
-    if is_sunday(today):
-
-        return render_template(
-            "employee_report.html",
-            employee=employee_obj,
-            result=None,
-            completed=0,
-            correct=0,
-            wrong=0,
-            seconds=0,
-            accuracy=0,
-            holiday=True,
-            holiday_message="Sunday — Holiday",
-            today=today,
-        )
-
-    result = get_or_create_daily_result(
-        employee_obj.id,
-        today,
-    )
-
-    accuracy = (
-        display_accuracy(
-            result.correct
-            / result.completed
-            * 100
-        )
-        if result.completed
-        else 0
-    )
-
-    return render_template(
-        "employee_report.html",
-        employee=employee_obj,
-        result=result,
-        completed=result.completed,
-        correct=result.correct,
-        wrong=result.wrong,
-        seconds=result.seconds,
-        accuracy=accuracy,
-        holiday=False,
-        holiday_message="",
-        today=today,
-    )
-
-
-# =========================================================
-# FOUNDER DASHBOARD
-# =========================================================
-
-@app.route("/founder")
-@founder_required
-def founder():
-
-    today = today_ist()
-
-    employees = (
-        Employee.query
-        .order_by(Employee.id.asc())
-        .all()
-    )
-
-    daily_results = {
-        e.id: DailyResult.query.filter_by(
-            employee_id=e.id,
-            work_date=today,
-        ).first()
-        for e in employees
-    }
-
-    historical_results = {
-        e.id: (
-            DailyResult.query
-            .filter_by(employee_id=e.id)
-            .order_by(DailyResult.work_date.desc())
-            .all()
-        )
-        for e in employees
-    }
-
-    historical_totals = {}
-
-    for employee in employees:
-
-        results = historical_results.get(
-            employee.id,
-            [],
-        )
-
-        completed = sum(
-            r.completed
-            for r in results
-        )
-
-        correct = sum(
-            r.correct
-            for r in results
-        )
-
-        wrong = sum(
-            r.wrong
-            for r in results
-        )
-
-        seconds = sum(
-            r.seconds
-            for r in results
-        )
-
-        raw_accuracy = (
-            correct / completed * 100
-            if completed
-            else 0
-        )
-
-        historical_totals[employee.id] = {
-            "completed": completed,
-            "correct": correct,
-            "wrong": wrong,
-            "seconds": seconds,
-            "accuracy": (
-                display_accuracy(raw_accuracy)
-                if completed
-                else 0
-            ),
-            "record_count": len(results),
-            "latest_date": (
-                results[0].work_date
-                if results
-                else None
-            ),
-        }
-
-    pending_employees = [
-        e
-        for e in employees
-        if e.active and not e.approved
-    ]
-
-    return render_template(
-        "founder.html",
-        employees=employees,
-        daily_results=daily_results,
-        historical_results=historical_results,
-        historical_totals=historical_totals,
-        pending_employees=pending_employees,
-        pending_count=len(pending_employees),
-        today=today,
-        is_sunday=is_sunday(today),
-        holiday_message=holiday_label(today),
-        daily_target=DAILY_TARGET,
-    )
-
-
-# =========================================================
-# APPROVE EMPLOYEE
-# =========================================================
-
-@app.post(
-    "/founder/employee/<int:employee_id>/approve"
-)
-@founder_required
-def approve_employee(employee_id):
-
-    employee = db.get_or_404(
-        Employee,
-        employee_id,
-    )
-
-    employee.approved = True
-    employee.active = True
-
-    db.session.commit()
-
-    audit(
-        "employee_approved",
-        actor_role="founder",
-        employee_id=employee.id,
-    )
-
-    flash(
-        f"{employee.employee_name} approved successfully.",
-        "success",
-    )
-
-    return redirect(
-        url_for("founder")
-    )
-
-
-# =========================================================
-# REJECT EMPLOYEE REGISTRATION
-# =========================================================
-
-@app.post(
-    "/founder/employee/<int:employee_id>/reject"
-)
-@founder_required
-def reject_employee(employee_id):
-
-    employee = db.get_or_404(
-        Employee,
-        employee_id,
-    )
-
     if employee.approved:
 
         flash(
@@ -3071,6 +2601,778 @@ def founder_employee_report_pdf(employee_id):
     document.build(
         story
     )
+
+    buffer.seek(0)
+
+    audit(
+        "founder_employee_report_pdf_generated",
+        actor_role="founder",
+        employee_id=employee.id,
+        metadata=(
+            f"month={first_day.strftime('%Y-%m')}"
+        ),
+    )
+
+    return send_file(
+        buffer,
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=(
+            f"{employee.employee_code or 'employee'}-"
+            f"report-"
+            f"{first_day.strftime('%Y-%m')}.pdf"
+        ),
+    )
+# =========================================================
+# FOUNDER MONTHLY REPORT
+# =========================================================
+
+@app.route("/founder/report")
+@founder_required
+def founder_report():
+
+    today = today_ist()
+
+    selected_month = request.args.get("month")
+
+    first_day, last_day = month_bounds(
+        selected_month
+    )
+
+    employees = (
+        Employee.query
+        .order_by(Employee.id.asc())
+        .all()
+    )
+
+    report_rows = []
+
+    for employee in employees:
+
+        results = (
+            DailyResult.query
+            .filter(
+                DailyResult.employee_id == employee.id,
+                DailyResult.work_date >= first_day,
+                DailyResult.work_date <= last_day,
+            )
+            .order_by(
+                DailyResult.work_date.asc()
+            )
+            .all()
+        )
+
+        completed = sum(
+            r.completed for r in results
+        )
+
+        correct = sum(
+            r.correct for r in results
+        )
+
+        wrong = sum(
+            r.wrong for r in results
+        )
+
+        seconds = sum(
+            r.seconds for r in results
+        )
+
+        raw_accuracy = (
+            correct / completed * 100
+            if completed
+            else 0
+        )
+
+        report_rows.append(
+            {
+                "employee": employee,
+                "results": results,
+                "completed": completed,
+                "correct": correct,
+                "wrong": wrong,
+                "seconds": seconds,
+                "accuracy": (
+                    display_accuracy(raw_accuracy)
+                    if completed
+                    else 0
+                ),
+            }
+        )
+
+    sundays = []
+
+    current = first_day
+
+    while current <= last_day:
+
+        if is_sunday(current):
+            sundays.append(current)
+
+        current += datetime.timedelta(days=1)
+
+    return render_template(
+        "founder_report.html",
+        employees=employees,
+        report_rows=report_rows,
+        first_day=first_day,
+        last_day=last_day,
+        month_label=month_label(first_day),
+        selected_month=(
+            selected_month
+            or first_day.strftime("%Y-%m")
+        ),
+        sundays=sundays,
+        today=today,
+        is_sunday_today=is_sunday(today),
+    )
+
+
+# =========================================================
+# EMPLOYEE HISTORY
+# =========================================================
+
+@app.route(
+    "/founder/employee/<int:employee_id>/history"
+)
+@founder_required
+def employee_history(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
+
+    selected_month = request.args.get(
+        "month"
+    )
+
+    month_start, month_end = month_bounds(
+        selected_month
+    )
+
+    history = (
+        DailyResult.query
+        .filter(
+            DailyResult.employee_id == employee_id,
+            DailyResult.work_date >= month_start,
+            DailyResult.work_date <= month_end,
+        )
+        .order_by(
+            DailyResult.work_date.desc()
+        )
+        .all()
+    )
+
+    rows = []
+
+    existing = set()
+
+    totals = [
+        0,
+        0,
+        0,
+        0,
+    ]
+
+    for result in history:
+
+        existing.add(
+            result.work_date
+        )
+
+        acc = (
+            result.correct
+            / result.completed
+            * 100
+            if result.completed
+            else 0
+        )
+
+        rows.append(
+            {
+                "result": result,
+                "accuracy": (
+                    round(acc, 1)
+                    if result.completed
+                    else 0
+                ),
+                "actual_accuracy": round(
+                    acc,
+                    1,
+                ),
+                "target": DAILY_TARGET,
+                "is_holiday": is_sunday(
+                    result.work_date
+                ),
+                "holiday_label": holiday_label(
+                    result.work_date
+                ),
+            }
+        )
+
+        totals[0] += result.completed
+        totals[1] += result.correct
+        totals[2] += result.wrong
+        totals[3] += result.seconds
+
+    current = month_start
+
+    while current <= month_end:
+
+        if (
+            is_sunday(current)
+            and current not in existing
+        ):
+
+            rows.append(
+                {
+                    "result": None,
+                    "accuracy": 0,
+                    "actual_accuracy": 0,
+                    "target": DAILY_TARGET,
+                    "is_holiday": True,
+                    "holiday_label": "Sunday — Holiday",
+                    "holiday_date": current,
+                }
+            )
+
+        current += datetime.timedelta(days=1)
+
+    rows.sort(
+        key=lambda row: (
+            row["result"].work_date
+            if row["result"]
+            else row["holiday_date"]
+        ),
+        reverse=True,
+    )
+
+    raw = (
+        totals[1]
+        / totals[0]
+        * 100
+        if totals[0]
+        else 0
+    )
+
+    return render_template(
+        "employee_history.html",
+        employee=employee,
+        history=rows,
+        daily_target=DAILY_TARGET,
+        month_start=month_start,
+        month_end=month_end,
+        selected_month=month_start.strftime(
+            "%Y-%m"
+        ),
+        month_label=month_label(
+            month_start
+        ),
+        total_completed=totals[0],
+        total_correct=totals[1],
+        total_wrong=totals[2],
+        total_seconds=totals[3],
+        monthly_accuracy=(
+            display_accuracy(raw)
+            if totals[0]
+            else 0
+        ),
+        actual_month_accuracy=round(
+            raw,
+            1,
+        ),
+    )
+
+
+# =========================================================
+# FOUNDER REPORT DATA API
+# =========================================================
+
+@app.route("/founder/report/data")
+@founder_required
+def founder_report_data():
+
+    today = today_ist()
+
+    results = (
+        DailyResult.query
+        .filter_by(
+            work_date=today
+        )
+        .all()
+    )
+
+    data = []
+
+    for result in results:
+
+        employee = db.session.get(
+            Employee,
+            result.employee_id,
+        )
+
+        if not employee:
+            continue
+
+        acc = (
+            result.correct
+            / result.completed
+            * 100
+            if result.completed
+            else 0
+        )
+
+        data.append(
+            {
+                "employee_id": employee.id,
+                "employee_code": employee.employee_code,
+                "employee_name": employee.employee_name,
+                "completed": result.completed,
+                "correct": result.correct,
+                "wrong": result.wrong,
+                "seconds": result.seconds,
+                "accuracy": (
+                    display_accuracy(acc)
+                    if result.completed
+                    else 0
+                ),
+                "date": str(
+                    result.work_date
+                ),
+                "holiday": is_sunday(
+                    result.work_date
+                ),
+            }
+        )
+
+    return {
+        "date": str(today),
+        "holiday": is_sunday(today),
+        "holiday_label": holiday_label(today),
+        "target": DAILY_TARGET,
+        "employees": data,
+    }
+
+
+# =========================================================
+# FOUNDER INDIVIDUAL EMPLOYEE PDF REPORT
+# =========================================================
+
+@app.route(
+    "/founder/employee/<int:employee_id>/report/pdf"
+)
+@founder_required
+def founder_employee_report_pdf(employee_id):
+
+    employee = db.get_or_404(
+        Employee,
+        employee_id,
+    )
+
+    selected_month = request.args.get(
+        "month"
+    )
+
+    first_day, last_day = month_bounds(
+        selected_month
+    )
+
+    results = (
+        DailyResult.query
+        .filter(
+            DailyResult.employee_id == employee.id,
+            DailyResult.work_date >= first_day,
+            DailyResult.work_date <= last_day,
+        )
+        .order_by(
+            DailyResult.work_date.asc()
+        )
+        .all()
+    )
+
+    completed = sum(
+        r.completed
+        for r in results
+    )
+
+    correct = sum(
+        r.correct
+        for r in results
+    )
+
+    wrong = sum(
+        r.wrong
+        for r in results
+    )
+
+    seconds = sum(
+        r.seconds
+        for r in results
+    )
+
+    raw_accuracy = (
+        correct / completed * 100
+        if completed
+        else 0
+    )
+
+    accuracy = (
+        display_accuracy(raw_accuracy)
+        if completed
+        else 0
+    )
+
+    buffer = BytesIO()
+
+    document = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=12 * mm,
+        leftMargin=12 * mm,
+        topMargin=12 * mm,
+        bottomMargin=12 * mm,
+    )
+
+    styles = getSampleStyleSheet()
+
+    title = ParagraphStyle(
+        "IndividualReportTitle",
+        parent=styles["Title"],
+        alignment=TA_CENTER,
+        fontSize=16,
+        leading=20,
+    )
+
+    heading = ParagraphStyle(
+        "IndividualReportHeading",
+        parent=styles["Heading2"],
+        fontSize=11,
+        leading=14,
+    )
+
+    body = ParagraphStyle(
+        "IndividualReportBody",
+        parent=styles["BodyText"],
+        fontSize=8,
+        leading=10,
+    )
+
+    story = [
+        Paragraph(
+            "Employee Work Report",
+            title,
+        ),
+        Spacer(
+            1,
+            5 * mm,
+        ),
+        Paragraph(
+            f"Employee: {employee.employee_name}",
+            body,
+        ),
+        Paragraph(
+            f"Employee ID: {employee.employee_code or ''}",
+            body,
+        ),
+        Paragraph(
+            f"Period: {month_label(first_day)}",
+            body,
+        ),
+        Paragraph(
+            "Timezone: India Standard Time (IST)",
+            body,
+        ),
+        Spacer(
+            1,
+            5 * mm,
+        ),
+        Paragraph(
+            "Monthly Summary",
+            heading,
+        ),
+        Spacer(
+            1,
+            2 * mm,
+        ),
+    ]
+
+    summary_data = [
+        [
+            "Completed",
+            "Correct",
+            "Wrong",
+            "Accuracy",
+            "Time",
+        ],
+        [
+            str(completed),
+            str(correct),
+            str(wrong),
+            f"{accuracy:.1f}%",
+            (
+                f"{seconds // 3600}h "
+                f"{(seconds % 3600) // 60}m"
+            ),
+        ],
+    ]
+
+    summary_table = Table(
+        summary_data,
+        colWidths=[
+            32 * mm,
+            32 * mm,
+            32 * mm,
+            32 * mm,
+            32 * mm,
+        ],
+    )
+
+    summary_table.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "FONTSIZE",
+                    (0, 0),
+                    (-1, -1),
+                    8,
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "ALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "CENTER",
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "MIDDLE",
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    5,
+                ),
+            ]
+        )
+    )
+
+    story.append(summary_table)
+
+    story.append(
+        Spacer(
+            1,
+            6 * mm,
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Daily Work Details",
+            heading,
+        )
+    )
+
+    story.append(
+        Spacer(
+            1,
+            2 * mm,
+        )
+    )
+
+    daily_table_data = [
+        [
+            "Date",
+            "Completed",
+            "Correct",
+            "Wrong",
+            "Accuracy",
+            "Time",
+        ]
+    ]
+
+    existing_dates = set()
+
+    for result in results:
+
+        existing_dates.add(
+            result.work_date
+        )
+
+        daily_accuracy = (
+            result.correct
+            / result.completed
+            * 100
+            if result.completed
+            else 0
+        )
+
+        daily_table_data.append(
+            [
+                result.work_date.strftime(
+                    "%d %b %Y"
+                ),
+                str(result.completed),
+                str(result.correct),
+                str(result.wrong),
+                (
+                    f"{display_accuracy(daily_accuracy):.1f}%"
+                    if result.completed
+                    else "0.0%"
+                ),
+                (
+                    f"{result.seconds // 3600}h "
+                    f"{(result.seconds % 3600) // 60}m"
+                ),
+            ]
+        )
+
+    current = first_day
+
+    while current <= last_day:
+
+        if (
+            is_sunday(current)
+            and current not in existing_dates
+        ):
+
+            daily_table_data.append(
+                [
+                    current.strftime(
+                        "%d %b %Y"
+                    ),
+                    "Holiday",
+                    "—",
+                    "—",
+                    "—",
+                    "—",
+                ]
+            )
+
+        current += datetime.timedelta(days=1)
+
+    daily_table_data[1:] = sorted(
+        daily_table_data[1:],
+        key=lambda row: datetime.datetime.strptime(
+            row[0],
+            "%d %b %Y",
+        ).date(),
+    )
+
+    daily_table = Table(
+        daily_table_data,
+        repeatRows=1,
+        colWidths=[
+            32 * mm,
+            27 * mm,
+            27 * mm,
+            27 * mm,
+            27 * mm,
+            28 * mm,
+        ],
+    )
+
+    daily_table.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.lightgrey,
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "FONTSIZE",
+                    (0, 0),
+                    (-1, -1),
+                    7,
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "MIDDLE",
+                ),
+                (
+                    "ALIGN",
+                    (1, 1),
+                    (-1, -1),
+                    "CENTER",
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    4,
+                ),
+            ]
+        )
+    )
+
+    story.append(daily_table)
+
+    story.append(
+        Spacer(
+            1,
+            5 * mm,
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Sunday Holidays: Sunday is a weekly holiday. "
+            "No employee work is required on Sundays.",
+            body,
+        )
+    )
+
+    document.build(story)
 
     buffer.seek(0)
 
