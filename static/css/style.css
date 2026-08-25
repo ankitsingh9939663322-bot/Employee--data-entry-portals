@@ -2479,3 +2479,83 @@ html[data-theme="dark"] textarea:focus-visible {
     }
 
 }
+/* =========================================================
+   THEME TOGGLE
+   ========================================================= */
+
+.theme-toggle {
+    width: 44px;
+    height: 44px;
+
+    margin-left: auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #dce2eb;
+    border-radius: 13px;
+
+    background: #ffffff;
+    color: #344054;
+
+    cursor: pointer;
+
+    box-shadow: 0 5px 15px rgba(15,23,42,.06);
+
+    transition:
+        background .22s ease,
+        border-color .22s ease,
+        color .22s ease,
+        transform .18s ease,
+        box-shadow .22s ease;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    box-shadow: 0 10px 22px rgba(15,23,42,.10);
+}
+
+.theme-toggle svg {
+    width: 20px;
+    height: 20px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+html[data-theme="dark"] .theme-toggle {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #334155;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.18);
+}
+
+html[data-theme="dark"] .theme-toggle:hover {
+    background: #243147;
+    border-color: #475569;
+}
+
+@media (max-width: 700px) {
+
+    .theme-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+    }
+
+    .theme-toggle svg {
+        width: 18px;
+        height: 18px;
+    }
+
+}
