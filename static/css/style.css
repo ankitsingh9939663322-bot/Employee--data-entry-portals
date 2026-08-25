@@ -1586,5 +1586,381 @@ hr {
     .button {
         box-shadow: none;
     }
+    
+}
+/* =========================================================
+   29. DARK THEME
+   ========================================================= */
 
+html[data-theme="dark"] {
+    --bg: #0b1120;
+    --surface: #111827;
+    --surface-soft: #172033;
+    --surface-muted: #1a2435;
+
+    --text: #f1f5f9;
+    --text-2: #e2e8f0;
+    --text-3: #cbd5e1;
+    --muted: #94a3b8;
+    --muted-2: #64748b;
+
+    --border: #263449;
+    --border-strong: #334155;
+
+    --primary: #3b82f6;
+    --primary-2: #6366f1;
+    --primary-soft: #172554;
+
+    --success-soft: #052e1a;
+    --danger-soft: #3a1115;
+    --warning-soft: #3b210c;
+    --info-soft: #083344;
+}
+
+
+/* ---------- Global ---------- */
+
+html[data-theme="dark"] {
+    background: var(--bg);
+}
+
+html[data-theme="dark"] body {
+    color: var(--text);
+
+    background:
+        radial-gradient(
+            900px 480px at 100% -12%,
+            rgba(99, 102, 241, .12),
+            transparent 62%
+        ),
+        radial-gradient(
+            760px 440px at -8% 4%,
+            rgba(37, 99, 235, .10),
+            transparent 60%
+        ),
+        linear-gradient(
+            180deg,
+            #0f172a 0%,
+            #0b1120 100%
+        );
+}
+
+
+/* ---------- Header ---------- */
+
+html[data-theme="dark"] .header {
+    background: rgba(15, 23, 42, .88);
+
+    border-bottom-color: rgba(51, 65, 85, .85);
+
+    box-shadow:
+        0 5px 25px rgba(0, 0, 0, .20);
+}
+
+html[data-theme="dark"] .brand {
+    color: #f1f5f9;
+}
+
+html[data-theme="dark"] .brand:after {
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,.12);
+}
+
+
+/* ---------- Cards ---------- */
+
+html[data-theme="dark"] .card {
+    background: rgba(17, 24, 39, .96);
+
+    border-color: #263449;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, .25);
+}
+
+
+/* ---------- Typography ---------- */
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4 {
+    color: var(--text);
+}
+
+html[data-theme="dark"] .muted {
+    color: var(--muted);
+}
+
+html[data-theme="dark"] .eyebrow {
+    color: #93c5fd;
+
+    background:
+        linear-gradient(
+            135deg,
+            #172554,
+            #1e1b4b
+        );
+
+    border-color: #263b70;
+}
+
+
+/* ---------- Links ---------- */
+
+html[data-theme="dark"] a {
+    color: #60a5fa;
+}
+
+html[data-theme="dark"] a:hover {
+    color: #93c5fd;
+}
+
+
+/* ---------- Labels ---------- */
+
+html[data-theme="dark"] label {
+    color: var(--text-3);
+}
+
+
+/* ---------- Inputs ---------- */
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select {
+    background: #0f172a;
+
+    color: var(--text);
+
+    border-color: #334155;
+
+    box-shadow:
+        0 1px 2px rgba(0,0,0,.20);
+}
+
+html[data-theme="dark"] input:hover,
+html[data-theme="dark"] select:hover {
+    background: #111c2e;
+
+    border-color: #475569;
+}
+
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus {
+    background: #111c2e;
+
+    border-color: #60a5fa;
+
+    box-shadow:
+        0 0 0 4px rgba(59,130,246,.15),
+        0 5px 16px rgba(0,0,0,.15);
+}
+
+html[data-theme="dark"] input::placeholder {
+    color: #64748b;
+}
+
+html[data-theme="dark"] input:disabled,
+html[data-theme="dark"] select:disabled {
+    color: #64748b;
+
+    background: #172033;
+}
+
+
+/* ---------- Secondary Buttons ---------- */
+
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .button-secondary {
+    background:
+        linear-gradient(
+            180deg,
+            #1e293b,
+            #172033
+        );
+
+    color: #e2e8f0;
+
+    border-color: #334155;
+}
+
+html[data-theme="dark"] button.secondary:hover,
+html[data-theme="dark"] .button-secondary:hover {
+    color: #fff;
+
+    background: #243147;
+
+    border-color: #475569;
+}
+
+
+/* ---------- Reference Panels ---------- */
+
+html[data-theme="dark"] .ref {
+    background:
+        linear-gradient(
+            145deg,
+            #172033,
+            #111827
+        );
+
+    border-color: #2d3b50;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.025),
+        0 5px 18px rgba(0,0,0,.18);
+}
+
+html[data-theme="dark"] .ref strong {
+    color: #e2e8f0;
+}
+
+
+/* ---------- Progress ---------- */
+
+html[data-theme="dark"] .progress {
+    background: #1e293b;
+
+    border-color: #334155;
+}
+
+
+/* ---------- Statistics ---------- */
+
+html[data-theme="dark"] .stat {
+    background:
+        linear-gradient(
+            145deg,
+            #172033,
+            #111827
+        );
+
+    border-color: #2d3b50;
+
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] .stat b {
+    color: #f1f5f9;
+}
+
+html[data-theme="dark"] .stat:hover {
+    border-color: #475569;
+}
+
+
+/* ---------- Badges ---------- */
+
+html[data-theme="dark"] .active-badge,
+html[data-theme="dark"] .status-badge.success,
+html[data-theme="dark"] .badge-success,
+html[data-theme="dark"] .recorded-badge {
+    color: #86efac;
+
+    background: #052e1a;
+
+    border-color: #166534;
+}
+
+html[data-theme="dark"] .inactive-badge,
+html[data-theme="dark"] .status-badge.neutral,
+html[data-theme="dark"] .badge-neutral,
+html[data-theme="dark"] .empty-badge {
+    color: #cbd5e1;
+
+    background: #1e293b;
+
+    border-color: #334155;
+}
+
+
+/* ---------- Tables ---------- */
+
+html[data-theme="dark"] table {
+    background: #111827;
+
+    border-color: #2d3b50;
+}
+
+html[data-theme="dark"] th {
+    background:
+        linear-gradient(
+            180deg,
+            #1e293b,
+            #172033
+        );
+
+    color: #cbd5e1;
+
+    border-bottom-color: #334155;
+}
+
+html[data-theme="dark"] td {
+    color: #cbd5e1;
+
+    border-bottom-color: #243147;
+}
+
+html[data-theme="dark"] tbody tr:hover {
+    background: #172033;
+}
+
+html[data-theme="dark"] tbody tr td:first-child {
+    color: #f1f5f9;
+}
+
+
+/* ---------- Empty / Completion ---------- */
+
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .completion-state {
+    background:
+        linear-gradient(
+            145deg,
+            #172033,
+            #111827
+        );
+
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .empty-state-icon {
+    color: #94a3b8;
+
+    background: #1e293b;
+
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .completion-state-icon {
+    color: #86efac;
+
+    background: #052e1a;
+
+    border-color: #166534;
+}
+
+
+/* ---------- Divider / Footer ---------- */
+
+html[data-theme="dark"] hr {
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #334155,
+            transparent
+        );
+}
+
+html[data-theme="dark"] .site-footer {
+    color: #64748b;
+}
+
+
+/* ---------- Selection ---------- */
+
+html[data-theme="dark"] ::selection {
+    color: #fff;
+    background: #2563eb;
 }
