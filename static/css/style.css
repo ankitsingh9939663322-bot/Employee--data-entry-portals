@@ -1964,3 +1964,518 @@ html[data-theme="dark"] ::selection {
     color: #fff;
     background: #2563eb;
 }
+/* =========================================================
+   NEXORA · PREMIUM DARK THEME ENHANCEMENT
+   Add this at the VERY END of style.css
+   ========================================================= */
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+
+/* =========================================================
+   GLOBAL SURFACE DEPTH
+   ========================================================= */
+
+html[data-theme="dark"] body {
+    background:
+        radial-gradient(
+            900px 500px at 100% -10%,
+            rgba(99,102,241,.15),
+            transparent 62%
+        ),
+        radial-gradient(
+            800px 500px at -10% 5%,
+            rgba(37,99,235,.11),
+            transparent 60%
+        ),
+        linear-gradient(
+            180deg,
+            #0f172a 0%,
+            #0b1120 55%,
+            #080d18 100%
+        );
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+html[data-theme="dark"] .header {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15,23,42,.92),
+            rgba(11,17,32,.86)
+        );
+
+    border-bottom:
+        1px solid rgba(71,85,105,.42);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.22);
+}
+
+html[data-theme="dark"] .brand {
+    color: #f8fafc;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+html[data-theme="dark"] .card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,29,45,.97),
+            rgba(15,23,42,.97)
+        );
+
+    border-color:
+        rgba(71,85,105,.52);
+
+    box-shadow:
+        0 24px 70px rgba(0,0,0,.30),
+        0 3px 12px rgba(0,0,0,.16);
+}
+
+html[data-theme="dark"] .card:before {
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(96,165,250,.28),
+            rgba(129,140,248,.20),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+   ========================================================= */
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4 {
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .muted {
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] .eyebrow {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30,41,59,.95),
+            rgba(30,27,75,.85)
+        );
+
+    border-color: #33457a;
+
+    color: #93c5fd;
+
+    box-shadow:
+        0 5px 18px rgba(37,99,235,.08);
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+    background:
+        linear-gradient(
+            180deg,
+            #111c2e,
+            #0f172a
+        );
+
+    color: #f1f5f9;
+
+    border-color: #334155;
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.025),
+        0 3px 10px rgba(0,0,0,.12);
+}
+
+html[data-theme="dark"] input:hover,
+html[data-theme="dark"] select:hover,
+html[data-theme="dark"] textarea:hover {
+    background: #142033;
+
+    border-color: #475569;
+}
+
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus,
+html[data-theme="dark"] textarea:focus {
+    background: #142033;
+
+    border-color: #60a5fa;
+
+    box-shadow:
+        0 0 0 4px rgba(59,130,246,.14),
+        0 8px 24px rgba(0,0,0,.18);
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: #64748b;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+html[data-theme="dark"] button,
+html[data-theme="dark"] .button {
+    box-shadow:
+        0 10px 24px rgba(37,99,235,.20);
+}
+
+html[data-theme="dark"] button:hover,
+html[data-theme="dark"] .button:hover {
+    box-shadow:
+        0 15px 32px rgba(37,99,235,.26);
+}
+
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .button-secondary {
+    background:
+        linear-gradient(
+            180deg,
+            #1e293b,
+            #172033
+        );
+
+    color: #e2e8f0;
+
+    border-color: #334155;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.16);
+}
+
+html[data-theme="dark"] button.secondary:hover,
+html[data-theme="dark"] .button-secondary:hover {
+    background: #243147;
+
+    color: #fff;
+
+    border-color: #475569;
+}
+
+
+/* =========================================================
+   REFERENCE PANELS
+   ========================================================= */
+
+html[data-theme="dark"] .ref {
+    background:
+        linear-gradient(
+            145deg,
+            #182338,
+            #111827
+        );
+
+    border-color: #2f4057;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.025),
+        0 8px 24px rgba(0,0,0,.18);
+}
+
+html[data-theme="dark"] .ref:hover {
+    border-color: #40536c;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.035),
+        0 12px 30px rgba(0,0,0,.23);
+}
+
+html[data-theme="dark"] .ref strong {
+    color: #f1f5f9;
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+html[data-theme="dark"] .progress {
+    background: #1e293b;
+
+    border-color: #334155;
+
+    box-shadow:
+        inset 0 2px 4px rgba(0,0,0,.25);
+}
+
+html[data-theme="dark"] .progress .fill {
+    box-shadow:
+        0 0 18px rgba(99,102,241,.30);
+}
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+html[data-theme="dark"] .stat {
+    background:
+        linear-gradient(
+            145deg,
+            #182338,
+            #111827
+        );
+
+    border-color: #2d3d53;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.18);
+}
+
+html[data-theme="dark"] .stat:hover {
+    transform: translateY(-3px);
+
+    border-color: #465a73;
+
+    box-shadow:
+        0 16px 36px rgba(0,0,0,.27);
+}
+
+html[data-theme="dark"] .stat b {
+    color: #f8fafc;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+html[data-theme="dark"] table {
+    background: #111827;
+
+    border-color: #2d3d53;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.20);
+}
+
+html[data-theme="dark"] th {
+    background:
+        linear-gradient(
+            180deg,
+            #1e293b,
+            #172033
+        );
+
+    color: #cbd5e1;
+
+    border-bottom-color: #334155;
+}
+
+html[data-theme="dark"] td {
+    color: #cbd5e1;
+
+    border-bottom-color: #243147;
+}
+
+html[data-theme="dark"] tbody tr:hover {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(37,99,235,.055),
+            rgba(99,102,241,.035)
+        );
+}
+
+html[data-theme="dark"] tbody tr td:first-child {
+    color: #f8fafc;
+}
+
+
+/* =========================================================
+   EMPTY / COMPLETION
+   ========================================================= */
+
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .completion-state {
+    background:
+        linear-gradient(
+            145deg,
+            #182338,
+            #111827
+        );
+
+    border-color: #334155;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+
+/* =========================================================
+   FLASH MESSAGES
+   ========================================================= */
+
+html[data-theme="dark"] .flash.success,
+html[data-theme="dark"] .flash.flash-success {
+    background: rgba(5,46,26,.78);
+
+    color: #86efac;
+
+    border-color: #166534;
+}
+
+html[data-theme="dark"] .flash.error,
+html[data-theme="dark"] .flash.flash-error {
+    background: rgba(58,17,21,.78);
+
+    color: #fca5a5;
+
+    border-color: #7f1d1d;
+}
+
+html[data-theme="dark"] .flash.info,
+html[data-theme="dark"] .flash.flash-info {
+    background: rgba(23,37,84,.78);
+
+    color: #93c5fd;
+
+    border-color: #1d4ed8;
+}
+
+html[data-theme="dark"] .flash.warning,
+html[data-theme="dark"] .flash.flash-warning {
+    background: rgba(59,33,12,.78);
+
+    color: #fdba74;
+
+    border-color: #9a3412;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+html[data-theme="dark"] .status-badge.warning,
+html[data-theme="dark"] .badge-warning {
+    color: #fdba74;
+
+    background: #3b210c;
+
+    border-color: #9a3412;
+}
+
+html[data-theme="dark"] .status-badge.danger,
+html[data-theme="dark"] .badge-danger {
+    color: #fca5a5;
+
+    background: #3a1115;
+
+    border-color: #7f1d1d;
+}
+
+html[data-theme="dark"] .status-badge.info,
+html[data-theme="dark"] .badge-info {
+    color: #7dd3fc;
+
+    background: #083344;
+
+    border-color: #155e75;
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+html[data-theme="dark"] a {
+    color: #60a5fa;
+}
+
+html[data-theme="dark"] a:hover {
+    color: #93c5fd;
+}
+
+
+/* =========================================================
+   DIVIDERS / FOOTER
+   ========================================================= */
+
+html[data-theme="dark"] hr {
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #334155,
+            transparent
+        );
+}
+
+html[data-theme="dark"] .site-footer {
+    color: #64748b;
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+html[data-theme="dark"] ::selection {
+    color: #fff;
+
+    background: #2563eb;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+html[data-theme="dark"] a:focus-visible,
+html[data-theme="dark"] button:focus-visible,
+html[data-theme="dark"] input:focus-visible,
+html[data-theme="dark"] select:focus-visible,
+html[data-theme="dark"] textarea:focus-visible {
+    outline-color: rgba(96,165,250,.45);
+}
+
+
+/* =========================================================
+   SMOOTH THEME TRANSITION
+   ========================================================= */
+
+@media (prefers-reduced-motion: no-preference) {
+
+    html[data-theme="dark"] body,
+    html[data-theme="dark"] .header,
+    html[data-theme="dark"] .card,
+    html[data-theme="dark"] .stat,
+    html[data-theme="dark"] .ref,
+    html[data-theme="dark"] input,
+    html[data-theme="dark"] select,
+    html[data-theme="dark"] textarea {
+        transition:
+            background .22s ease,
+            border-color .22s ease,
+            box-shadow .22s ease,
+            color .22s ease;
+    }
+
+}
