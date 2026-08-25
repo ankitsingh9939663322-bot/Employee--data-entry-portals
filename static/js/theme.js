@@ -81,7 +81,7 @@
          * Find existing Nexora header.
          */
         const header =
-            document.querySelector(".brand");
+            document.querySelector(".header");
 
         if (!header) {
             return null;
