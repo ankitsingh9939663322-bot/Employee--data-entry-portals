@@ -106,8 +106,8 @@ DAILY_TARGET = 250
 TOTAL_UNIQUE_RECORDS = 100000
 SUNDAY_WEEKDAY = 6
 
-MIN_ACCURACY = 80.0
-MAX_ACCURACY = 90.0
+MIN_ACCURACY = 75.0
+MAX_ACCURACY = 88.0
 
 
 # =========================================================
