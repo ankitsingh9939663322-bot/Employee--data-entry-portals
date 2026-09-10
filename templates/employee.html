@@ -163,7 +163,54 @@
             box-shadow:
                 0 0 0 4px rgba(22,163,74,.10);
         }
+        /* =====================================================
+           WALLET
+        ===================================================== */
 
+        .nx-wallet {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 8px 11px;
+
+            border: 1px solid #dce8ff;
+            border-radius: 11px;
+
+            background: linear-gradient(
+                135deg,
+                #f7f9ff,
+                #ffffff
+            );
+
+            color: #182230;
+
+            font-size: 11px;
+            font-weight: 850;
+
+            white-space: nowrap;
+
+            box-shadow:
+                0 5px 14px rgba(37,99,235,.06);
+        }
+
+        .nx-wallet-icon {
+            font-size: 14px;
+        }
+
+        .nx-wallet-label {
+            color: #667085;
+            font-size: 9px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .nx-wallet-amount {
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 900;
+        }
         /* =====================================================
            PAGE
            ===================================================== */
@@ -888,6 +935,17 @@
             .nx-secure {
                 display: none;
             }
+            .nx-wallet {
+                padding: 7px 9px;
+            }
+
+            .nx-wallet-label {
+                display: none;
+            }
+
+            .nx-wallet-amount {
+                font-size: 11px;
+            }
 
             .nx-page {
                 padding: 20px 11px 42px;
@@ -1000,7 +1058,21 @@
                 Secure workspace
 
             </div>
+           <div class="nx-wallet">
 
+               <span class="nx-wallet-icon">
+                💰
+               </span>
+
+               <span class="nx-wallet-label">
+                     Wallet
+              </span>
+
+              <span class="nx-wallet-amount">
+                ₹{{ employee.wallet_balance }}
+              </span>
+
+            </div>
         </div>
 
     </div>
