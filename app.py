@@ -205,6 +205,11 @@ class Employee(db.Model):
         db.String(150),
         nullable=False,
     )
+    wallet_balance = db.Column(
+        db.Integer,
+        default=0,
+        nullable=False,
+    )
 
     employee_code = db.Column(
         db.String(20),
@@ -441,13 +446,19 @@ def setup_database():
                     "ALTER TABLE employee "
                     "ADD COLUMN approved BOOLEAN DEFAULT FALSE"
                 )
+           
 
                 connection.exec_driver_sql(
                     "UPDATE employee "
                     "SET approved = TRUE "
                     "WHERE approved IS NULL"
                 )
+            if "wallet_balance" not in columns:
 
+                connection.exec_driver_sql(
+                    "ALTER TABLE employee "
+                    "ADD COLUMN wallet_balance INTEGER DEFAULT 0"
+                )
         employees = (
             Employee.query
             .order_by(Employee.id.asc())
@@ -1623,7 +1634,77 @@ def founder():
         holiday_message=holiday_label(today),
         daily_target=DAILY_TARGET,
     )
+@app.route("/founder/wallet/add/<int:employee_id>", methods=["POST"])
+@founder_required
+def add_wallet_money(employee_id):
+    employee = db.session.get(Employee, employee_id)
 
+    if employee is None:
+        flash("Employee not found.", "error")
+        return redirect(url_for("founder"))
+
+    amount_raw = request.form.get("amount", "").strip()
+
+    try:
+        amount = int(amount_raw)
+    except (TypeError, ValueError):
+        flash("Please enter a valid amount.", "error")
+        return redirect(url_for("founder"))
+
+    if amount <= 0:
+        flash("Amount must be greater than ₹0.", "error")
+        return redirect(url_for("founder"))
+
+    employee.wallet_balance += amount
+
+    db.session.commit()
+
+    flash(
+        f"₹{amount} added to {employee.employee_name}'s wallet.",
+        "success",
+    )
+
+    return redirect(url_for("founder"))
+
+
+@app.route("/founder/wallet/subtract/<int:employee_id>", methods=["POST"])
+@founder_required
+def subtract_wallet_money(employee_id):
+    employee = db.session.get(Employee, employee_id)
+
+    if employee is None:
+        flash("Employee not found.", "error")
+        return redirect(url_for("founder"))
+
+    amount_raw = request.form.get("amount", "").strip()
+
+    try:
+        amount = int(amount_raw)
+    except (TypeError, ValueError):
+        flash("Please enter a valid amount.", "error")
+        return redirect(url_for("founder"))
+
+    if amount <= 0:
+        flash("Amount must be greater than ₹0.", "error")
+        return redirect(url_for("founder"))
+
+    if amount > employee.wallet_balance:
+        flash(
+            "Wallet balance se zyada amount subtract nahi kar sakte.",
+            "error",
+        )
+        return redirect(url_for("founder"))
+
+    employee.wallet_balance -= amount
+
+    db.session.commit()
+
+    flash(
+        f"₹{amount} subtracted from {employee.employee_name}'s wallet.",
+        "success",
+    )
+
+    return redirect(url_for("founder"))
 
 # =========================================================
 # APPROVE EMPLOYEE
