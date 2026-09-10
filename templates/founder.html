@@ -383,6 +383,77 @@
             color:#244fb8;
             text-decoration:none;
         }
+        /* =================================================
+           WALLET
+        ================================================= */
+
+        .wallet-cell {
+            min-width:180px;
+        }
+
+        .wallet-balance {
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:7px 10px;
+            border-radius:10px;
+            background:#f8faff;
+            border:1px solid #e2e8f4;
+            color:#182230;
+            font-size:13px;
+            font-weight:850;
+            white-space:nowrap;
+        }
+
+        .wallet-actions {
+            display:flex;
+            align-items:center;
+            gap:6px;
+            margin-top:8px;
+        }
+
+        .wallet-actions form {
+            display:flex;
+            gap:5px;
+            margin:0;
+        }
+
+        .wallet-input {
+            width:85px;
+            padding:7px 8px;
+            border:1px solid #dfe5ed;
+            border-radius:8px;
+            background:#fff;
+            color:#182230;
+            font-size:11px;
+            outline:none;
+        }
+
+        .wallet-input:focus {
+            border-color:var(--primary);
+            box-shadow:0 0 0 3px rgba(37,99,235,.08);
+        }
+
+        .wallet-add-button,
+        .wallet-subtract-button {
+            padding:7px 9px !important;
+            border-radius:8px !important;
+            font-size:11px !important;
+            font-weight:800 !important;
+            white-space:nowrap;
+        }
+
+        .wallet-add-button {
+            background:#ecfdf3 !important;
+            color:#166534 !important;
+            border:1px solid #b7ebc6 !important;
+        }
+
+        .wallet-subtract-button {
+            background:#fff !important;
+            color:#b42318 !important;
+            border:1px solid #f1b5b0 !important;
+        }
 
         /* =================================================
            ACTIONS
@@ -955,6 +1026,10 @@
                         </th>
 
                         <th>
+                            Wallet
+                        </th>
+
+                        <th>
                             Status
                         </th>
 
@@ -1275,7 +1350,96 @@
                             </a>
 
                         </td>
+<!-- =================================================
+     WALLET
+================================================= -->
 
+<td>
+
+    <div class="wallet-cell">
+
+        <div class="wallet-balance">
+            💰 ₹{{ employee.wallet_balance }}
+        </div>
+
+        <div class="wallet-actions">
+
+            <!-- ADD MONEY -->
+
+            <form
+                method="post"
+                action="{{ url_for(
+                    'add_wallet_money',
+                    employee_id=employee.id
+                ) }}"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <input
+                    type="number"
+                    name="amount"
+                    class="wallet-input"
+                    min="1"
+                    step="1"
+                    placeholder="Amount"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="wallet-add-button"
+                >
+                    + Add
+                </button>
+
+            </form>
+
+
+            <!-- SUBTRACT MONEY -->
+
+            <form
+                method="post"
+                action="{{ url_for(
+                    'subtract_wallet_money',
+                    employee_id=employee.id
+                ) }}"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <input
+                    type="number"
+                    name="amount"
+                    class="wallet-input"
+                    min="1"
+                    step="1"
+                    placeholder="Amount"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="wallet-subtract-button"
+                >
+                    − Subtract
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</td>
 
                         <!-- =================================================
                              STATUS
@@ -1445,7 +1609,7 @@
                     <tr>
 
                         <td
-                            colspan="9"
+                            colspan="10"
                             style="
                                 text-align:center;
                                 padding:35px;
